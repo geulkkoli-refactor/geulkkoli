@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:>
+<body>
+<header th:fragment="header" id="btn-all" class="p-3 text-white">
+    <div class="header-buttons">
+        <button type="button"
+                onclick="location.href='/loginPage'"
+                sec:authorize="isAnonymous()"
+                class="btn btn-primary btn-sm fixed-width">Login
+        </button>
+
+        <button type="button"
+                onclick="location.href='/admin/'"
+                sec:authorize="hasRole('ADMIN')"
+                class="btn btn-primary">admin
+        </button>
+
+
+        <button type="button"
+                onclick="location.href='/join'"
+                sec:authorize="isAnonymous()"
+                class="btn btn-outline-primary btn-sm fixed-width">Sign-up
+        </button>
+
+        <div th:if="${#request.getAttribute('loginError') != null}">
+            <button type="button"
+                    onclick="location.href='/loginPage'"
+                    class="btn btn-primary btn-sm fixed-width">Login
+            </button>
+
+            <button type="button"
+                    onclick="location.href='/join'"
+                    class="btn btn-outline-primary btn-sm fixed-width">Sign-up
+            </button>
+        </div>
+
+        <div sec:authorize="hasAnyRole('USER','ADMIN')" class="account-options">
+            <button type="button"
+                    sec:authorize="hasAnyRole('USER')"
+                    th:attr="data-url='/user/'+${#authentication.principal.nickName}"
+                    onclick="location.href=this.getAttribute('data-url')"
+                    class="btn btn-primary btn-sm fixed-width">Account profile
+            </button>
+            <button type="button"
+                    sec:authorize="hasAnyRole('USER')"
+                    onclick="location.href='/user/edit'"
+                    class="btn btn-primary btn-sm fixed-width">Account Settings
+            </button>
+            <button type="button"
+                    onclick="location.href='/logout'"
+                    sec:authorize="hasAnyRole('USER','ADMIN')"
+                    class="btn btn-outline-primary btn-sm fixed-width">Logout
+            </button>
+        </div>
+    </div>
+</header>
+</body>
+</html>

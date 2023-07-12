@@ -1,0 +1,79 @@
+package com.geulkkoli.domain.user.service;
+
+import com.geulkkoli.domain.user.User;
+import com.geulkkoli.domain.user.UserRepository;
+import com.geulkkoli.web.user.dto.JoinFormDto;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ActiveProfiles("test")
+@SpringBootTest
+@Transactional
+class UserFindServiceTest {
+    @Autowired
+    private UserFindService userFindService;
+    @Autowired
+    private UserService userService;
+
+    @DisplayName("유저 아이디로 찾기")
+    @Test
+    void findById() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        User user = userService.signUp(joinForm);
+        User findById = userFindService.findById(user.getUserId());
+
+        assertEquals(user.getUserId(),findById.getUserId());
+    }
+
+    @DisplayName("유저 이메일로 찾기")
+    @Test
+    void findByEmail() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        User user = userService.signUp(joinForm);
+        Optional<User> findByEmail = userFindService.findByEmail(user.getEmail());
+
+        assertThat(findByEmail).hasValue(user);
+    }
+
+    @DisplayName("유저 닉네임, 전화번호로 찾기")
+    @Test
+    void findByUserNameAndPhoneNo() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        User user = userService.signUp(joinForm);
+        Optional<User> findByUserNameAndPhoneNo = userFindService.findByUserNameAndPhoneNo(user.getUserName(),user.getPhoneNo());
+
+        assertThat(findByUserNameAndPhoneNo).hasValue(user);
+    }
+
+    @DisplayName("유저 이메일, 닉네임, 전화번호로 찾기")
+    @Test
+    void findByEmailAndUserNameAndPhoneNo() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+
+        User user = userService.signUp(joinForm);
+        Optional<User> findByEmailAndUserNameAndPhoneNo = userFindService.findByEmailAndUserNameAndPhoneNo(user.getEmail(),user.getUserName(),user.getPhoneNo());
+
+        assertThat(findByEmailAndUserNameAndPhoneNo).hasValue(user);
+    }
+
+    @DisplayName("유저 닉네임으로 찾기")
+    @Test
+    void findByNickName() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+
+        User user = userService.signUp(joinForm);
+        User findByNickName = userFindService.findByNickName(user.getNickName());
+
+        assertEquals(user.getNickName(),findByNickName.getNickName());
+    }
+}

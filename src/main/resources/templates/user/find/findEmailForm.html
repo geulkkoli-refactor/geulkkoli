@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이메일 찾기</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/userForm.css">
+</head>
+
+<body>
+<header id="header" th:include="header"></header>
+<h1>이메일 찾기</h1>
+
+<br>
+<br>
+
+<div class="contentBox">
+  <form action="" th:action th:object="${findEmailForm}" method="post">
+
+    <div>
+      <label for="userName">
+        <h4>이름</h4>
+      </label>
+      <input type="text" name="userName" id="userName"
+             th:field="*{userName}"
+             th:errorclass="field-error"
+             placeholder="홍길동" class="form-control form-control-lg">
+      <p class="field-error" th:errors="*{userName}"></p>
+    </div>
+
+    <div>
+      <label for="phoneNo">
+        <h4>전화번호</h4>
+      </label>
+      <input type="tel" name="phoneNo" id="phoneNo"
+             th:field="*{phoneNo}"
+             th:errorclass="field-error"
+             placeholder="숫자만 입력 (01012345678)"
+             class="form-control form-control-lg">
+      <p class="field-error" th:errors="*{phoneNo}"></p>
+      <p class="field-error"
+         th:if="${#fields.hasGlobalErrors()}"
+         th:text="#{Check.findContent}"></p>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="mb-3 sub-div">
+      <input type="submit" value="이메일 찾기" class="btn btn-primary form-control-lg">
+    </div>
+  </form>
+</div>
+
+<div id="footer" th:include="footer"></div>
+</body>
+</html>

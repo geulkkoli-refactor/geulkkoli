@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" ,
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mypage.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+</head>
+<body>
+<header id="header" th:include="header"></header>
+<span class="private-page-name"><strong id="user-nickname"
+                                        th:text="|${#authentication.principal.nickName + ' 의 페이지'}|"> </strong></span>
+<div class="nav">
+    <div class="div-aside">
+        <section class="follow-section">
+            <img class="default-profile" src="/images/defaultProfile.png" alt="default Profile Image">
+            <div class="profile-info">
+                <a class="following-link"
+                   th:attr="data-url='/user/'+${#authentication.principal.nickName} + '/followers'"
+                   onclick="location.href=this.getAttribute('data-url')"
+                   th:if="${followsCount.getFollowerCount() > 0}">
+                    <em>구독자</em>
+                    <span th:text="${followsCount.getFollowerCount()}"></span>
+                </a>
+                <a class="following-link" href="#" th:unless="${followsCount.getFollowerCount() > 0}">
+                    <em>구독자</em>
+                    <span th:text="${followsCount.getFollowerCount()}"></span>
+                </a>
+                <a class="following-link"
+                   th:attr="data-url='/user/'+${#authentication.principal.nickName} + '/followees'"
+                   onclick="location.href=this.getAttribute('data-url')"
+                   th:if="${followsCount.getFolloweeCount() > 0}">
+                    <em>작가</em>
+                    <span th:text="${followsCount.getFolloweeCount()}"></span>
+                </a>
+                <a class="following-link" href="#" th:unless="${followsCount.getFolloweeCount() > 0}">
+                    <em>작가</em>
+                    <span th:text="${followsCount.getFolloweeCount()}"></span>
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+<div class="flex-shrink-0 p-3" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+        <svg class="bi pe-none me-2" width="30" height="24">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+        <span class="fs-5 fw-semibold">Home</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="true">
+                <a class=""
+                   th:attr="data-url='/user/'+${#authentication.principal.nickName} + '/write-posts'"
+                   onclick="location.href=this.getAttribute('data-url')">
+                    <em>내가 쓴 글</em>
+                </a>            </button>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#orders-collapse" aria-expanded="true">
+                <a class=""
+                   th:attr="data-url='/user/'+${#authentication.principal.nickName} + '/favorites'"
+                   onclick="location.href=this.getAttribute('data-url')">
+                    <em>좋아요 한 글</em>
+                </a>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<div id="calendarBox">
+    <h4> < 활동한 날 > </h4>
+    <select id="beforeYears" style="display: none">
+    </select>
+    <div class="calendar">
+        <div class="days"></div>
+    </div>
+</div>
+</body>
+<div th:include="footer"></div>
+<script src="/js/calendar.js"></script>
+<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</html>

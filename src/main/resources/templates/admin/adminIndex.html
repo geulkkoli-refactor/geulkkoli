@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/header.css" rel="stylesheet">
+    <title>관리 페이지</title>
+</head>
+<body>
+<header id="header"></header>
+<div th:include="header"></div>
+<form id="search-form">
+    <div class="row">
+        <div class="col-12">
+            <div class="row no-gutters m-5 ">
+                <div class="p-3">
+                    <button type="button"
+                            onclick="location.href='/admin/reportedPostList'"
+                            class="btn btn-primary">신고받은 게시글
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>날짜</th>
+        <th>주제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${data}">
+        <td th:text="${item.getDate()}"></td>
+        <td th:text="${item.topic}" contenteditable="true"
+            th:attr="data-id=${item.date}"
+            id="themeInput">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<footer id="footer"></footer>
+<div th:include="footer"></div>
+<script>
+    const themeCell = document.getElementById('themeInput');
+    themeCell.addEventListener('blur', function() {
+        const date = this.getAttribute('data-id');
+        const theme = this.innerText;
+        updateTheme(date, theme);
+    });
+
+    function updateTheme(date, theme) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/calendar/update");
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify({date: date, theme: theme}));
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Updated successfully.');
+            } else {
+                console.error('An error occurred: ' + xhr.status);
+                console.error('error with : ' + date + " and "+theme);
+            }
+        };
+
+    }
+</script>
+</body>
+</html>

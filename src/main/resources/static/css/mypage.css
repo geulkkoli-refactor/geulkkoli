@@ -1,0 +1,93 @@
+.following-link {
+    text-decoration: none;
+    color: #000;
+    font-size: 1.0rem;
+}
+
+#wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.following-link em {
+    font-style: normal !important;
+}
+
+.nav {
+    flex-direction: column;
+    margin-top: 20px;
+
+}
+
+.logo{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-content: stretch;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-left: 1.7%;
+}
+
+.side-nav {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+li {
+    list-style: none;
+}
+a{
+    text-decoration: none;
+   color: black;
+}
+em{
+    font-style: normal;
+}
+
+main {
+    display: inline;
+}
+
+.follow-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.div-aside {
+    margin-top: 10px;
+    display: inline-block;
+}
+.default-profile {
+    top: 70%;
+    left: 50%;
+    height: 10%;
+    transform: translate(-50%, 0%);
+    width: 10%;
+    margin: 0;
+}
+
+.private-page-name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+@media (max-width: 981px) {
+    .side-nav {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .following-link {
+        font-size: 0.8rem;
+    }
+
+}

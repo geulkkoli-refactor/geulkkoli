@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <link href="/css/bootstrap.min.css"
+        th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link rel="stylesheet" href="/css/post.css">
+  <title>게시글 수정 폼</title>
+
+  <!-- wysiwyg editor summernote -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link href="/summernote/summernote-lite.css" rel="stylesheet">
+  <script src="/summernote/summernote-lite.js"></script>
+  <!-- wysiwyg editor summernote -->
+
+</head>
+<body>
+
+<header id="header"></header>
+<div th:include="header" ></div>
+
+<div class="container">
+  <div class="py-5 text-center">
+    <h2>게시글 수정하기</h2>
+  </div>
+
+  <hr class="my-4">
+  <div class="container">
+    <div>
+      <form id="edit" th:action="@{/post/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}" th:object="${editDTO}" method="post">
+        <input type="hidden" th:field="*{nickName}" form="edit">
+        <div class="mb-3">
+          <label th:text="제목">제목</label>
+          <input class="form-control"
+                 type="text"
+                 id="title"
+                 th:field="*{title}">
+          <div class="field-error" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb=3">
+          <label for="tag-category" th:text="분류">category</label>
+          <select th:field="*{tagCategory}" class="form-select" id="tag-category" name="tag-category">
+            <option th:value="'#시'" th:selected="${tagCategory}=='#시'">시</option>
+            <option th:value="'#수필'" th:selected="${tagCategory}=='#수필'">수필</option>
+            <option th:value="'#소설'" th:selected="${tagCategory}=='#소설'">소설</option>
+          </select>
+        </div>
+        <div class="mb=3">
+          <label for="tag-status" th:text="상태">status</label>
+          <select th:field="*{tagStatus}" class="form-select" id="tag-status" name="tag-status">
+            <option th:value="'#단편'" th:selected="${tagStatus}=='#단편'">단편</option>
+            <option th:value="'#연재'" th:selected="${tagStatus}=='#연재'">연재</option>
+            <option th:value="'#완결'" th:selected="${tagStatus}=='#완결'">완결</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label th:text="내용">내용</label>
+          <textarea class="form-control"
+                    th:field="*{postBody}" form="edit"
+                    rows="8">내용</textarea>
+          <div class="field-error" th:errors="*{postBody}"></div>
+        </div>
+
+        <div class="mb-3">
+          <label th:text="해시태그">해시태그</label>
+          <input class="form-control"
+                 type="text"
+                 id="tagListString"
+                 th:field="*{tagListString}">
+          <div class="field-error" th:errors="*{tagListString}"></div>
+        </div>
+
+        <input type="hidden" th:field="*{postId}">
+
+        <hr class="my-4">
+        <div class="row">
+          <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    type="button"
+                    th:onclick="|location.href='@{/post/list(page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
+                    th:value="취소">취소</button>
+          </div>
+          <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    type="submit" id="submit" th:value="등록">등록</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<div th:include="footer" ></div>
+
+<script type="text/javascript" >
+  $(document).ready(function() {
+    function imageUpload(files, editor) {
+      const data = new FormData();
+      data.append('file', files);
+      $.ajax({
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        data: data,
+        type: 'POST',
+        url: '/post/upload-file',
+        success: function (url) {
+          $(editor).summernote('insertImage', url);
+        }
+      });
+    }
+
+    $('#postBody').summernote({
+      height: 300,
+      callbacks: {
+        onImageUpload: function (files) {
+          imageUpload(files[0], this);
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+<div th:include="footer" ></div>
+</html>

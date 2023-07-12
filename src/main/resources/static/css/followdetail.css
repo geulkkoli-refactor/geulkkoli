@@ -1,0 +1,110 @@
+.title_follow {
+    font-size: 30px;
+    display: block;
+    font-weight: normal;
+    padding: 95px 0 35px;
+    text-align: center;
+}
+
+.btn-subscribe {
+    background: none;
+
+    border: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.txt_on {
+    display: none;
+}
+
+.btn-subscribe:hover .txt_default {
+    display: none;
+}
+
+.btn-subscribe:hover .txt_on {
+    display: inline-block;
+}
+
+.list_follow li {
+    position: relative;
+}
+
+
+.list_follow li .btn-subscribe {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.list_follow .span_follow #btn-follow #btn-unfollow {
+    background-position: -70px -210px;
+    border-radius: 42px;
+    float: left;
+    height: 42px;
+    position: relative;
+    width: 42px;
+}
+
+.btn-back_text_hide {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 10px;
+    left: -20px;
+}
+
+.span_follow-profile-image {
+    background-image: url(../images/defaultProfile.png);
+    background-size: cover;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+
+.btn-back_text_hide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-image: url(../images/ico/ico_back.png);
+    background-size: cover;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.btn-back_text_hide:hover::before {
+    transform: scale(1.2);
+}
+
+.btn-back_text_hide span {
+    display: none;
+}
+
+.btn-back_text_hide::after {
+    content: "";
+    display: inline-block;
+    width: 100%;
+}
+
+.btn-back_text_hide {
+    float: right;
+
+}
+
+.list_follow li {
+    border-bottom: 1px solid #eee;
+    overflow: hidden;
+    padding: 30px 0;
+    width: 100%;
+}
+
+li {
+    list-style-type: none;
+}

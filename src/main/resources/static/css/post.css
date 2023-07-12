@@ -1,0 +1,19 @@
+
+.container {
+    max-width: 1000px;
+}
+
+.txt_on {
+    display: none;
+}
+#btn-unfollow .txt_on {
+    display: none;
+}
+
+#btn-unfollow:hover .txt_on {
+    display: inline;
+}
+
+#btn-unfollow:hover .txt_default {
+    display: none;
+}

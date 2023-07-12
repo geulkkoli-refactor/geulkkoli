@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 정보 수정</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/userForm.css">
+    <link rel="stylesheet" href="/css/header.css">
+</head>
+
+<body>
+<header id="header" th:include="header"></header>
+<h1>회원 정보 수정</h1>
+
+<br>
+<br>
+
+<form action th:action="@{/user/edit}" th:object="${editForm}" method="post">
+    <div class="mb-3">
+        <label for="userName">
+            <h4>이름</h4>
+        </label>
+        <input type="text" name="userName" id="userName"
+               th:field="*{userName}"
+               th:errorclass="field-error"
+               placeholder="홍길동" class="form-control form-control-lg">
+        <p class="field-error" th:errors="*{userName}"></p>
+    </div>
+
+    <div class="mb-3">
+        <label for="nickName">
+            <h4>닉네임</h4>
+        </label>
+        <input type="text" name="nickName" id="nickName"
+               th:field="*{nickName}"
+               th:errorclass="field-error"
+               placeholder="2~8자리 / 한글, 영문, 숫자 사용 가능"
+               class="form-control form-control-lg nickNameInline">
+        <p class="field-error" th:errors="*{nickName}"></p>
+    </div>
+
+    <div class="mb-3">
+        <label for="email">
+            <h4>E-mail</h4>
+        </label>
+        <!-- userName == email -->
+        <input type="email" name="email" id="email"
+               th:value="${#request.getUserPrincipal().getName()}"
+               class="form-control form-control-lg" readonly>
+    </div>
+
+    <div class="mb-3">
+        <label for="password">
+            <h4>비밀번호</h4>
+        </label>
+        <br th:if="${param.status}">
+        <h5 th:if="${param.status}" th:text="'비밀번호 변경 완료'" class="pwChangeMessage"></h5>
+        <br>
+        <input type="button" name="password" id="password" value="비밀번호 재설정"
+               class="btn btn-primary form-control-lg" onclick="location.href='/user/edit/edit-password'">
+    </div>
+
+    <div class="mb-3">
+        <label for="phoneNo">
+            <h4>전화번호</h4>
+        </label>
+        <input type="tel" name="phoneNo" id="phoneNo"
+               th:field="*{phoneNo}"
+               th:errorclass="field-error"
+               placeholder="숫자만 입력 (01012345678)"
+               class="form-control form-control-lg">
+        <p class="field-error" th:errors="*{phoneNo}"></p>
+    </div>
+
+    <div class="mb-3">
+        <h4>성별</h4>
+        <div class="form-check form-check-inline">
+            <input type="radio" name="gender" id="male" value="male" th:checked="${editForm.getGender() == 'male'}">
+            <label for="male">남자</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" name="gender" id="female" value="female"
+                   th:checked="${editForm.getGender() == 'female'}">
+            <label for="female">여자</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" name="gender" id="non" value="non" th:checked="${editForm.getGender() == 'non'}">
+            <label for="non">밝히고 싶지 않음</label>
+        </div>
+    </div>
+
+    <section class="col" style="text-align: center">
+        <a th:if="${connectedInfos.isKakaoConnected()}"
+           th:href="@{/social/disconnect/socialType(type=kakao)}" class="btn btn-block">
+            카카오 계정 연동 취소
+        </a>
+        <a th:unless="${connectedInfos.isKakaoConnected()}"
+           th:href="@{/social/kakao/login}" class="btn btn-block">
+            카카오 계정 연결하기
+        </a>
+        <a th:if="${connectedInfos.isNaverConnected()}"
+           th:href="@{/social/disconnect/socialType(type=naver)}" class="btn btn-block">
+            네이버 계정 연동 취소
+        </a>
+        <a th:unless="${connectedInfos.isNaverConnected()}"
+           th:href="@{/social/naver/login}" class="btn btn-block">
+            네이버 계정 연결하기
+        </a>
+
+        <a th:if="${connectedInfos.isGoogleConnected()}"
+           th:href="@{/social/disconnect/socialType(type=google)}" class="btn btn-block">
+            구글 계정 연동 취소
+        </a>
+        <a th:unless="${connectedInfos.isGoogleConnected()}"
+           th:href="@{/social/google/login}" class="btn btn-block">
+            구글 계정 연결하기
+        </a>
+    </section>
+
+    <div class="mb-3 sub-div">
+        <input type="submit" value="수정하기" class="btn btn-primary form-control-lg">
+        <input type="button" value="취소하기" class="btn btn-outline-primary form-control-lg" onclick="location.href='/'">
+    </div>
+    <div class="d-grid gap-2 col-1 mx-auto">
+        <button class="btn btn-primary" type="button" th:attr="data-url='/user/'+${editForm.getNickName()+'/unsubscribed'}"
+                onclick="location.href=this.getAttribute('data-url')">탈퇴하기
+        </button>
+    </div>
+</form>
+<div id="footer" th:include="footer"></div>
+</body>
+</html>

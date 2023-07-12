@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이메일 찾기</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/userForm.css">
+</head>
+<body>
+<header id="header" th:include="header"></header>
+<h1>이메일 찾기</h1>
+
+<br>
+<br>
+
+<div class="contentBox">
+  <label for="email">
+    <h4>조회된 결과: </h4>
+  </label>
+  <input type="email" name="email" id="email"
+         th:value="*{email}"
+         class="form-control form-control-lg" readonly>
+</div>
+
+<br>
+<br>
+
+<div class="mb-3 sub-div">
+  <input type="submit" value="로그인하기" class="btn btn-primary form-control-lg" onclick="location.replace('/loginPage')">
+  <input type="button" value="비밀번호 찾기" class="btn btn-outline-primary form-control-lg" onclick="location.href='/findPassword'">
+</div>
+
+<div id="footer" th:include="footer"></div>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+ <!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/nav.css}" rel="stylesheet">
+    <style>
+        a {
+            text-decoration: none !important;
+        }
+
+        a:link {
+            color: black
+        }
+
+        a:visited {
+            color: black
+        }
+
+        a:hover {
+            color: brown
+        }
+
+        thead {
+            text-align: center;
+        }
+    </style>
+    <title>게시물 리스트</title>
+</head>
+<body>
+<div>
+    <div th:replace="header :: header"></div>
+    <div class="d-flex justify-content-center" style="font-size: 20px">
+        글꼬리
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="nav-content">
+            <form id="search-form" th:action="@{/post/list}">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row no-gutters">
+                            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                <label for="search-type" hidden>검색 유형</label>
+                                <select class="form-select" id="search-type" name="searchType">
+                                    <option th:selected="${searchType}=='제목'">제목</option>
+                                    <option th:selected="${searchType}=='본문'">본문</option>
+                                    <option th:selected="${searchType}=='닉네임'">닉네임</option>
+                                    <option th:selected="${searchType}=='해시태그'">해시태그</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-8 col-md-6 col-sm-12 p-0">
+                                <label for="search-words" hidden>검색어</label>
+                                <input type="text"
+                                       placeholder="검색어를 입력해주세요..."
+                                       class="form-control"
+                                       id="search-words"
+                                       name="searchWords"
+                                       th:value="${searchWords}">
+                            </div>
+                            <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                <button type="submit" class="btn btn-base">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24"
+                                         height="24"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="feather feather-search">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="d-flex">
+        <div th:replace="sidenav :: nav"></div>
+        <div class="align-self-stretch">
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">제목</th>
+                        <th scope="col">닉네임</th>
+                        <th scope="col">날짜</th>
+                        <th scope="col">조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${page.list}">
+                        <td><a th:href="@{|/post/read/${post.postId}|(page=${currentPage})}"
+                               th:text="${post.title}"></a></td>
+                        <td th:align="center" th:text="${post.nickName}"></td>
+                        <td th:align="center" th:text="${post.date}"></td>
+                        <td th:align="center" th:text="${post.postHits}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <nav class="" aria-label="Page navigation example">
+                    <ul class="pagination" id="pagination">
+                        <li class="page-item"><a href="#" class="page-link" aria-label="firstPageNum"><span
+                                aria-hidden="true"><i class="fa fa-fw fa-angle-left"></i></span><span
+                                class="sr-only">처음으로</span></a></li>
+                        <li class="page-item"><a href="#" class="page-link" aria-label="Previous"><span
+                                aria-hidden="true"><i class="fa fa-fw fa-angle-left"></i></span><span
+                                class="sr-only"><</span></a></li>
+                        <li class="page-item"><a href="#" class="page-link" aria-label="Next"><span
+                                aria-hidden="true"><i
+                                class="fa fa-fw fa-angle-right"></i></span><span class="sr-only">></span></a></li>
+                        <li class="page-item"><a href="#" class="page-link" aria-label="lastPageNum"><span
+                                aria-hidden="true"><i class="fa fa-fw fa-angle-right"></i></span><span
+                                class="sr-only">마지막으로</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="p-2">
+            <Button class="btn btn-primary btn-sm" style="float: right"
+                    th:onclick="|location.href='@{/post/add}'|"
+                    th:text="'글 쓰기'" type="button">글쓰기
+            </Button>
+        </div>
+    </div>
+</div>
+
+</body>
+<div th:include="footer"></div>
+<script type="text/javascript">
+
+    const currentPage = [[${page.number}]];
+    const isFirst = [[${page.first}]];
+    const isLast = [[${page.last}]];
+    const endPage = [[${page.totalPages}]];
+    const size = [[${page.size}]];
+
+</script>
+<script src="/js/pagination.js"></script>
+</html>

@@ -1,0 +1,122 @@
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.menu-button {
+    display: none;
+}
+
+.menu-list {
+    position: fixed;
+    top: 0;
+    left: -150px;
+    height: 100vh;
+    width: 150px;
+    transition: left 0.5s ease;
+    background-color: #824C71;
+    padding: 20px;
+    overflow: hidden;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+.menu-list:hover {
+    left: -20px;
+    width: 170px;
+}
+
+
+.menu-list.expanded {
+    left: 0;
+    width: 170px;
+}
+
+.menu-list li {
+    visibility: visible;
+}
+
+.menu-list.expanded li {
+    visibility: visible;
+}
+
+.menu-list li span {
+    display: block;
+}
+
+.content-area {
+    margin-left: 20px;
+    text-align: center;
+}
+
+@media (max-width: 800px) {
+    .nav-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-button {
+        display: block;
+        width: 30px;
+        height: 30px;
+        background-image: url("../images/ico/icons8-menu-50.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .content-area {
+        margin-left: 0;
+        margin-top: 70px;
+        text-align: center;
+    }
+
+    .menu-list {
+        position: fixed;
+        top: 40px;
+        left: -170px;
+        height: 100vh;
+        width: 170px;
+        transition: right 0.5s ease;
+        background-color: #824C71;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .menu-list.expanded {
+        left: 0;
+    }
+
+    .menu-list li {
+        visibility: visible;
+    }
+
+    .menu-button {
+        display: block;
+        width: 30px;
+        height: 30px;
+        background-image: url("../images/ico/icons8-menu-50.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .content-area {
+        margin-left: 0;
+        margin-top: 70px;
+        text-align: center;
+    }
+}
+
+@media (min-width: 801px) {
+    .menu-list:hover {
+        left: -20px;
+        width: 170px;
+    }
+}

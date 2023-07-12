@@ -1,0 +1,70 @@
+#calendarBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar {
+    display: inline-grid;
+    grid-auto-flow: column;
+    flex-direction: row;
+}
+
+.one-month {
+    display: block;
+    margin-right: -7.5px;
+    margin-left: -7.5px;
+}
+
+.one-month-columns {
+    display: flex;
+    flex-direction: row;
+}
+
+.month-name {
+    display: block;
+    text-align: center;
+    font-size: 15px;
+}
+
+.days {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-right: 15px;
+    justify-content: space-evenly;
+    font-size: 15px;
+}
+
+.calendar-cell {
+    display: flex;
+    width: 15px;
+    height: 15px;
+    border-collapse: collapse;
+}
+
+.first-column {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    align-items: flex-end;
+}
+
+.last-column {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: auto;
+    align-items: flex-start;
+}
+
+.borderLine {
+    border: gray solid 1px;
+}
+
+.last-column.seven-cells {
+    margin: 0px;
+}
+
+.coloring {
+    background-color: #0a53be;
+}

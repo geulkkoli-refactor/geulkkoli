@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/header.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+
+        .container {
+            max-width: 1000px;
+        }
+
+        a {text-decoration: none !important;}
+        a:link {color: black}
+        a:visited {color: black}
+        a:hover {color: brown}
+    </style>
+    <title>게시물 리스트</title>
+</head>
+<body>
+<header id="header" th:include="header"></header>
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>게시물 리스트</h2>
+    </div>
+
+    <hr class="my-4">
+    <div class="header">
+        <div class="col">
+            <Button class="btn btn-primary btn-lg" style="float: right"
+                    th:onclick="|location.href='@{/post/add}'|"
+                    th:text="'글 쓰기'" type="button">글쓰기</Button>
+        </div>
+    </div>
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">닉네임</th>
+                    <th scope="col">신고 횟수</th>
+                    <th scope="col">정지</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post : ${list}">
+                    <th scope="row"> <a th:href="@{|/post/read/${post.postId}|}" th:text="${post.postId}"></a></th>
+                    <td> <a th:href="@{|/post/read/${post.postId}|}" th:text="${post.title}"></a></td>
+                    <td th:text="${post.nickName}"></td>
+                    <td th:text="0"></td>
+                    <td><button onclick="openPopup()">회원 정지</button>
+
+                        <div id="popup" style="display: none">
+                            <p>정지일</p>
+                            <button onclick="confirm()">정지</button>
+                            <button onclick="cancel()">닫기</button>
+                        </div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="my-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 card-margin">
+                <form id="search-form">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row no-gutters">
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <label for="search-type" hidden>검색 유형</label>
+                                    <select class="form-select" id="search-type" name="searchType">
+                                        <option>제목</option>
+                                        <option>본문</option>
+                                        <option>id</option>
+                                        <option>닉네임</option>
+                                        <option>해시태그</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-8 col-md-6 col-sm-12 p-0">
+                                    <label for="search-value" hidden>검색어</label>
+                                    <input type="text"
+                                           placeholder="검색어..."
+                                           class="form-control"
+                                           id="search-value"
+                                           name="searchValue">
+                                </div>
+                                <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn btn-base">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="24"
+                                             height="24"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="feather feather-search">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+<footer id="footer" th:include="footer"></footer>
+
+<script>
+    function openPopup() {
+        document.getElementById("popup").style.display = "block";
+    }
+
+    function confirm() {
+        // 여기에 정지 처리 로직 추가
+        alert("회원이 ~일까지 ~일 정지되었습니다.");
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function cancel() {
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+</body>
+</html>
