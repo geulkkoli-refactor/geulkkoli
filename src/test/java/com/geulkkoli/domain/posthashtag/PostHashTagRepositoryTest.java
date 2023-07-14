@@ -9,6 +9,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
 @DataJpaTest
@@ -41,78 +43,33 @@ class PostHashTagRepositoryTest {
 
     @Test
     void 게시글_해시태그_저장() throws Exception {
-
         //given
-
-        User user = User.builder()
-                .email("test@naver.com")
-                .userName("test")
-                .nickName("test")
-                .phoneNo("00000000000")
-                .password("123")
-                .gender("male").build();
-
-        user = userRepository.save(user);
-        AddDTO addDTO01 = AddDTO.builder()
-                .title("testTitle01")
-                .postBody("test postbody 01")
-                .nickName(user.getNickName())
-                .build();
-        Post post01 = user.writePost(addDTO01);
-        postRepository.save(post01);
-
-        AddDTO addDTO02 = AddDTO.builder()
-                .title("testTitle02")
-                .postBody("test postbody 02")
-                .nickName(user.getNickName())
-                .build();
-        Post post02 = user.writePost(addDTO02);
-        postRepository.save(post02);
-
-        HashTag tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
-
-
-        PostHashTag save = post01.addHashTag(tag1);
+        User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
+        Post post = createPost(user, "testTitle01", "test postbody 01");
+        HashTag 일반글 = creatHashTag("일반글", HashTagType.GENERAL);
+        PostHashTag newPostHashtag = createPostHashTag(post, 일반글);
 
         //when
-        PostHashTag postHashTag = postHashTagRepository.save(save);
+        PostHashTag postHashTag = postHashTagRepository.save(newPostHashtag);
 
         //then
         assertThat(postHashTag.getHashTag().getHashTagName()).isEqualTo("일반글");
     }
 
     @Test
-    @Transactional
     void 게시글_다중_해시태그_저장() throws Exception {
-
-
         //given
-        User user = User.builder()
-                .email("test@naver.com")
-                .userName("test")
-                .nickName("test")
-                .phoneNo("00000000000")
-                .password("123")
-                .gender("male").build();
+        User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
+        Post post01 = createPost(user, "test", "ttest");
 
-        user = userRepository.save(user);
-        AddDTO addDTO01 = AddDTO.builder()
-                .title("testTitle01")
-                .postBody("test postbody 01")
-                .nickName(user.getNickName())
-                .build();
-        Post post01 = user.writePost(addDTO01);
-        postRepository.save(post01);
+        HashTag tag1 = creatHashTag("일반글", HashTagType.GENERAL);
+        HashTag tag3 = creatHashTag("코미디", HashTagType.CATEGORY);
+        HashTag tag4 = creatHashTag("판타지", HashTagType.CATEGORY);
 
+        PostHashTag save1 = postHashTagRepository.save(createPostHashTag(post01, tag1));
+        PostHashTag save2 = postHashTagRepository.save(createPostHashTag(post01, tag3));
+        PostHashTag save3 = postHashTagRepository.save(createPostHashTag(post01, tag4));
 
-        HashTag tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
-        HashTag tag3 = hashTagRepository.save(new HashTag("판타지", HashTagType.CATEGORY));
-        HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
-
-
-        PostHashTag save1 = post01.addHashTag(tag1);
-        PostHashTag save2 = post01.addHashTag(tag3);
-        PostHashTag save3 = post01.addHashTag(tag4);
 
         //when
         PostHashTag postHashTag1 = postHashTagRepository.save(save1);
@@ -130,79 +87,75 @@ class PostHashTagRepositoryTest {
     @Test
     void 게시글_해시태그_불러오기() throws Exception {
         //given
-        //given
-        User user = User.builder()
-                .email("test@naver.com")
-                .userName("test")
-                .nickName("test")
-                .phoneNo("00000000000")
-                .password("123")
-                .gender("male").build();
+        User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
+        Post post01 = createPost(user, "testTitle01", "test postbody 01");
 
-        user = userRepository.save(user);
-        AddDTO addDTO01 = AddDTO.builder()
-                .title("testTitle01")
-                .postBody("test postbody 01")
-                .nickName(user.getNickName())
-                .build();
-        Post post01 = user.writePost(addDTO01);
-        postRepository.save(post01);
+        HashTag tag1 = creatHashTag("일반글", HashTagType.GENERAL);
+        HashTag tag3 = creatHashTag("코미디", HashTagType.CATEGORY);
+        HashTag tag4 = creatHashTag("판타지", HashTagType.CATEGORY);
 
-
-        HashTag tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
-        HashTag tag3 = hashTagRepository.save(new HashTag("판타지", HashTagType.CATEGORY));
-        HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
-
-
-        PostHashTag postHashTag1 = postHashTagRepository.save(post01.addHashTag(tag1));
-        PostHashTag postHashTag2 = postHashTagRepository.save(post01.addHashTag(tag3));
-        PostHashTag postHashTag3 = postHashTagRepository.save(post01.addHashTag(tag4));
+        PostHashTag save1 = postHashTagRepository.save(createPostHashTag(post01, tag1));
+        PostHashTag save2 = postHashTagRepository.save(createPostHashTag(post01, tag3));
+        PostHashTag save3 = postHashTagRepository.save(createPostHashTag(post01, tag4));
         //when
         List<PostHashTag> list = post01.getPostHashTags();
 
         //then
-        assertThat(list.size()).isEqualTo(3);
-        assertThat(list.get(1).getHashTag().getHashTagName()).isEqualTo("판타지");
+        assertAll(
+                () -> assertThat(list).hasSize(3),
+                () -> assertThat(list).contains(save1),
+                () -> assertThat(list).contains(save2),
+                () -> assertThat(list).contains(save3));
     }
 
     @Test
     void 해시태그로_게시글_전부_찾기() throws Exception {
         //given
-        User user = User.builder()
-                .email("test@naver.com")
-                .userName("test")
-                .nickName("test")
-                .phoneNo("00000000000")
-                .password("123")
-                .gender("male").build();
 
-        user = userRepository.save(user);
-        AddDTO addDTO01 = AddDTO.builder()
-                .title("testTitle01")
-                .postBody("test postbody 01")
-                .nickName(user.getNickName())
-                .build();
-        Post post01 = user.writePost(addDTO01);
-        postRepository.save(post01);
+        User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
+        Post post01 = createPost(user, "testTitle01", "test postbody 01");
+        Post post02 = createPost(user, "testTitle02", "test postbody 02");
 
-        AddDTO addDTO02 = AddDTO.builder()
-                .title("testTitle02")
-                .postBody("test postbody 02")
-                .nickName(user.getNickName())
-                .build();
-        Post post02 = user.writePost(addDTO02);
-        postRepository.save(post02);
+        HashTag tag1 = creatHashTag("일반글", HashTagType.GENERAL);
 
-        HashTag tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
-
-        PostHashTag save01 = postHashTagRepository.save(post01.addHashTag(tag1));
-        PostHashTag save02 = postHashTagRepository.save(post02.addHashTag(tag1));
+        PostHashTag save01 = postHashTagRepository.save(createPostHashTag(post01, tag1));
+        PostHashTag save02 = postHashTagRepository.save(createPostHashTag(post02, tag1));
 
         //when
         List<PostHashTag> postHashTagList = postHashTagRepository.findAllByHashTag(tag1);
         //then
-        assertThat(postHashTagList).hasSize(2);
-        assertThat(postHashTagList.get(0).getHashTag().getHashTagName()).isEqualTo("일반글");
+        assertAll(
+                () -> assertThat(postHashTagList).hasSize(2),
+                () -> assertThat(postHashTagList).contains(save01),
+                () -> assertThat(postHashTagList).contains(save02));
+    }
+
+    private PostHashTag createPostHashTag(Post post, HashTag hashTag) {
+        return post.addHashTag(hashTag);
+    }
+
+    private HashTag creatHashTag(String hashTagName, HashTagType hashTagType) {
+        return hashTagRepository.save(new HashTag(hashTagName, hashTagType));
+    }
+
+    private Post createPost(User user, String title, String postBody) {
+        AddDTO addDTO01 = AddDTO.builder()
+                .title(title)
+                .postBody(postBody)
+                .nickName(user.getNickName())
+                .build();
+        return postRepository.save(user.writePost(addDTO01));
+    }
+
+    private User creatUser(String userName, String nickName, String email, String phoneNo, String password, String gender) {
+        User user = User.builder()
+                .email(email)
+                .userName(userName)
+                .nickName(nickName)
+                .phoneNo(phoneNo)
+                .password(password)
+                .gender(gender).build();
+        return userRepository.save(user);
     }
 
 }
