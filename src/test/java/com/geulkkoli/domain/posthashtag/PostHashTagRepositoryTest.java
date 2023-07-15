@@ -42,7 +42,7 @@ class PostHashTagRepositoryTest {
 
 
     @Test
-    void 게시글_해시태그_저장() throws Exception {
+    void 게시글_해시태그_저장(){
         //given
         User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
         Post post = createPost(user, "testTitle01", "test postbody 01");
@@ -57,7 +57,7 @@ class PostHashTagRepositoryTest {
     }
 
     @Test
-    void 게시글_다중_해시태그_저장() throws Exception {
+    void 게시글_다중_해시태그_저장() {
         //given
         User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
         Post post01 = createPost(user, "test", "ttest");
@@ -85,7 +85,7 @@ class PostHashTagRepositoryTest {
     }
 
     @Test
-    void 게시글_해시태그_불러오기() throws Exception {
+    void 게시글_해시태그_불러오기(){
         //given
         User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
         Post post01 = createPost(user, "testTitle01", "test postbody 01");
@@ -109,7 +109,7 @@ class PostHashTagRepositoryTest {
     }
 
     @Test
-    void 해시태그로_게시글_전부_찾기() throws Exception {
+    void 해시태그로_게시글_전부_찾기()  {
         //given
 
         User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");

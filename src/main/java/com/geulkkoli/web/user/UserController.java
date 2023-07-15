@@ -66,12 +66,12 @@ public class UserController {
 
     @GetMapping("/{nickName}")
     public ModelAndView getMyPage(@PathVariable("nickName") String nickName) {
-        ConnectedSocialInfos connectedInfos = socialInfoFindService.findConnectedInfosByNickName(nickName);
         User user = userFindService.findByNickName(nickName);
         Integer followee = followFindService.countFolloweeByFollowerId(user.getUserId());
         Integer follower = followFindService.countFollowerByFolloweeId(user.getUserId());
         FollowsCount followsCount = FollowsCount.of(followee, follower);
-        ModelAndView modelAndView = new ModelAndView("user/mypage", "connectedInfos", connectedInfos);
+        ModelAndView modelAndView = new ModelAndView("user/mypage");
+        modelAndView.addObject("nickName",nickName);
         modelAndView.addObject("followsCount", followsCount);
 
         return modelAndView;
