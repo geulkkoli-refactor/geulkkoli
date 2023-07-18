@@ -43,7 +43,7 @@ public class User extends ConfigDate {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "phone_No", unique = true)
+    @Column(name = "phone_No", nullable = false, unique = true)
     private String phoneNo;
 
     @Column(nullable = false)
@@ -110,7 +110,7 @@ public class User extends ConfigDate {
         return this.phoneNo;
     }
 
-    public String updateGender(String gender){
+    public String updateGender(String gender) {
         this.gender = gender;
         return this.gender;
     }

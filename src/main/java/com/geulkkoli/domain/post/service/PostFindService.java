@@ -23,6 +23,7 @@ public class PostFindService {
                 .orElseThrow(() -> new PostNotExistException("No post found id matches:" + postId));
     }
 
+
     @Transactional(readOnly = true)
     public List<String> getCreatedAts(User user) {
         return postRepository.findCreatedAt(user.getUserId());

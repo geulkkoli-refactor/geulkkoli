@@ -48,10 +48,6 @@ class PostFindServiceTest {
         HashTag 소설 = hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
     }
 
-    @BeforeEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
 
     @DisplayName("게시글 번호로 조회")
     @Test
