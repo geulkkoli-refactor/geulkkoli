@@ -103,7 +103,7 @@ public class SocialController {
         context.setAuthentication(token);
         SecurityContextHolder.setContext(context);
 
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName(HOME);
         return modelAndView;
     }
 
