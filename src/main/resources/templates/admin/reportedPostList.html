@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/css/header.css" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
 
         .container {
             max-width: 1000px;
         }
 
-        a {text-decoration: none !important;}
-        a:link {color: black}
-        a:visited {color: black}
-        a:hover {color: brown}
+        a {
+            text-decoration: none !important;
+        }
+
+        a:link {
+            color: black
+        }
+
+        a:visited {
+            color: black
+        }
+
+        a:hover {
+            color: brown
+        }
     </style>
     <title>게시물 리스트</title>
 </head>
@@ -31,35 +42,53 @@
         <div class="col">
             <Button class="btn btn-primary btn-lg" style="float: right"
                     th:onclick="|location.href='@{/post/add}'|"
-                    th:text="'글 쓰기'" type="button">글쓰기</Button>
+                    th:text="'글 쓰기'" type="button">글쓰기
+            </Button>
         </div>
     </div>
 
     <div>
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">닉네임</th>
-                    <th scope="col">신고 횟수</th>
-                    <th scope="col">정지</th>
-                </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">제목</th>
+                <th scope="col">닉네임</th>
+                <th scope="col">신고 횟수</th>
+                <th scope="col">정지</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="post : ${list}">
-                    <th scope="row"> <a th:href="@{|/post/read/${post.postId}|}" th:text="${post.postId}"></a></th>
-                    <td> <a th:href="@{|/post/read/${post.postId}|}" th:text="${post.title}"></a></td>
-                    <td th:text="${post.nickName}"></td>
-                    <td th:text="0"></td>
-                    <td><button onclick="openPopup()">회원 정지</button>
-
-                        <div id="popup" style="display: none">
-                            <p>정지일</p>
-                            <button onclick="confirm()">정지</button>
-                            <button onclick="cancel()">닫기</button>
-                        </div></td>
-                </tr>
+            <tr th:each="reportedPost : ${list}">
+                <th scope="row"><a th:href="@{|/post/read/${reportedPost.postId}|}"
+                                   th:text="${reportedPost.postId}"></a></th>
+                <td><a th:href="@{|/post/read/${reportedPost.postId}|}" th:text="${reportedPost.title}"></a></td>
+                <td th:text="${reportedPost.nickName}"></td>
+                <td th:text="${reportedPost.reports}"></td>
+                <td>
+                    <details>
+                        <summary class="memberSummary">회원 정지</summary>
+                        <form>
+                            <label>
+                                <input hidden="hidden" th:value="${reportedPost.postId}" name="postId">
+                            </label>
+                            <label>
+                                <input name="date"
+                                       placeholder="정지할 일수, 0은 영구정지">
+                            </label>
+                            <label>
+                                <input name="reason"
+                                       placeholder="정지 사유">
+                            </label>
+                            <button type="button" onclick="lockUserFetch(this.form)">정지</button>
+                            <div></div>
+                        </form>
+                    </details>
+                </td>
+                <td>
+                    <button type="button" th:onclick="deletePost([[${reportedPost.postId}]])">삭제</button>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -114,29 +143,46 @@
             </div>
         </div>
     </div>
-
 </div>
-
-
-
-
-
 
 <footer id="footer" th:include="footer"></footer>
 
-<script>
-    function openPopup() {
-        document.getElementById("popup").style.display = "block";
+<script th:inline="javascript">
+    function lockUserFetch(form) {
+        let formData = new FormData(form);
+
+        const reportedPostId = formData.get('postId');
+        const date = formData.get('date');
+        const reason = formData.get('reason');
+
+        fetch('/admin/lockUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({postId: reportedPostId, lockReason: reason, lockDate: date}),
+        }).then(function (response) {
+            return response.text();
+        }).then(function (text) {
+            console.log('Request successful', text);
+            alert(text); // 비동기 통신 콜백(체인 메소드)으로 text값을 리턴받아 출력
+        }).catch(function (error) {
+            console.log('Request failed', error)
+        });
     }
 
-    function confirm() {
-        // 여기에 정지 처리 로직 추가
-        alert("회원이 ~일까지 ~일 정지되었습니다.");
-        document.getElementById("popup").style.display = "none";
-    }
-
-    function cancel() {
-        document.getElementById("popup").style.display = "none";
+    function deletePost (id) {
+        console.log("deletePostId=" + id);
+        fetch('/admin/delete/'+id, {
+            method: 'DELETE',
+        }).then(function (response) {
+            return response.text();
+        }).then(function (text) {
+            console.log('Request successful', text);
+            alert(text); // 비동기 통신 콜백(체인 메소드)으로 text값을 리턴받아 출력
+        }).catch(function (error) {
+            console.log('Request failed', error)
+        });
     }
 </script>
 </body>

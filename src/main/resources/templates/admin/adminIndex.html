@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -10,21 +9,18 @@
 <body>
 <header id="header"></header>
 <div th:include="header"></div>
-<form id="search-form">
-    <div class="row">
-        <div class="col-12">
-            <div class="row no-gutters m-5 ">
-                <div class="p-3">
-                    <button type="button"
-                            onclick="location.href='/admin/reportedPostList'"
-                            class="btn btn-primary">신고받은 게시글
-                    </button>
-                </div>
-            </div>
-        </div>
+<div class="col-5">
+    <div class="row no-gutters m-5 ">
+        <button type="button"
+                onclick="location.href='/admin/reportedPostList'"
+                class="btn btn-primary">신고받은 게시글
+        </button>
+        <button type="button"
+                onclick="location.href='/admin/add'"
+                class="btn btn-primary">공지사항 작성
+        </button>
     </div>
-</form>
-
+</div>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -35,9 +31,9 @@
     <tbody>
     <tr th:each="item : ${data}">
         <td th:text="${item.getDate()}"></td>
-        <td th:text="${item.topic}" contenteditable="true"
+        <td th:text="${item.getTopic}" contenteditable="true"
             th:attr="data-id=${item.date}"
-            id="themeInput">
+            th:onblur="updateTheme([[${item.getDate}]],this.innerText)">
         </td>
     </tr>
     </tbody>
@@ -45,29 +41,22 @@
 
 <footer id="footer"></footer>
 <div th:include="footer"></div>
-<script>
-    const themeCell = document.getElementById('themeInput');
-    themeCell.addEventListener('blur', function() {
-        const date = this.getAttribute('data-id');
-        const theme = this.innerText;
-        updateTheme(date, theme);
-    });
 
-    function updateTheme(date, theme) {
+</body>
+
+<script th:inline="javascript">
+    function updateTheme(date, topic) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/admin/calendar/update");
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.send(JSON.stringify({date: date, theme: theme}));
+        xhr.send(JSON.stringify({date: date, topic: topic}));
         xhr.onload = function () {
             if (xhr.status === 200) {
                 console.log('Updated successfully.');
             } else {
-                console.error('An error occurred: ' + xhr.status);
-                console.error('error with : ' + date + " and "+theme);
+                console.error('error with : ' + date + " and " + topic);
             }
         };
-
     }
 </script>
-</body>
 </html>

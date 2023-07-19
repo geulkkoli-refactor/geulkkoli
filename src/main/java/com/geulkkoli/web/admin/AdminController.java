@@ -47,7 +47,7 @@ public class AdminController {
 
         model.addAttribute("data", weeklyTopic);
 
-        return "/admin/adminIndex";
+        return "admin/adminIndex";
     }
 
     @ResponseBody
@@ -61,7 +61,7 @@ public class AdminController {
     @GetMapping("/reportedPostList") //신고받은 게시물 링크
     public String reportedPostList(Model model) {
         model.addAttribute("list", adminService.findAllReportedPost());
-        return "/admin/reportedPostList";
+        return "admin/reportedPostList";
     }
 
     //lock user with spring security
@@ -87,7 +87,7 @@ public class AdminController {
     @GetMapping("/add")
     public String postAddForm(Model model) {
         model.addAttribute("addDTO", new AddDTO());
-        return "/admin/noticeAddForm";
+        return "admin/noticeAddForm";
     }
 
     //새 게시글 등록
@@ -100,7 +100,7 @@ public class AdminController {
         long postId;
 
         if (bindingResult.hasErrors()) {
-            return "/admin/noticeAddForm";
+            return "admin/noticeAddForm";
         }
 
         postId = adminService.saveNotice(post, user).getPostId();
@@ -117,7 +117,7 @@ public class AdminController {
         EditDTO postPage = EditDTO.toDTO(postFindService.findById(postId));
         model.addAttribute("editDTO", postPage);
         searchDefault(model, searchType, searchWords);
-        return "/admin/noticeEditForm";
+        return "admin/noticeEditForm";
     }
 
     //게시글 수정
@@ -128,7 +128,7 @@ public class AdminController {
                            @RequestParam(defaultValue = "") String searchWords) {
         try {
             if (bindingResult.hasErrors()) {
-                return "/admin/noticeEditForm";
+                return "admin/noticeEditForm";
             }
             adminService.updateNotice(postId, updateParam);
         } catch (IllegalArgumentException e) {
@@ -139,7 +139,7 @@ public class AdminController {
             e.getStackTrace();
         }
         if (bindingResult.hasErrors()) {
-            return "/admin/noticeEditForm";
+            return "admin/noticeEditForm";
         }
         redirectAttributes.addAttribute("updateStatus", true);
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
