@@ -178,7 +178,7 @@ public class PostController {
         model.addAttribute("loginUserId", authUser.getUserId());
         model.addAttribute("comments", new CommentBodyDTO());
         searchDefault(model, searchType, searchWords);
-        return "/post/postPage";
+        return "post/postPage";
     }
 
     //게시글 수정 html로 이동
