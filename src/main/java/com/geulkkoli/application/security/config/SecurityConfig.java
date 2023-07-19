@@ -4,22 +4,30 @@ import com.geulkkoli.application.security.handler.LoginFailureHandler;
 import com.geulkkoli.application.security.handler.LoginSuccessHandler;
 import com.geulkkoli.application.social.service.CustomOauth2UserService;
 import com.geulkkoli.application.user.service.UserSecurityService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * 시큐리티 설정파일
  */
-@Configuration
+
 @Slf4j
+@RequiredArgsConstructor
+@Configuration
 public class SecurityConfig {
 
     public static final String LOGIN_PAGE = "/loginPage";
@@ -30,13 +38,10 @@ public class SecurityConfig {
 
     private final LoginSuccessHandler loginSuccessHandler;
 
+    private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(UserSecurityService userSecurityService, CustomOauth2UserService customOauth2UserService, LoginFailureHandler loginFailureHandler, LoginSuccessHandler loginSuccessHandler) {
-        this.userSecurityService = userSecurityService;
-        this.customOauth2UserService = customOauth2UserService;
-        this.loginFailureHandler = loginFailureHandler;
-        this.loginSuccessHandler = loginSuccessHandler;
-    }
+
+
 
     /**
      * 시큐리티 필터 설정
@@ -104,6 +109,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
 }
 

@@ -114,7 +114,7 @@ public class PostController {
                           RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest request)
             throws UnsupportedEncodingException {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
-
+        log.info("addDTO: {}", post);
         User user = userFindService.findById(post.getAuthorId());
         try {
             if (bindingResult.hasErrors()) {

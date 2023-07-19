@@ -19,15 +19,15 @@ public class CalendarDto {
     @NotEmpty
     private String signUpDate;
 
-    private List<String> allPostDatesByOneUser;
+    private List<LocalDate> allPostDatesByOneUser;
 
     public CalendarDto(String email, String signUpDate, List<String> allPostDatesByOneUser) {
         this.email = email;
         this.signUpDate = signUpDate;
-        this.allPostDatesByOneUser = allPostDatesByOneUser;
+        this.allPostDatesByOneUser = pare(allPostDatesByOneUser);
     }
 
-    public List<LocalDate> getAllPostDatesByOneUser() {
+    private List<LocalDate> pare(List<String> allPostDatesByOneUser) {
         return allPostDatesByOneUser.stream()
                 .map(date -> date.substring(0,10))
                 .map(date2 -> LocalDate.parse(date2, DateTimeFormatter.ofPattern("yyyy/MM/dd")))

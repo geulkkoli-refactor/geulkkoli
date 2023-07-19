@@ -41,7 +41,7 @@ async function settingCalendarDaysByUserSignUpDate() {
         let now = new Date();
         let nowYear = now.getFullYear();
         let nowMonth = now.getMonth() +1;
-        postingDates = data.allPostDatesByOneUser.map(postDate => postDate.replace(/(\d{4})\. (\d{2})\. (\d{2}) (.+)/, '$2/$3/$1 $4'));
+        postingDates = data.allPostDatesByOneUser;
         console.log(postingDates);
         //가입 후 1년이 지났는지
         let timeDiff = Math.abs(now.getTime() - signUpDate.getTime());
