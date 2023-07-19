@@ -98,14 +98,14 @@ public class PostController {
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords));
         model.addAttribute("page", pagingDTO);
         searchDefault(model, searchType, searchWords);
-        return "/post/postList";
+        return "post/postList";
     }
 
     //게시글 addForm html 로 이동
     @GetMapping("/add")
     public String postAddForm(Model model) {
         model.addAttribute("addDTO", new AddDTO());
-        return "/post/postAddForm";
+        return "post/postAddForm";
     }
 
     //새 게시글 등록
@@ -118,7 +118,7 @@ public class PostController {
         User user = userFindService.findById(post.getAuthorId());
         try {
             if (bindingResult.hasErrors()) {
-                return "/post/postAddForm";
+                return "post/postAddForm";
             }
         } catch (IllegalArgumentException e) {
             bindingResult.rejectValue("tagCategory", "Tag.Required", new String[]{e.getMessage()}, e.toString());
@@ -155,7 +155,7 @@ public class PostController {
             model.addAttribute("authorUser", userProfile);
             model.addAttribute("checkFavorite", checkFavorite);
             searchDefault(model, searchType, searchWords);
-            return "/post/postPage";
+            return "post/postPage";
         }
 
         User loggingUser = userFindService.findById(Long.parseLong(authUser.getUserId()));
@@ -190,7 +190,7 @@ public class PostController {
         model.addAttribute("editDTO", postPage);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
-        return "/post/postEditForm";
+        return "post/postEditForm";
     }
 
     //게시글 수정
@@ -214,7 +214,7 @@ public class PostController {
             e.getStackTrace();
         }
         if (bindingResult.hasErrors()) {
-            return "/post/postEditForm";
+            return "post/postEditForm";
         }
         redirectAttributes.addAttribute("updateStatus", true);
         redirectAttributes.addAttribute("page", page);
