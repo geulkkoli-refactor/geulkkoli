@@ -2,12 +2,14 @@ package com.geulkkoli.web.post.dto;
 
 import com.geulkkoli.domain.hashtag.HashTagSign;
 import lombok.Builder;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
+@Setter
 public class AddDTO {
 
     @NotNull
@@ -83,5 +85,18 @@ public class AddDTO {
 
     public String addHasTageSignToTagStatus() {
         return HashTagSign.GENERAL.getSign() +tagStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "AddDTO{" +
+                "authorId=" + authorId +
+                ", title='" + title + '\'' +
+                ", postBody='" + postBody + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", tagListString='" + tagListString + '\'' +
+                ", tagCategory='" + tagCategory + '\'' +
+                ", tagStatus='" + tagStatus + '\'' +
+                '}';
     }
 }
