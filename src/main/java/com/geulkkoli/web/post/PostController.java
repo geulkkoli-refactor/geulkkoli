@@ -12,13 +12,11 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
-import com.geulkkoli.web.post.dto.PageDTO;
-import com.geulkkoli.web.post.dto.PagingDTO;
+import com.geulkkoli.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -95,7 +93,15 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords));
+        if (searchType.equals("해시태그")) {
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords);
+            PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+            model.addAttribute("page", pagingDTO);
+            searchDefault(model, searchType, searchWords);
+            return "post/postList";
+        }
+        Page<PostRequestListDTO> postRequestListDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         model.addAttribute("page", pagingDTO);
         searchDefault(model, searchType, searchWords);
         return "post/postList";

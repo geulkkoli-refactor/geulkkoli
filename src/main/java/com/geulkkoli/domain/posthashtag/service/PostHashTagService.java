@@ -90,7 +90,6 @@ public class PostHashTagService {
                 post.getPostHits()
         ));
     }
-
     //searchPostsListByHashTag의 페이징 처리를 위해, 페이징 값을 반환해줍니다.
     private Page<Post> getPosts(Pageable pageable, List<Post> resultList) {
         resultList.sort(Comparator.comparing(Post::getUpdatedAt).reversed());

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@ToString
 public class PostRequestListDTO {
 
     @NotBlank
@@ -46,5 +45,16 @@ public class PostRequestListDTO {
                 .date(String.valueOf(post.getUpdatedAt()))
                 .postHits(post.getPostHits())
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        return "PostRequestListDTO{" +
+                "postId=" + postId +
+                ", title='" + title + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", date='" + date + '\'' +
+                ", postHits=" + postHits +
+                '}';
     }
 }

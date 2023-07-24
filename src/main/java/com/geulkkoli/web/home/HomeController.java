@@ -55,7 +55,6 @@ public class HomeController {
                        @RequestParam(defaultValue = "일반") String searchWords) {
         model.addAttribute("list", postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords).toList());
         model.addAttribute("notificationList", postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords+"#공지글").toList());
-        log.info("now : {}", LocalDate.now());
         model.addAttribute("todayTopic", postHashTagService.showTodayTopic(LocalDate.now()));
         return "home";
     }
