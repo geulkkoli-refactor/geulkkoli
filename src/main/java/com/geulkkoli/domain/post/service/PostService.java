@@ -1,8 +1,5 @@
 package com.geulkkoli.domain.post.service;
 
-import com.geulkkoli.domain.hashtag.HashTag;
-import com.geulkkoli.domain.hashtag.HashTagSign;
-import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostNotExistException;
@@ -68,7 +65,7 @@ public class PostService {
             for (PostHashTag postHashTag : postHashTags) {
                 post.deletePostHashTag(postHashTag);
             }
-            postHashTagService.addHashTagsToPost(post, updateParam);
+            postHashTagService.editHashTagsToPost(post, updateParam);
         }
         return postRepository.save(post);
     }

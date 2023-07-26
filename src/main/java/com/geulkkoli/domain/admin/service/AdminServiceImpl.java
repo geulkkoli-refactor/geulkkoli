@@ -1,8 +1,6 @@
 package com.geulkkoli.domain.admin.service;
 
 import com.geulkkoli.domain.admin.AccountLock;
-import com.geulkkoli.domain.hashtag.HashTag;
-import com.geulkkoli.domain.hashtag.HashTagSign;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostFindService;
@@ -95,7 +93,7 @@ public class AdminServiceImpl {
         for (PostHashTag postHashTag : postHashTags) {
             post.deletePostHashTag(postHashTag);
         }
-        postHashTagService.addHashTagsToPostNotice(post, updateParam);
+        postHashTagService.editHashTagsToPostNotice(post, updateParam);
         return postService.updatePost(post, updateParam);
     }
 

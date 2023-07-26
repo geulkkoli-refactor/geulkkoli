@@ -1,6 +1,7 @@
 package com.geulkkoli.web.post.dto;
 
 import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.HashTagSign;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
@@ -54,24 +55,24 @@ public class EditDTO {
         this.tagStatus = tagStatus;
     }
 
-    public static EditDTO toDTO (Post post) {
+    public static EditDTO toDTO(Post post) {
         List<PostHashTag> postHashTags = new ArrayList<>(post.getPostHashTags());
         String tagStatus = "";
         String tagCategory = "";
 
-        if(postHashTags.get(0).getHashTag().getHashTagName().equals("공지글")){
+        if (postHashTags.get(0).getHashTag().getHashTagName().equals("공지글")) {
             postHashTags.remove(0);
         } else {
             postHashTags.remove(0);
-            tagStatus = postHashTags.get((postHashTags.size()-1)).getHashTag().getHashTagName();
-            postHashTags.remove(postHashTags.size()-1);
-            tagCategory = postHashTags.get((postHashTags.size()-1)).getHashTag().getHashTagName();
-            postHashTags.remove(postHashTags.size()-1);
+            tagStatus = postHashTags.get((postHashTags.size() - 1)).getHashTag().getHashTagName();
+            postHashTags.remove(postHashTags.size() - 1);
+            tagCategory = postHashTags.get((postHashTags.size() - 1)).getHashTag().getHashTagName();
+            postHashTags.remove(postHashTags.size() - 1);
         }
 
         String tags = "";
-        for (PostHashTag name : postHashTags){
-            tags += " #"+name.getHashTag().getHashTagName();
+        for (PostHashTag name : postHashTags) {
+            tags += " #" + name.getHashTag().getHashTagName();
         }
         return EditDTO.builder()
                 .postId(post.getPostId())
@@ -79,14 +80,27 @@ public class EditDTO {
                 .postBody(post.getPostBody())
                 .nickName(post.getNickName())
                 .tagListString(tags)
-                .tagCategory("#"+tagCategory)
-                .tagStatus("#"+tagStatus)
+                .tagCategory("#" + tagCategory)
+                .tagStatus("#" + tagStatus)
                 .build();
     }
-    public Post toEntity () {
+
+    public Post toEntity() {
         return Post.builder()
                 .title(title)
                 .postBody(postBody)
                 .build();
+    }
+
+    public String getTagListString() {
+        return HashTagSign.GENERAL.getSign() + tagListString;
+    }
+
+    public String getTagCategory() {
+        return HashTagSign.GENERAL.getSign() + tagCategory;
+    }
+
+    public String getTagStatus() {
+        return HashTagSign.GENERAL.getSign() +tagStatus;
     }
 }
