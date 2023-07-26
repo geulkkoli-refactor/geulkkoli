@@ -7,6 +7,7 @@ import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
+import com.geulkkoli.domain.post.service.SearchType;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
@@ -93,14 +94,15 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        if (searchType.equals("해시태그")) {
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords);
+        if (SearchType.HASH_TAG.getType().equals(searchType)) {
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchWords);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
             model.addAttribute("page", pagingDTO);
             searchDefault(model, searchType, searchWords);
             return "post/postList";
         }
-        Page<PostRequestListDTO> postRequestListDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords);
+
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         model.addAttribute("page", pagingDTO);
         searchDefault(model, searchType, searchWords);

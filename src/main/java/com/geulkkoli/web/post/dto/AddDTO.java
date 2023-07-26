@@ -64,15 +64,15 @@ public class AddDTO {
     }
 
     public String getTagListString() {
-        return tagListString;
+        return HashTagSign.GENERAL.getSign()+tagListString;
     }
 
     public String getTagCategory() {
-        return tagCategory;
+        return HashTagSign.GENERAL.getSign()+tagCategory;
     }
 
     public String getTagStatus() {
-        return tagStatus;
+        return HashTagSign.GENERAL.getSign()+tagStatus;
     }
 
     public String addHasTageSignToTageList() {

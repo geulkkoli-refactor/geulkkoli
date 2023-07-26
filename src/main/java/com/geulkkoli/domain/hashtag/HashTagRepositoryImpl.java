@@ -1,11 +1,14 @@
 package com.geulkkoli.domain.hashtag;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.geulkkoli.domain.hashtag.QHashTag.hashTag;
+
+@Repository
 public class HashTagRepositoryImpl implements HashTagRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
@@ -19,6 +22,4 @@ public class HashTagRepositoryImpl implements HashTagRepositoryCustom{
                 .from(hashTag)
                 .where(hashTag.hashTagName.in(hashTagNames))
                 .fetch();
-    }
-
-}
+    }}

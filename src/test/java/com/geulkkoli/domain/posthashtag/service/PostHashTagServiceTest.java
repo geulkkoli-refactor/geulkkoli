@@ -1,4 +1,4 @@
-package com.geulkkoli.domain.posthashtag;
+package com.geulkkoli.domain.posthashtag.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
@@ -119,23 +119,6 @@ class PostHashTagServiceTest {
         hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
     }
 
-
-    @Test
-    @DisplayName("검색어 분리 기능 테스트")
-     void searchWordExtractorTest() {
-        //given
-        String searchWords = "우리 함께 즐겨요 #판타지 #코미디";
-
-        //when
-        List<HashTag> hashTags = postHashTagService.hashTagSeparator(searchWords);
-        String searchWord = postHashTagService.searchWordExtractor(searchWords);
-
-        //then
-        assertThat(hashTags).contains(tag3, tag4);
-        assertThat(searchWord).isEqualTo("우리 함께 즐겨요");
-
-    }
-
     @Test
     @DisplayName("태그에 따른 게시글을 잘 가져오는지 테스트")
      void searchPostContainAllHashTagsTest() {
@@ -194,11 +177,10 @@ class PostHashTagServiceTest {
         }
 
         String searchWords = "01 #일반글";
-        String searchType = "제목";
 
         //when
         Pageable pageable = PageRequest.of(5, 5);
-        Page<PostRequestListDTO> listDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords);
+        Page<PostRequestListDTO> listDTOS = postHashTagService.searchPostsListByHashTag(pageable, searchWords);
         List<PostRequestListDTO> collect = listDTOS.get().collect(Collectors.toList());
 
         //then

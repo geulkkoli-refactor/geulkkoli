@@ -34,6 +34,13 @@ public class PostFindService {
     public List<String> getCreatedAts(User user) {
         return postRepository.findCreatedAt(user.getUserId());
     }
+    public Page<PostRequestListDTO> searchPostsList(Pageable pageable, String searchType, String searchWords) {
+        if (SearchType.TITLE.getType().equals(searchType)) return searchPostsListByTitle(pageable, searchWords);
+        if (SearchType.NICKNAME.getType().equals(searchType)) return searchPostListByNickName(pageable, searchWords);
+        if (SearchType.BODY.getType().equals(searchType)) return searchPostListByPostBody(pageable, searchWords);
+        return postRepository.findAll(pageable)
+                .map(PostRequestListDTO::toDTO);
+    }
 
     public Page<PostRequestListDTO> searchPostsListByTitle(Pageable pageable, String title) {
         if (title.contains(" ")) {

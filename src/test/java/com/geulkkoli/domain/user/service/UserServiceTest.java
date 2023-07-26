@@ -44,26 +44,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("이메일 중복")
-    void isEmailDuplicate() {
-        assertThat(userService.isEmailDuplicate("tako1@naver.com")).isTrue();
-    }
-
-    @Test
-    @DisplayName("별명 중복")
-    void isNickNameDuplicate() {
-
-        assertThat(userService.isNickNameDuplicate("바나나1")).isTrue();
-    }
-
-    @Test
-    @DisplayName("전화번호 중복확인")
-    void isPhoneNoDuplicate() {
-
-        assertThat(userService.isPhoneNoDuplicate("01012345671")).isTrue();
-    }
-
-    @Test
     @DisplayName("회원정보 수정 성공")
     void updateTest() {
         //given

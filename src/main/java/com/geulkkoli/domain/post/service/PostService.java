@@ -47,14 +47,19 @@ public class PostService {
         Post writePost = user.writePost(addDTO);
         Post save = postRepository.save(writePost);
 
-        List<HashTag> hashTags = postHashTagService.hashTagSeparator(HashTagSign.GENERAL + HashTagType.GENERAL.getTypeName() + addDTO.addHasTageSignToTageList() + addDTO.addHasTageSignToTagCategory() + addDTO.addHasTageSignToTagStatus());
-        log.info("hashTags : " + hashTags);
-        postHashTagService.validatePostHasType(hashTags);
-        postHashTagService.addHashTagsToPost(save, hashTags);
+        postHashTagService.addHashTagsToPost(save, addDTO);
 
         return save;
     }
 
+    /**
+     *
+     * @param post
+     * @param updateParam
+     * @return
+     *
+     *  postHashTagService의 hashTagSerparator가 해시태그를 찾아 List<HashTag>로 반환한다. 나
+     */
     @Transactional
     public Post updatePost(Post post, EditDTO updateParam) {
         post.getUser().editPost(post, updateParam);
@@ -63,11 +68,7 @@ public class PostService {
             for (PostHashTag postHashTag : postHashTags) {
                 post.deletePostHashTag(postHashTag);
             }
-            List<HashTag> hashTags = postHashTagService.hashTagSeparator(HashTagSign.GENERAL.getSign() + HashTagType.GENERAL.getTypeName()
-                    + updateParam.getTagListString() + updateParam.getTagCategory() + updateParam.getTagStatus());
-            postHashTagService.validatePostHasType(hashTags);
-            postHashTagService.addHashTagsToPost(post, hashTags);
-
+            postHashTagService.addHashTagsToPost(post, updateParam);
         }
         return postRepository.save(post);
     }

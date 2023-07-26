@@ -89,6 +89,7 @@ public class SecurityConfig {
                                 userInfoEndpointConfig -> userInfoEndpointConfig
                                         .userService(customOauth2UserService)
                         ).successHandler(loginSuccessHandler)
+                        .failureHandler(loginFailureHandler)
                 )
                 .userDetailsService(userSecurityService)
                 .logout()

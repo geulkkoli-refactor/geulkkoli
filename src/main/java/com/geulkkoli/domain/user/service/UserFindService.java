@@ -21,6 +21,20 @@ public class UserFindService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No user found id matches:" + id));
     }
+    @Transactional(readOnly = true)
+    public boolean isEmailDuplicate(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isNickNameDuplicate(String nickName) {
+        return userRepository.findByNickName(nickName).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isPhoneNoDuplicate(String phoneNo) {
+        return userRepository.findByPhoneNo(phoneNo).isPresent();
+    }
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);

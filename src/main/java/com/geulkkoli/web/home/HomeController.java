@@ -3,6 +3,7 @@ package com.geulkkoli.web.home;
 import com.geulkkoli.application.EmailService;
 import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
+import com.geulkkoli.domain.topic.service.TopicService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
@@ -47,15 +48,16 @@ public class HomeController {
     private final UserFindService userFindService;
     private final UserService userService;
     private final PasswordService passwordService;
+    private final TopicService topicService;
 
     @GetMapping
     public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model,
                        @RequestParam(defaultValue = "해시태그") String searchType,
                        @RequestParam(defaultValue = "일반") String searchWords) {
-        model.addAttribute("list", postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords).toList());
-        model.addAttribute("notificationList", postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords+"#공지글").toList());
-        model.addAttribute("todayTopic", postHashTagService.showTodayTopic(LocalDate.now()));
+        model.addAttribute("list", postHashTagService.searchPostsListByHashTag(pageable,  searchWords).toList());
+        model.addAttribute("notificationList", postHashTagService.searchPostsListByHashTag(pageable, searchWords+"#공지글").toList());
+        model.addAttribute("todayTopic", topicService.showTodayTopic(LocalDate.now()));
         return "home";
     }
 
@@ -151,11 +153,11 @@ public class HomeController {
 
     @PostMapping("/join")
     public String userJoin(@Validated @ModelAttribute("joinForm") JoinFormDto form, BindingResult bindingResult, HttpServletRequest request) {
-        if (userService.isNickNameDuplicate(form.getNickName())) {
+        if (userFindService.isNickNameDuplicate(form.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
 
-        if (userService.isPhoneNoDuplicate(form.getPhoneNo())) {
+        if (userFindService.isPhoneNoDuplicate(form.getPhoneNo())) {
             bindingResult.rejectValue("phoneNo", "Duple.phoneNo");
         }
 
@@ -191,7 +193,7 @@ public class HomeController {
         if (form.getEmail().isEmpty()) {
             return ResponseMessage.NULL_OR_BLANK_EMAIL;
         }
-        if (userService.isEmailDuplicate(form.getEmail())) {
+        if (userFindService.isEmailDuplicate(form.getEmail())) {
             return ResponseMessage.EMAIL_DUPLICATION;
         }
         int length = 6;

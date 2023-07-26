@@ -76,4 +76,32 @@ class UserFindServiceTest {
 
         assertEquals(user.getNickName(),findByNickName.getNickName());
     }
+
+    @Test
+    @DisplayName("이메일 중복")
+    void isEmailDuplicate() {
+
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","tako1@naver.com","01056789999","Male");
+
+        User user = userService.signUp(joinForm);
+        assertThat(userFindService.isEmailDuplicate("tako1@naver.com")).isTrue();
+    }
+
+    @Test
+    @DisplayName("별명 중복")
+    void isNickNameDuplicate() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01056789999","Male");
+
+        User user = userService.signUp(joinForm);
+        assertThat(userService.isNickNameDuplicate("바나나1")).isTrue();
+    }
+
+    @Test
+    @DisplayName("전화번호 중복확인")
+    void isPhoneNoDuplicate() {
+        JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01012345671","Male");
+
+        User user = userService.signUp(joinForm);
+        assertThat(userService.isPhoneNoDuplicate("01012345671")).isTrue();
+    }
 }

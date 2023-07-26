@@ -141,6 +141,7 @@ public class User extends ConfigDate {
     public Post editPost(Post post, EditDTO editDTO) {
         post.changePostBody(editDTO.getPostBody());
         post.changeTitle(editDTO.getTitle());
+        post.changeNickName(editDTO.getNickName());
         return post;
     }
 
