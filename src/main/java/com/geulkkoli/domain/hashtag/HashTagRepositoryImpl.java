@@ -17,8 +17,8 @@ public class HashTagRepositoryImpl implements HashTagRepositoryCustom{
     }
 
     @Override
-    public List<Long> hashIdsByHashTagNames(List<String> hashTagNames) {
-        return queryFactory.select(hashTag.hashTagId)
+    public List<HashTag> findAllHashTagByHashTagNames(List<String> hashTagNames) {
+        return queryFactory.select(hashTag)
                 .from(hashTag)
                 .where(hashTag.hashTagName.in(hashTagNames))
                 .fetch();

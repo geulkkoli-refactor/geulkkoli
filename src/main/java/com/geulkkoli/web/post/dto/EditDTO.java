@@ -22,7 +22,7 @@ public class EditDTO {
     @NotNull
     private Long postId;
 
-    @Setter
+
     @NotBlank
     @Length(min = 1, max = 100)
     private String title;
@@ -32,15 +32,15 @@ public class EditDTO {
     @Length(min = 10, max = 10000)
     private String postBody;
 
-    @Setter
+    @NotBlank
     private String tagListString;
 
     private final String nickName;
 
-
+    @NotBlank
     private final String tagCategory;
 
-
+    @NotBlank
     private final String tagStatus;
 
     @Builder
@@ -93,14 +93,26 @@ public class EditDTO {
     }
 
     public String getTagListString() {
-        return HashTagSign.GENERAL.getSign() + tagListString;
+        return tagListString;
     }
 
     public String getTagCategory() {
-        return HashTagSign.GENERAL.getSign() + tagCategory;
+        return tagCategory;
     }
 
     public String getTagStatus() {
-        return HashTagSign.GENERAL.getSign() +tagStatus;
+        return tagStatus;
+    }
+
+    public String tageCateGory() {
+        return String.join("", tagCategory.split(HashTagSign.GENERAL.getSign()));
+    }
+
+    public String tagListString() {
+        return String.join("", tagListString.split(HashTagSign.GENERAL.getSign()));
+    }
+
+    public String tagStatus() {
+        return String.join("", tagStatus.split(HashTagSign.GENERAL.getSign()));
     }
 }

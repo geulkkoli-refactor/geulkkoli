@@ -14,11 +14,13 @@ public class PostHashTagRepositoryImpl implements PostHashTagRepositoryCustom {
     public PostHashTagRepositoryImpl(EntityManager entityManager) {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
+
     @Override
     public List<Post> findAllByHashTagNames(List<String> hashTagNames) {
         return queryFactory.select(postHashTag.post)
                 .from(postHashTag)
                 .where(postHashTag.hashTag.hashTagName.in(hashTagNames))
+                .distinct()
                 .fetch();
     }
 }

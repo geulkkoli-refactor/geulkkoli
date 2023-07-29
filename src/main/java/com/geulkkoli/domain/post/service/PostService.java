@@ -43,7 +43,6 @@ public class PostService {
     public Post savePost(AddDTO addDTO, User user) {
         Post writePost = user.writePost(addDTO);
         Post save = postRepository.save(writePost);
-
         postHashTagService.addHashTagsToPost(save, addDTO);
 
         return save;

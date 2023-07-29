@@ -3,8 +3,11 @@ package com.geulkkoli.domain.post;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,5 +128,24 @@ class PostTest {
         post.deleteAllPostHashTag();
 
         assertThat(post.getPostHashTags()).isEmpty();
+    }
+
+    @DisplayName("해시태그를 여러개 추가한다.")
+    @Test
+    void addMultiHashTags() {
+        Post post = Post.builder()
+                .nickName("나")
+                .postBody("나나")
+                .title("테스트").build();
+        HashTag category = new HashTag("test category", HashTagType.CATEGORY);
+        HashTag category2 = new HashTag("test category2", HashTagType.CATEGORY);
+        HashTag category3 = new HashTag("test category3", HashTagType.CATEGORY);
+        List<HashTag> hashTags = List.of(category, category2, category3);
+        List<PostHashTag> postHashTags = post.addMultiHashTags(hashTags);
+
+        assertAll(() -> assertThat(postHashTags).hasSize(3),
+                () -> assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("test category"),
+                () -> assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("test category2"),
+                () -> assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("test category3"));
     }
 }

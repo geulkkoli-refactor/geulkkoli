@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface PostHashTagRepositoryCustom {
 
-    public List<Post> findAllByHashTagNames(List<String> hashTagNames);
+    List<Post> findAllByHashTagNames(List<String> hashTagNames);
+
 }

@@ -145,7 +145,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsListByTitle(pageable, "title");
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "title", "title");
 
         //then
         assertAll(
@@ -182,7 +182,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsListByTitle(pageable, "title fsdfsdf sdfsdfds");
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "제목", "title fsdfsdf sdfsdfds");
 
         //then
         assertAll(
@@ -192,7 +192,7 @@ class PostFindServiceTest {
 
     @DisplayName("다양한 검색어와 검색 타입으로 검색하기")
     @ParameterizedTest
-    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body"},delimiter = ',')
+    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body","멀티 해시태그, 소설#완결"}, delimiter = ',')
     void searchPostsList(String searchType, String searchWords) {
         //given
         User user1 = User.builder()
@@ -207,7 +207,7 @@ class PostFindServiceTest {
         userRepository.save(user1);
 
         AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO1 = new AddDTO(1L, "title1", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO1 = new AddDTO(1L, "ㅁㄷ", "ㅇㄹㅁ", "ㅁㄹ", "testTag", "소설", "연재");
         AddDTO addDTO2 = new AddDTO(1L, "fsdfsdf", "body sdfsd", "nick", "testTag", "소설", "완결");
         AddDTO addDTO3 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
 
@@ -223,7 +223,7 @@ class PostFindServiceTest {
         Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
 
         assertAll(
-                () -> assertThat(postRequestListDTOS).hasSize(4),
-                () -> assertThat(postRequestListDTOS).extracting("title").contains("title", "title1", "fsdfsdf", "sdfsdfds"));
+                () -> assertThat(postRequestListDTOS).hasSize(3),
+                () -> assertThat(postRequestListDTOS).extracting("title").contains("title", "fsdfsdf", "sdfsdfds"));
     }
 }

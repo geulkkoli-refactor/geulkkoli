@@ -1,9 +1,11 @@
 package com.geulkkoli.domain.post.service;
 
+import com.geulkkoli.domain.hashtag.HashTagSign;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostNotExistException;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.user.User;
+import com.geulkkoli.web.post.dto.PostRequestDto;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +36,23 @@ public class PostFindService {
     public List<String> getCreatedAts(User user) {
         return postRepository.findCreatedAt(user.getUserId());
     }
+
     public Page<PostRequestListDTO> searchPostsList(Pageable pageable, String searchType, String searchWords) {
         if (SearchType.TITLE.getType().equals(searchType)) return searchPostsListByTitle(pageable, searchWords);
         if (SearchType.NICKNAME.getType().equals(searchType)) return searchPostListByNickName(pageable, searchWords);
         if (SearchType.BODY.getType().equals(searchType)) return searchPostListByPostBody(pageable, searchWords);
+        if (SearchType.Multi_Hash_Tag.getType().equals(searchType)) return searchPostsListByHashTag(pageable, searchWords);
         return postRepository.findAll(pageable)
                 .map(PostRequestListDTO::toDTO);
+    }
+
+    private Page<PostRequestListDTO> searchPostsListByHashTag(Pageable pageable, String searchWords) {
+        List<String> multiHashTagNames = Arrays.stream(searchWords.split(HashTagSign.GENERAL.getSign())).collect(Collectors.toUnmodifiableList());
+        List<PostRequestListDTO> result = postRepository.allPostsMultiHashTags(multiHashTagNames).stream()
+                .map(PostRequestListDTO::toDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(result, pageable, pageable.getPageSize());
     }
 
     public Page<PostRequestListDTO> searchPostsListByTitle(Pageable pageable, String title) {

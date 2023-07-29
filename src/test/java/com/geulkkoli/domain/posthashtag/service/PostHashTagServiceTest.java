@@ -101,7 +101,7 @@ class PostHashTagServiceTest {
         posts = postRepository.findAll();
 
         tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
-        notice = hashTagRepository.save(new HashTag("공지글", HashTagType.MANAGEMENT));
+        notice = hashTagRepository.save(new HashTag("공지글", HashTagType.GENERAL));
         fantasy = hashTagRepository.save(new HashTag("판타지", HashTagType.GENERAL));
         tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.GENERAL));
         tag5 = hashTagRepository.save(new HashTag("단편소설", HashTagType.GENERAL));
@@ -110,7 +110,7 @@ class PostHashTagServiceTest {
         tag8 = hashTagRepository.save(new HashTag("게임", HashTagType.GENERAL));
         fangaia = hashTagRepository.save(new HashTag("판게아", HashTagType.GENERAL));
 
-        hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
+        hashTagRepository.save(new HashTag("소설", HashTagType.GENERAL));
         hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
     }
 
@@ -121,7 +121,7 @@ class PostHashTagServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("판게아")
+                .tagListString("새로운 해시태그")
                 .tagCategory("소설")
                 .tagStatus("완결")
                 .nickName("test")
@@ -134,6 +134,29 @@ class PostHashTagServiceTest {
         Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
 
         assertThat(post.getPostHashTags()).hasSize(3);
+        assertThat(post.getPostHashTags().get(post.getPostHashTags().size() - 1)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("새로운 해시태그"), "새로운 해시태그"));
+
+    }
+
+    @DisplayName("글 작성 후 빈 해시태그가 들어올 시 아무것도 추가하지 않는다.")
+    @Test
+    void addHashTagsToPost_blank() {
+        AddDTO addDTO = AddDTO.builder()
+                .title("test01")
+                .postBody("TestingCode01")
+                .tagListString("")
+                .tagCategory("")
+                .tagStatus("")
+                .nickName("test")
+                .authorId(1L)
+                .build();
+
+        Post post1 = user.writePost(addDTO);
+        postRepository.save(post1);
+
+        Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
+
+        assertThat(post.getPostHashTags()).isEmpty();
 
     }
 
@@ -167,7 +190,7 @@ class PostHashTagServiceTest {
         Post editPost = postHashTagService.editHashTagsToPost(post, editDTO);
 
         assertThat(editPost.getPostHashTags()).hasSize(3);
-        assertThat(editPost.getPostHashTags()).have(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fantasy.getHashTagName()), "판타지"));
+        assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fantasy.getHashTagName()), "판타지"));
     }
 
     @DisplayName("공지글 작성 후 해시태그를 추가할 수 있다.")

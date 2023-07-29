@@ -57,7 +57,7 @@ class PostHashTagRepositoryImplTest {
     void findAllByHashTagName() {
         HashTag tag2 = hashTagRepository.save(new HashTag("일반", HashTagType.GENERAL));
         HashTag tag1 = hashTagRepository.save(new HashTag("공지글", HashTagType.MANAGEMENT));
-        HashTag tag3 = hashTagRepository.save(new HashTag("판타지", HashTagType.GENERAL));
+        HashTag tag3 = hashTagRepository.save(new HashTag("로맨스", HashTagType.GENERAL));
         HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.GENERAL));
         HashTag tag5 = hashTagRepository.save(new HashTag("단편소설", HashTagType.GENERAL));
         HashTag tag6 = hashTagRepository.save(new HashTag("시", HashTagType.GENERAL));
@@ -67,14 +67,14 @@ class PostHashTagRepositoryImplTest {
 
         hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
         hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
-        AddDTO addDTO = new AddDTO(user.getUserId(), "title", "body", "nick", "일반", "소설", "완결");
+        AddDTO addDTO = new AddDTO(user.getUserId(), "title", "body", "nick", "로맨스", "소설", "완결");
         AddDTO addDTO1 = new AddDTO(user.getUserId(), "title", "body", "nick1", "일반", "소설", "완결");
         AddDTO addDTO2 = new AddDTO(user.getUserId(), "title", "body", "nick2", "일반", "소설", "완결");
         Post save = postService.savePost(addDTO, user);
         Post save1 = postService.savePost(addDTO1, user);
         Post save2 = postService.savePost(addDTO2, user);
 
-        List<Post> posts = postHashTagRepository.findAllByHashTagNames(List.of("일반"));
+        List<Post> posts = postHashTagRepository.findAllByHashTagNames(List.of("로맨스","소설", "완결"));
 
         assertThat(posts).hasSize(3);
     }

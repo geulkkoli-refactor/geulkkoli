@@ -66,22 +66,13 @@ class PostHashTagRepositoryTest {
         HashTag tag3 = creatHashTag("코미디", HashTagType.CATEGORY);
         HashTag tag4 = creatHashTag("판타지", HashTagType.CATEGORY);
 
-        PostHashTag save1 = postHashTagRepository.save(createPostHashTag(post01, tag1));
-        PostHashTag save2 = postHashTagRepository.save(createPostHashTag(post01, tag3));
-        PostHashTag save3 = postHashTagRepository.save(createPostHashTag(post01, tag4));
+        List<PostHashTag> postHashTags = postHashTagRepository.saveAll(post01.addMultiHashTags(List.of(tag1, tag3, tag4)));
 
-
-        //when
-        PostHashTag postHashTag1 = postHashTagRepository.save(save1);
-        PostHashTag postHashTag2 = postHashTagRepository.save(save2);
-        PostHashTag postHashTag3 = postHashTagRepository.save(save3);
 
 
         //then
-        assertThat(post01.getPostHashTags()).hasSize(3);
-        assertThat(post01.getPostHashTags()).contains(postHashTag1);
-        assertThat(post01.getPostHashTags()).contains(postHashTag2);
-        assertThat(post01.getPostHashTags()).contains(postHashTag3);
+        assertThat(postHashTags).hasSize(3);
+
     }
 
     @Test

@@ -1,8 +1,7 @@
 package com.geulkkoli.domain.posthashtag.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
-import com.geulkkoli.domain.hashtag.HashTagRepository;
-import com.geulkkoli.domain.hashtag.HashTagSign;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
@@ -12,22 +11,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class PostHahTagFindService {
-    private final HashTagRepository hashTagRepository;
+
+    private final HashTagFindService hashTagFindService;
     private final PostHashTagRepository postHashTagRepository;
 
     public Page<PostRequestListDTO> searchPostsListByHashTag(Pageable pageable, String searchWords) {
 
-        List<HashTag> tags = findHashTag(searchWords);
+        List<HashTag> tags = hashTagFindService.findHashTag(searchWords);
         List<Post> resultList = searchPostContainAllHashTags(tags);
 
         return convertPostSearchRequestListDTO(pageable, resultList).map(post -> new PostRequestListDTO(
@@ -49,22 +49,16 @@ public class PostHahTagFindService {
     }
 
     //웹에서 받은 문자열로 하여금 해시태그로 나눠줍니다.
-    private List<HashTag> findHashTag(String searchWords) {
-        return Arrays.stream(searchWords.split(HashTagSign.GENERAL.getSign()))
-                .map(String::strip)
-                .map(hashTagRepository::findByHashTagName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
+
 
     //해당 태그를 가진 게시글을 찾아냅니다.
     private List<Post> searchPostContainAllHashTags(List<HashTag> tags) {
 
         if (tags.isEmpty()) {
-            return postHashTagRepository.findAll().stream().map(PostHashTag::getPost).collect(Collectors.toList());
+            return postHashTagRepository.findAll().stream().map(PostHashTag::getPost).distinct().collect(Collectors.toList());
         }
 
         List<String> hashTagNames = tags.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
-        return postHashTagRepository.findAllByHashTagNames(hashTagNames);
+        return postHashTagRepository.findAllByHashTagNames(hashTagNames).stream().distinct().collect(Collectors.toList());
     }
 }
