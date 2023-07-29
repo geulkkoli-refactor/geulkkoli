@@ -5,6 +5,7 @@ import com.geulkkoli.application.security.config.SecurityConfig;
 import com.geulkkoli.application.security.handler.LoginFailureHandler;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
+import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,9 +57,9 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
-//    @MockBean
-//    private UserSecurityService userSecurityService;
 
+    @MockBean
+    private UserFindService userFindService;
     User user;
 
     @BeforeEach
@@ -115,7 +116,7 @@ class UserControllerTest {
     void joinEmailDupleTest() throws Exception {
         //given
         given(userRepository.findByEmail("tako@naver.com")).willReturn(Optional.ofNullable(user));
-        given(userService.isEmailDuplicate(TESTER_MAIL)).willReturn(true);
+        given(userFindService.isEmailDuplicate(TESTER_MAIL)).willReturn(true);
         MultiValueMap<String, String> query_param = new LinkedMultiValueMap<>();
         query_param.add("userName", "fish");
         query_param.add("password", "1234WnRnal@");
@@ -130,7 +131,7 @@ class UserControllerTest {
                         .params(query_param)
                         .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        User findByEmailIdUser = userRepository.findByEmail("tako@naver.com").
+        User findByEmailIdUser = userFindService.findByEmail("tako@naver.com").
                 orElse(null);
 
         //then
@@ -142,7 +143,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원가입 닉네임 중복 체크 되는지 테스트")
     void joinNickNameDupleTest() throws Exception {
-        given(userService.isNickNameDuplicate("유저닉1")).willReturn(true);
+        given(userFindService.isNickNameDuplicate("유저닉1")).willReturn(true);
 
         //given
         MultiValueMap<String, String> query_param = new LinkedMultiValueMap<>();
@@ -169,7 +170,7 @@ class UserControllerTest {
     @Test
     @DisplayName("전화번호 중복 체크 되는지 테스트")
     void joinPhoneNoDupleTest() throws Exception {
-        given(userService.isPhoneNoDuplicate("01012345678")).willReturn(true);
+        given(userFindService.isPhoneNoDuplicate("01012345678")).willReturn(true);
         //given
         MultiValueMap<String, String> query_param = new LinkedMultiValueMap<>();
         query_param.add("userName", "fish");

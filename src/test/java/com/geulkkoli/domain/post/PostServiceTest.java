@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @SpringBootTest
 @Transactional
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PostServiceTest {
 
     @Autowired
@@ -74,9 +73,8 @@ class PostServiceTest {
                 () -> assertThat(save).has(new Condition<>(p -> p.getPostBody().equals("body"), "body")),
                 () -> assertThat(save).has(new Condition<>(p -> p.getNickName().equals("nick"), "nick")));
 
-        assertThat(save.getPostHashTags().get(0).getHashTag().getHashTagName()).isEqualTo("testTag");
-        assertThat(save.getPostHashTags().get(1).getHashTag().getHashTagName()).isEqualTo("소설");
-        assertThat(save.getPostHashTags().get(2).getHashTag().getHashTagName()).isEqualTo("완결");
+        assertThat(save.getPostHashTags().get(0).getHashTag().getHashTagName()).isEqualTo("소설");
+        assertThat(save.getPostHashTags().get(1).getHashTag().getHashTagName()).isEqualTo("완결");
     }
 
 
@@ -96,14 +94,18 @@ class PostServiceTest {
         userRepository.save(user1);
 
 
-        Post post = postService.savePost(new AddDTO(1L, "title", "body", "nick", "#testTag", "#소설", "#완결"), user1);
-        EditDTO editDTO = new EditDTO(post.getPostId(), "title update", "body update", "nick update", "#수정test", "#소설", "#완결");
+        Post post = postService.savePost(new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결"), user1);
+        EditDTO editDTO = new EditDTO(post.getPostId(), "title update", "body update", "nick update", "수정test", "판타지", "완결");
         postService.updatePost(post, editDTO);
 
         Post one = postFindService.findById(post.getPostId());
 
 
-        assertThat("title update").isEqualTo(one.getTitle());
+        assertAll(() -> assertThat(one.getTitle()).isEqualTo("title update"),
+                () -> assertThat(one.getPostBody()).isEqualTo("body update"),
+                () -> assertThat(one.getNickName()).isEqualTo("nick update"),
+                () -> assertThat(one.getPostHashTags().get(0).getHashTag().getHashTagName()).isEqualTo("판타지"),
+                () -> assertThat(one.getPostHashTags().get(1).getHashTag().getHashTagName()).isEqualTo("완결"));
     }
 
     @DisplayName("게시글 삭제")

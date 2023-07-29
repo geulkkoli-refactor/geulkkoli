@@ -1,7 +1,6 @@
 package com.geulkkoli.domain.admin.service;
 
 import com.geulkkoli.domain.admin.AccountLock;
-import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostFindService;
@@ -83,8 +82,7 @@ public class AdminServiceImpl {
     public Post saveNotice(AddDTO addDto, User user) {
         Post save = postRepository.save(user.writePost(addDto));
         log.info("addDto.getTagListString() = " + addDto.getTagListString());
-        List<HashTag> hashTags = postHashTagService.hashTagSeparator("#공지글");
-        postHashTagService.addHashTagsToPost(save, hashTags);
+        postHashTagService.addHashTagsToPostNotice(save, addDto);
         return save;
     }
 
@@ -95,12 +93,10 @@ public class AdminServiceImpl {
         for (PostHashTag postHashTag : postHashTags) {
             post.deletePostHashTag(postHashTag);
         }
-
-        List<HashTag> hashTags = postHashTagService.hashTagSeparator("#공지글");
-        postHashTagService.addHashTagsToPost(post, hashTags)
-        ;
-       return postService.updatePost(post, updateParam);
+        postHashTagService.editHashTagsToPostNotice(post, updateParam);
+        return postService.updatePost(post, updateParam);
     }
+
     public List<DailyTopicDto> findWeeklyTopic() {
         List<Topic> topics = topicRepository.findTopicByUpComingDateBetween(LocalDate.now(), LocalDate.now().plusDays(29), Sort.by(Sort.Direction.ASC, "upComingDate"));
 
@@ -137,11 +133,11 @@ public class AdminServiceImpl {
     public Topic updateTopic(DailyTopicDto topic) {
         Topic findTopic = topicRepository.findTopicByUpComingDate(LocalDate.parse(topic.getDate()));
         log.info("findTopic = " + findTopic);
-        findTopic.settingUpComingDate(LocalDate.of(2000,1,1));
+        findTopic.settingUpComingDate(LocalDate.of(2000, 1, 1));
 
         Topic updateTopic = topicRepository.findTopicByTopicName(topic.getTopic());
 
-        if(Objects.isNull(updateTopic)){
+        if (Objects.isNull(updateTopic)) {
             updateTopic = Topic.builder().topicName(topic.getTopic()).build();
         }
 

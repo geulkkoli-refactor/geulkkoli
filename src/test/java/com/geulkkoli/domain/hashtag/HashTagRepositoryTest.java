@@ -1,17 +1,11 @@
 package com.geulkkoli.domain.hashtag;
 
-import com.geulkkoli.domain.post.Post;
-import com.geulkkoli.domain.post.PostRepository;
-import com.geulkkoli.domain.user.User;
-import com.geulkkoli.domain.user.UserRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
-@SpringBootTest
-@Transactional
+@DataJpaTest
 class HashTagRepositoryTest {
 
 
@@ -33,8 +26,9 @@ class HashTagRepositoryTest {
         hashTagRepository.deleteAll();
     }
 
+    @DisplayName("해시태그 이름들로 여러 해시태그 찾기")
     @Test
-    void findHashTagIds() {
+    void findAllHashTagByHashTagName() {
         //given
         HashTag hashTag = new HashTag("일반글",  HashTagType.GENERAL);
         HashTag save = hashTagRepository.save(hashTag);
@@ -44,11 +38,11 @@ class HashTagRepositoryTest {
         hashTagNames.add("일반글");
         hashTagNames.add("공지글");
         //when
-        //then
-        List<Long> hashIdsByHashTagNames = hashTagRepository.hashIdsByHashTagNames(hashTagNames);
 
-        assertThat(hashIdsByHashTagNames.get(0)).isEqualTo(save.getHashTagId());
-        assertThat(hashIdsByHashTagNames.get(1)).isEqualTo(save2.getHashTagId());
+        //then
+        List<HashTag> hashIdsByHashTagNames = hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
+
+        assertThat(hashIdsByHashTagNames).contains(save,save2);
     }
 
 

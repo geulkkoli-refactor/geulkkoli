@@ -7,18 +7,18 @@ import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
+import com.geulkkoli.domain.post.service.SearchType;
+import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
-import com.geulkkoli.web.post.dto.PageDTO;
-import com.geulkkoli.web.post.dto.PagingDTO;
+import com.geulkkoli.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -52,6 +52,7 @@ public class PostController {
     private final UserFindService userFindService;
     private final FavoriteService favoriteService;
     private final PostHashTagService postHashTagService;
+    private final PostHahTagFindService postHashTagFindService;
     private final FollowFindService followFindService;
     @Value("${comm.uploadPath}")
     private String uploadPath;
@@ -95,7 +96,16 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postHashTagService.searchPostsListByHashTag(pageable, searchType, searchWords));
+        if (SearchType.HASH_TAG.getType().equals(searchType)) {
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, searchWords);
+            PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+            model.addAttribute("page", pagingDTO);
+            searchDefault(model, searchType, searchWords);
+            return "post/postList";
+        }
+
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         model.addAttribute("page", pagingDTO);
         searchDefault(model, searchType, searchWords);
         return "post/postList";

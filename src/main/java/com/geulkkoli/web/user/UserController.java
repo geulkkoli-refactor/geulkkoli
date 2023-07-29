@@ -141,7 +141,7 @@ public class UserController {
         String checkFavorite = "none";
         UserProfileDTO authorUser = UserProfileDTO.toDTO(byId.getUser());
 
-        ModelAndView modelAndView = new ModelAndView("/post/postPage");
+        ModelAndView modelAndView = new ModelAndView("post/postPage");
         modelAndView.addObject("post", post);
         modelAndView.addObject("authorUser", authorUser);
         modelAndView.addObject("followResult", followResult);
@@ -184,7 +184,7 @@ public class UserController {
         String checkFavorite = "exist";
 
         UserProfileDTO authorUser = UserProfileDTO.toDTO(findPost.getUser());
-        ModelAndView modelAndView = new ModelAndView("/post/postPage");
+        ModelAndView modelAndView = new ModelAndView("post/postPage");
         modelAndView.addObject("post", post);
         modelAndView.addObject("authorUser", authorUser);
         modelAndView.addObject("followResult", followResult);

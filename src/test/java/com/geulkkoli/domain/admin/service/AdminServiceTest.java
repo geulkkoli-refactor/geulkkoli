@@ -84,7 +84,7 @@ class AdminServiceImplTest {
                 .gender("Male")
                 .build();
         this.user2 = userRepository.save(user2);
-        HashTag tag2 = hashTagRepository.save(new HashTag("공지글", HashTagType.CATEGORY));
+        HashTag tag2 = hashTagRepository.save(new HashTag("공지글", HashTagType.MANAGEMENT));
         HashTag tag3 = hashTagRepository.save(new HashTag("판타지", HashTagType.CATEGORY));
         HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
         HashTag 완결 = hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
@@ -205,14 +205,18 @@ class AdminServiceImplTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagCategory("#소설")
-                .tagStatus("#완결")
+                .tagCategory("소설")
+                .tagStatus("완결")
                 .nickName("점심뭐먹지").build();
 
 
         Post post = adminService.saveNotice(addDTO, user);
 
-        assertThat(post.getPostHashTags()).have(new Condition<>(hashTag -> hashTag.getHashTag().getHashTagName().equals("공지글"), "공지사항 태그"));
+        assertAll(
+                () -> assertThat(post.getTitle()).isEqualTo("testTitle"),
+                () -> assertThat(post.getPostBody()).isEqualTo("test postbody"),
+                () -> assertThat(post.getPostHashTags()).hasSize(3)
+        );
     }
 
     @Test
@@ -220,16 +224,16 @@ class AdminServiceImplTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagCategory("#소설")
-                .tagStatus("#완결")
+                .tagCategory("소설")
+                .tagStatus("완결")
                 .nickName("점심뭐먹지").build();
 
         Post post = adminService.saveNotice(addDTO, user);
         EditDTO editDTO = EditDTO.builder()
                 .title("testTitle1")
                 .postBody("test")
-                .tagCategory("#소설")
-                .tagStatus("#완결")
+                .tagCategory("소설")
+                .tagStatus("완결")
                 .nickName("밥뭐먹지")
                 .build();
         Post editPost = adminService.updateNotice(post.getPostId(), editDTO);
@@ -237,8 +241,7 @@ class AdminServiceImplTest {
         assertAll(
                 () -> assertThat(editPost.getTitle()).isEqualTo("testTitle1"),
                 () -> assertThat(editPost.getPostBody()).isEqualTo("test"),
-                () -> assertThat(editPost.getPostHashTags()).hasSize(1),
-                () -> assertThat(editPost.getPostHashTags()).have(new Condition<>(hashTag -> hashTag.getHashTag().getHashTagName().equals("공지글"), "공지사항 태그"))
+                () -> assertThat(editPost.getPostHashTags()).hasSize(3)
         );
 
     }
@@ -262,5 +265,9 @@ class AdminServiceImplTest {
 
         //then
         assertThat(topic2.getTopicName()).isEqualTo(dailyTopicDto.getTopic());
+    }
+
+    @Test
+    void testSaveNotice() {
     }
 }

@@ -21,7 +21,8 @@ import java.util.*;
 @Entity
 public class Post extends ConfigDate {
 
-    @Id @Column(name = "post_id")
+    @Id
+    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
@@ -56,7 +57,7 @@ public class Post extends ConfigDate {
     //해시태그의 게시글 매핑
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<PostHashTag> postHashTags =  new ArrayList<>();
+    private List<PostHashTag> postHashTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "reportedPost", orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -88,23 +89,43 @@ public class Post extends ConfigDate {
     }
 
     //조회수를 바꾼다.
-    public void changeHits (int postHits) {
+    public void changeHits(int postHits) {
         this.postHits = postHits;
     }
 
-    public PostHashTag addHashTag (HashTag hashTag) {
+    public PostHashTag addHashTag(HashTag hashTag) {
         PostHashTag postHashTag = new PostHashTag(this, hashTag);
         this.getPostHashTags().add(postHashTag);
         hashTag.getPostHashTags().add(postHashTag);
         return postHashTag;
     }
-    public PostHashTag deletePostHashTag (PostHashTag deletePostHashTag) {
+
+    public List<PostHashTag> addMultiHashTags(List<HashTag> hashTag) {
+        for (HashTag tag : hashTag) {
+            PostHashTag postHashTag = new PostHashTag(this, tag);
+            this.getPostHashTags().add(postHashTag);
+            tag.getPostHashTags().add(postHashTag);
+        }
+        return this.postHashTags;
+    }
+
+    public List<PostHashTag> editMultiHashTags(List<HashTag> hashTags) {
+        deleteAllPostHashTag();
+        for (HashTag tag : hashTags) {
+            PostHashTag postHashTag = new PostHashTag(this, tag);
+            postHashTags.add(postHashTag);
+        }
+
+        return this.postHashTags;
+    }
+
+    public PostHashTag deletePostHashTag(PostHashTag deletePostHashTag) {
         postHashTags.remove(deletePostHashTag);
         deletePostHashTag.getHashTag().getPostHashTags().remove(deletePostHashTag);
         return deletePostHashTag;
     }
 
-    public void deleteAllPostHashTag () {
+    public void deleteAllPostHashTag() {
         this.postHashTags.clear();
     }
 
@@ -116,5 +137,7 @@ public class Post extends ConfigDate {
                 ", nickName='" + nickName + '\'' +
                 '}';
     }
+
+
 }
 

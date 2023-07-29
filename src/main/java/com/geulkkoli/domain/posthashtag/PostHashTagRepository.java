@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> {
+public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long>, PostHashTagRepositoryCustom{
     List<PostHashTag> findAllByHashTag (HashTag hashTagId);
+
+
 }

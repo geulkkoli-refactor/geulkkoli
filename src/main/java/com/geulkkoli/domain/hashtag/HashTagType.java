@@ -16,7 +16,7 @@ public enum HashTagType {
         this.typeCode = typeCode;
     }
 
-    public static HashTagType getHashTagType(String type) {
+    public static HashTagType find(String type) {
         return Arrays.stream(HashTagType.values())
                 .filter(hashTagType -> hashTagType.typeName.equals(type))
                 .findFirst()

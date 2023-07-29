@@ -26,7 +26,7 @@ public class AddDTO {
     @NotBlank
     private String nickName;
 
-    private String tagListString ="";
+    private String tagListString = "";
 
     private String tagCategory;
 
@@ -75,16 +75,17 @@ public class AddDTO {
         return tagStatus;
     }
 
-    public String addHasTageSignToTageList() {
-        return HashTagSign.GENERAL.getSign() +tagListString ;
+    public String tageCateGory() {
+        return String.join("", tagCategory.split(HashTagSign.GENERAL.getSign()));
     }
 
-    public String addHasTageSignToTagCategory() {
-        return HashTagSign.GENERAL.getSign()+ tagCategory;
+    public String tagListString() {
+        return String.join("", tagListString.split(HashTagSign.GENERAL.getSign()));
     }
 
-    public String addHasTageSignToTagStatus() {
-        return HashTagSign.GENERAL.getSign() +tagStatus;
+    public String tagStatus() {
+        return
+                String.join("", tagStatus.split(HashTagSign.GENERAL.getSign()));
     }
 
     @Override
