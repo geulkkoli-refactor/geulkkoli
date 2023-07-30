@@ -6,6 +6,7 @@ import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.social.SocialInfoDto;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ class SocialInfoRepositoryTest {
     private SocialInfoRepository socialInfoRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @AfterEach
+    void tearDown() {
+        socialInfoRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
 
     @DisplayName("소셜 타입과 소셜 아이디로 소셜 정보를 찾는다.")
     @Test

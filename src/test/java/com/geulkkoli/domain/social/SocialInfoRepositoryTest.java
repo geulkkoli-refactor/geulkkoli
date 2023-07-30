@@ -5,6 +5,7 @@ import com.geulkkoli.domain.social.service.SocialInfo;
 import com.geulkkoli.domain.social.service.SocialInfoRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,6 +21,11 @@ class SocialInfoRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @AfterEach
+    void tearDown() {
+        socialInfoRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
     @Test
     void socialInfoSave() {
         User user = User.builder()

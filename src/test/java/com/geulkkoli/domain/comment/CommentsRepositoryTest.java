@@ -42,7 +42,9 @@ class CommentsRepositoryTest {
 
     @AfterEach
     void afterEach () {
-        commentsRepository.deleteAll();
+        commentsRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @BeforeEach

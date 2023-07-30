@@ -6,10 +6,12 @@ import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostService;
+import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,8 @@ class PostHahTagFindServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private PostHashTagRepository postHashTagRepository;
+    @Autowired
     private HashTagRepository hashTagRepository;
     @Autowired
     private PostService postService;
@@ -47,6 +51,14 @@ class PostHahTagFindServiceTest {
     private HashTag tag1, notice, tag3, tag4, tag5, tag6, tag7, tag8, tag9;
 
     List<Post> posts;
+
+    @AfterEach
+    void tearDown() {
+        postHashTagRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
 
     @BeforeEach
     void init() {
@@ -60,6 +72,8 @@ class PostHahTagFindServiceTest {
 
         user = userRepository.save(save);
     }
+
+
 
     @BeforeEach
     void beforeEach() {

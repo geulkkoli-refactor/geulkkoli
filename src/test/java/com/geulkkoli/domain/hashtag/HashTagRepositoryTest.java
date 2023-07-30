@@ -23,7 +23,7 @@ class HashTagRepositoryTest {
 
     @AfterEach
     void afterEach() {
-        hashTagRepository.deleteAll();
+        hashTagRepository.deleteAllInBatch();
     }
 
     @DisplayName("해시태그 이름들로 여러 해시태그 찾기")

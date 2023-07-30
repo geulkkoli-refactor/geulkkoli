@@ -28,6 +28,12 @@ public class PostHashTagService {
     private final HashTagService hashTagService;
 
     public Post addHashTagsToPost(Post post, AddDTO addDTO) {
+        if (addDTO.getTagListString().isEmpty()) {
+            List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
+            postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
+            return post;
+        }
+
         List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
         log.info("hashTags: {}", hashTags);
         Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();

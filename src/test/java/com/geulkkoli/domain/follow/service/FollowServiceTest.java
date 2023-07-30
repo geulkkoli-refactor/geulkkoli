@@ -4,6 +4,7 @@ import com.geulkkoli.domain.follow.Follow;
 import com.geulkkoli.domain.follow.FollowRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,10 @@ class FollowServiceTest {
     @Autowired
     UserRepository userRepository;
 
-    @BeforeEach
+    @AfterEach
     void setUp() {
-        followRepository.deleteAll();
-        userRepository.deleteAll();
+        followRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
     @Test
     void follow() {

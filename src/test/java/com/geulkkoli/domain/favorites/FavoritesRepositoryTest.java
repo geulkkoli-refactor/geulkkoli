@@ -37,7 +37,9 @@ class FavoritesRepositoryTest {
 
     @AfterEach
     void afterEach () {
-        favoritesRepository.deleteAll();
+        favoritesRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @BeforeEach

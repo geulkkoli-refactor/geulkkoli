@@ -4,6 +4,7 @@ import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ class HashTagFindServiceTest {
 
     @Autowired
     HashTagRepository hashTagRepository;
+
+    @AfterEach
+    void afterEach() {
+        hashTagRepository.deleteAllInBatch();
+    }
 
 
     @DisplayName("게시글 이름을 받아 게시글을 찾기")

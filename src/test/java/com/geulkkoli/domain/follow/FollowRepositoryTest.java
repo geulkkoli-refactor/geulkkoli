@@ -4,6 +4,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ class FollowRepositoryTest {
     private FollowRepository followRepository;
     @Autowired
     UserRepository userRepository;
+
+    @AfterEach
+    void tearDown() {
+        followRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
 
 
     @DisplayName("팔로우 하는 사람 수 조회")

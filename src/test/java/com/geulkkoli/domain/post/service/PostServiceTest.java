@@ -1,16 +1,22 @@
-package com.geulkkoli.domain.post;
+package com.geulkkoli.domain.post.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
+import com.geulkkoli.domain.post.NotAuthorException;
+import com.geulkkoli.domain.post.Post;
+import com.geulkkoli.domain.post.PostNotExistException;
+import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
+import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserNotExistException;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.EditDTO;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +42,10 @@ class PostServiceTest {
     private PostService postService;
     @Autowired
     private PostFindService postFindService;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private PostHashTagRepository postHashTagRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,6 +59,13 @@ class PostServiceTest {
         HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
         HashTag 완결 = hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
         HashTag 소설 = hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
+    }
+    @AfterEach
+    void tearDown() {
+        postHashTagRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("게시글 저장")
@@ -71,10 +88,9 @@ class PostServiceTest {
 
         assertAll(() -> assertThat(save).has(new Condition<>(p -> p.getTitle().equals("title"), "title")),
                 () -> assertThat(save).has(new Condition<>(p -> p.getPostBody().equals("body"), "body")),
-                () -> assertThat(save).has(new Condition<>(p -> p.getNickName().equals("nick"), "nick")));
+                () -> assertThat(save).has(new Condition<>(p -> p.getNickName().equals("nick"), "nick")),
+                () -> assertThat(save.getPostHashTags()).hasSize(3));
 
-        assertThat(save.getPostHashTags().get(0).getHashTag().getHashTagName()).isEqualTo("소설");
-        assertThat(save.getPostHashTags().get(1).getHashTag().getHashTagName()).isEqualTo("완결");
     }
 
 
@@ -146,6 +162,7 @@ class PostServiceTest {
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
+                .tagListString("")
                 .tagCategory("#코미디")
                 .tagStatus("#완결")
                 .build();

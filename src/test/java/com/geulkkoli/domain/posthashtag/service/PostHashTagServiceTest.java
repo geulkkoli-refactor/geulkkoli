@@ -6,12 +6,14 @@ import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostService;
+import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.EditDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,21 +43,27 @@ class PostHashTagServiceTest {
     @Autowired
     private HashTagRepository hashTagRepository;
     @Autowired
-    private PostService postService;
+    private PostHashTagRepository postHashTagRepository;
+
 
     private User user;
-    private Post post, post01, post02, post03;
-    private HashTag tag1, notice, fantasy, tag4, tag5, tag6, tag7, tag8, fangaia;
+    private HashTag notice, fantasy, fangaia;
 
-    List<Post> posts;
 
+    @AfterEach
+    void tearDown() {
+        postRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
     @BeforeEach
     void init() {
         User save = User.builder()
-                .email("test@naver.com")
+                .email("test" + UUID.randomUUID() + "@naver.com")
                 .userName("test")
-                .nickName("test")
-                .phoneNo("00000000000")
+                .nickName("test" +  UUID.randomUUID())
+                .phoneNo("12400608000")
                 .password("123")
                 .gender("male").build();
 
@@ -63,55 +72,14 @@ class PostHashTagServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        for (int i = 0; i < 10; i++) {
-            AddDTO addDTO = AddDTO.builder()
-                    .title("testTitle" + i)
-                    .postBody("test postbody " + i)
-                    .nickName(user.getNickName())
-                    .build();
-            post = user.writePost(addDTO);
-            postRepository.save(post);
-        }
 
-
-        AddDTO addDTO01 = AddDTO.builder()
-                .title("testTitle01")
-                .postBody("test postbody 01")
-                .nickName(user.getNickName())
-                .build();
-        post01 = user.writePost(addDTO01);
-        postRepository.save(post01);
-
-        AddDTO addDTO02 = AddDTO.builder()
-                .title("testTitle02")
-                .postBody("test postbody 02")
-                .nickName(user.getNickName())
-                .build();
-        post02 = user.writePost(addDTO02);
-        postRepository.save(post02);
-
-        AddDTO addDTO03 = AddDTO.builder()
-                .title("testTitle03")
-                .postBody("test postbody 03")
-                .nickName(user.getNickName())
-                .build();
-        post03 = user.writePost(addDTO03);
-        postRepository.save(post03);
-
-        posts = postRepository.findAll();
-
-        tag1 = hashTagRepository.save(new HashTag("일반글", HashTagType.GENERAL));
         notice = hashTagRepository.save(new HashTag("공지글", HashTagType.GENERAL));
         fantasy = hashTagRepository.save(new HashTag("판타지", HashTagType.GENERAL));
-        tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.GENERAL));
-        tag5 = hashTagRepository.save(new HashTag("단편소설", HashTagType.GENERAL));
-        tag6 = hashTagRepository.save(new HashTag("시", HashTagType.GENERAL));
-        tag7 = hashTagRepository.save(new HashTag("이상", HashTagType.GENERAL));
-        tag8 = hashTagRepository.save(new HashTag("게임", HashTagType.GENERAL));
         fangaia = hashTagRepository.save(new HashTag("판게아", HashTagType.GENERAL));
 
         hashTagRepository.save(new HashTag("소설", HashTagType.GENERAL));
         hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
+
     }
 
 
@@ -199,7 +167,7 @@ class PostHashTagServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("판타지")
+                .tagListString("공지글")
                 .tagCategory("소설")
                 .tagStatus("완결")
                 .nickName("test")
@@ -210,7 +178,7 @@ class PostHashTagServiceTest {
         postRepository.save(post1);
         Post post = postHashTagService.addHashTagsToPostNotice(post1, addDTO);
 
-        assertThat(post.getPostHashTags()).hasSize(4);
+        assertThat(post.getPostHashTags()).hasSize(3);
         assertThat(post.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(notice.getHashTagName()), "공지글"));
     }
 
@@ -242,7 +210,7 @@ class PostHashTagServiceTest {
 
         Post editPost = postHashTagService.editHashTagsToPostNotice(post, editDTO);
 
-        assertThat(editPost.getPostHashTags()).hasSize(4);
-        assertThat(editPost.getPostHashTags().get(1)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fangaia.getHashTagName()), "판게아"));
+        assertThat(editPost.getPostHashTags()).hasSize(3);
+        assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fangaia.getHashTagName()), "판게아"));
     }
 }
