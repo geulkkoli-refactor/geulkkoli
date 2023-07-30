@@ -1,6 +1,7 @@
 package com.geulkkoli.domain.admin.service;
 
 import com.geulkkoli.domain.admin.AccountLock;
+import com.geulkkoli.domain.admin.AccountLockRepository;
 import com.geulkkoli.domain.admin.Report;
 import com.geulkkoli.domain.admin.ReportRepository;
 import com.geulkkoli.domain.hashtag.HashTag;
@@ -8,6 +9,7 @@ import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
+import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.topic.Topic;
 import com.geulkkoli.domain.topic.TopicRepository;
 import com.geulkkoli.domain.user.User;
@@ -42,6 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @SpringBootTest
 @Transactional
 class AdminServiceImplTest {
+    @Autowired
+    private PostHashTagRepository postHashTagRepository;
+    @Autowired
+    private AccountLockRepository accountLockRepository;
 
     @Autowired
     private AdminServiceImpl adminService;
@@ -89,6 +95,18 @@ class AdminServiceImplTest {
         HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
         HashTag 완결 = hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
         HashTag 소설 = hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
+    }
+
+
+    @AfterEach
+    void tearDown() {
+        postHashTagRepository.deleteAllInBatch();
+        accountLockRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+        reportRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        topicRepository.deleteAllInBatch();
     }
 
 
@@ -205,6 +223,7 @@ class AdminServiceImplTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
+                .tagListString("이벤트")
                 .tagCategory("소설")
                 .tagStatus("완결")
                 .nickName("점심뭐먹지").build();
@@ -224,6 +243,7 @@ class AdminServiceImplTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
+                .tagListString("이벤트")
                 .tagCategory("소설")
                 .tagStatus("완결")
                 .nickName("점심뭐먹지").build();
@@ -233,6 +253,7 @@ class AdminServiceImplTest {
                 .title("testTitle1")
                 .postBody("test")
                 .tagCategory("소설")
+                .tagListString("이벤트")
                 .tagStatus("완결")
                 .nickName("밥뭐먹지")
                 .build();
@@ -267,7 +288,4 @@ class AdminServiceImplTest {
         assertThat(topic2.getTopicName()).isEqualTo(dailyTopicDto.getTopic());
     }
 
-    @Test
-    void testSaveNotice() {
-    }
 }

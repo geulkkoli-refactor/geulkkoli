@@ -51,7 +51,7 @@ class PostRepositoryTest {
 
     @AfterEach
     void afterEach() {
-        postRepository.deleteAll();
+        postRepository.deleteAllInBatch();
     }
 
     @BeforeEach
@@ -184,77 +184,6 @@ class PostRepositoryTest {
             log.info("post={}", post);
         }
         assertThat(all.size()).isEqualTo(0);
-    }
-
-    @Test
-    void findByHastagName() {
-//        AddDTO addDTO01 = AddDTO.builder()
-//                .title("testTitle01")
-//                .postBody("test postbody 01")
-//                .nickName(user.getNickName())
-//                .build();
-//        Post post01 = user.writePost(addDTO01);
-//        postRepository.save(post01);
-//
-//        AddDTO addDTO02 = AddDTO.builder()
-//                .title("testTitle02")
-//                .postBody("test postbody 02")
-//                .nickName(user.getNickName())
-//                .build();
-//
-//        AddDTO addDTO03 = AddDTO.builder()
-//                .title("testTitle03")
-//                .postBody("test postbody 03")
-//                .nickName(user.getNickName())
-//                .build();
-//
-//        AddDTO addDTO4 = AddDTO.builder()
-//                .title("testTitle04")
-//                .postBody("test postbody 04")
-//                .nickName(user.getNickName())
-//                .build();
-//
-//        AddDTO addDTO5 = AddDTO.builder()
-//                .title("testTitle05")
-//                .postBody("test postbody 05")
-//                .nickName(user.getNickName())
-//                .build();
-//
-//        Post post02 = user.writePost(addDTO02);
-//        Post post03 = user.writePost(addDTO03);
-//        Post post04 = user.writePost(addDTO4);
-//        Post post05 = user.writePost(addDTO5);
-//
-//        postRepository.save(post02);
-//        postRepository.save(post03);
-//        postRepository.save(post04);
-//        postRepository.save(post05);
-//
-//        HashTag tag1 = hashTagRepository.save(new HashTag("일반글"));
-//        HashTag tag2 = hashTagRepository.save(new HashTag("공지글"));
-//        HashTag tag3 = hashTagRepository.save(new HashTag("판타지"));
-//        HashTag tag4 = hashTagRepository.save(new HashTag("코미디"));
-//
-//        PostHashTag save1 = post01.addHashTag(tag1);
-//        PostHashTag save2 = post01.addHashTag(tag3);
-//        PostHashTag save3 = post01.addHashTag(tag4);
-//        PostHashTag save4 = post02.addHashTag(tag1);
-//        PostHashTag save5 = post02.addHashTag(tag3);
-//        PostHashTag save6 = post02.addHashTag(tag4);
-//
-//        postHashTagRepository.save(save1);
-//        postHashTagRepository.save(save2);
-//        postHashTagRepository.save(save3);
-//
-//
-//        postHashTagRepository.save(save4);
-//        postHashTagRepository.save(save5);
-//        postHashTagRepository.save(save6);
-//
-//        List<Post> posts = postRepository.postsByHashTag(tag1.getHashTagName());
-//
-//        log.info("posts={}", posts);
-
     }
 
     @Test

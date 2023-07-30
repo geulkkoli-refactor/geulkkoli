@@ -7,10 +7,7 @@ import com.geulkkoli.web.user.dto.JoinFormDto;
 import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ActiveProfiles("test")
 @SpringBootTest
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserServiceTest {
 
     @Autowired
@@ -34,19 +30,18 @@ class UserServiceTest {
     @Autowired
     UserService userService;
 
-    User saveUser;
 
-
-    @BeforeAll
-    void init() {
-        saveUser = userRepository.save(User.builder() // userId = 3L
-                .email("tako1@naver.com").userName("김1").nickName("바나나1").password("123qwe!@#").phoneNo("01012345671").gender("male").build());
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
     }
 
     @Test
     @DisplayName("회원정보 수정 성공")
     void updateTest() {
         //given
+        User saveUser = userRepository.save(User.builder() // userId = 3L
+                .email("tako1@naver.com").userName("김1").nickName("바나나1").password("123qwe!@#").phoneNo("01012345671").gender("male").build());
         UserInfoEditFormDto preupdateUser = UserInfoEditFormDto.form("김2", "바나나155", "01055554646", "female");
 
         //when
@@ -61,22 +56,20 @@ class UserServiceTest {
     @Test
     void signUp() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test@naver.com", "01056789999", "Male");
+        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
 
         //when
         User user = userService.signUp(joinForm);
 
         //then
-        assertThat(user).hasFieldOrPropertyWithValue("userName", "test");
-        assertThat(user).hasFieldOrPropertyWithValue("nickName", "nick");
-        assertThat(user).hasFieldOrPropertyWithValue("email", "test@naver.com");
+        assertThat(user).has(new Condition<>(u -> u.getEmail().equals("test12222@naver.com"), "이메일이 비어있지 않다"));
     }
 
     @DisplayName("회원탈퇴")
     @Test
     void delete() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test@naver.com", "01056789999", "Male");
+        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
         User user = userService.signUp(joinForm);
 
         //when

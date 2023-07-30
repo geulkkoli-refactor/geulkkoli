@@ -40,9 +40,9 @@ class CommentsServiceTest {
 
     @BeforeEach
     void tearDown() {
-        commentsRepository.deleteAll();
-        userRepository.deleteAll();
-        postRepository.deleteAll();
+        commentsRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
     }
 
     @DisplayName("댓글 작성 테스트")

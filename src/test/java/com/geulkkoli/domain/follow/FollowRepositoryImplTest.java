@@ -5,6 +5,7 @@ import com.geulkkoli.application.security.Role;
 import com.geulkkoli.application.security.RoleRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DataJpaTest
 class FollowRepositoryImplTest {
 
-    @Autowired
-    private FollowRepositoryImpl followRepositoryDsl;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -30,6 +30,13 @@ class FollowRepositoryImplTest {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @AfterEach
+    void tearDown() {
+        followRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        roleRepository.deleteAllInBatch();
+    }
 
     @Test
     void findFollowEntitiesByFolloweeUserId() {
@@ -88,7 +95,7 @@ class FollowRepositoryImplTest {
         followRepository.save(follow2);
         followRepository.save(follow3);
 
-        List<FollowInfo> followEntitiesByFolloweeUserId = followRepositoryDsl.findFollowersByFolloweeUserId(user.getUserId(), null, 3);
+        List<FollowInfo> followEntitiesByFolloweeUserId = followRepository.findFollowersByFolloweeUserId(user.getUserId(), null, 3);
 
         assertAll(() -> {
             assertThat(followEntitiesByFolloweeUserId).size().isEqualTo(3);
@@ -158,7 +165,7 @@ class FollowRepositoryImplTest {
         followRepository.save(follow4);
         followRepository.save(follow5);
 
-        List<FollowInfo> followInfos= followRepositoryDsl.findFollowersByFolloweeUserId(user.getUserId(), null, 3);
+        List<FollowInfo> followInfos= followRepository.findFollowersByFolloweeUserId(user.getUserId(), null, 3);
         List<Long> collect = followInfos.stream().map(FollowInfo::getUserId).collect(Collectors.toUnmodifiableList());
         List<Long> correspondence = followRepository.findFollowedEachOther(collect, user.getUserId(), 10);
 
@@ -226,7 +233,7 @@ class FollowRepositoryImplTest {
         followRepository.save(follow4);
         followRepository.save(follow5);
 
-        List<FollowInfo> followInfos = followRepositoryDsl.findFolloweesByFollowerUserId(user.getUserId(), null, 3);
+        List<FollowInfo> followInfos = followRepository.findFolloweesByFollowerUserId(user.getUserId(), null, 3);
 
         assertAll( () -> {
             assertThat(followInfos).hasSize(2);

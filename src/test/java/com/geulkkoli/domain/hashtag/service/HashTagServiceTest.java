@@ -1,7 +1,9 @@
 package com.geulkkoli.domain.hashtag.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  class HashTagServiceTest {
     @Autowired
     HashTagService hashTagService;
+
+    @Autowired
+    HashTagRepository hashTagRepository;
+
+    @AfterEach
+    void tearDown() {
+        hashTagRepository.deleteAllInBatch();
+    }
 
     @DisplayName("해시태그 새로 만들어 저장하기")
     @Test

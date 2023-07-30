@@ -41,6 +41,15 @@ class PostHashTagRepositoryTest {
     private PostHashTagRepository postHashTagRepository;
 
 
+
+    @AfterEach
+    void tearDown() {
+        postHashTagRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+    }
+
     @Test
     void 게시글_해시태그_저장(){
         //given

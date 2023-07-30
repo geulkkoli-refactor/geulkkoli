@@ -10,6 +10,7 @@ import com.geulkkoli.domain.follow.FollowRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 class FollowFindServiceTest {
@@ -40,11 +40,11 @@ class FollowFindServiceTest {
     @Autowired
     private FollowFindService followFindService;
 
-    @BeforeEach
-    void setUp() {
-        followRepository.deleteAll();
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
+    @AfterEach
+    void tearDown() {
+        followRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        roleRepository.deleteAllInBatch();
     }
 
     @Test

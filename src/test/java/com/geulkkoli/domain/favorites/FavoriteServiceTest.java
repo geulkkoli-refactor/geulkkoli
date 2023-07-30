@@ -3,7 +3,6 @@ package com.geulkkoli.domain.favorites;
 import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
-import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
@@ -34,7 +33,7 @@ class FavoriteServiceTest {
     @Autowired
     private FavoritesRepository favoritesRepository;
     @Autowired
-    private PostRepository postService;
+    private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -43,7 +42,10 @@ class FavoriteServiceTest {
 
     @AfterEach
     void afterEach() {
-        favoritesRepository.deleteAll();
+
+        favoritesRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @BeforeEach
@@ -76,14 +78,14 @@ class FavoriteServiceTest {
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        post01 = postService.save(user.writePost(addDTO01));
+        post01 = postRepository.save(user.writePost(addDTO01));
 
         AddDTO addDTO02 = AddDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
-        post02 = postService.save(user.writePost(addDTO02));
+        post02 = postRepository.save(user.writePost(addDTO02));
     }
 
     @Test
@@ -126,7 +128,7 @@ class FavoriteServiceTest {
     }
 
     @Test
-     void 좋아요_지우기 () throws Exception {
+     void 좋아요_지우기 ()  {
         //given
         Long favoriteId01 = favoriteService.addFavorite(post01, user);
         Long favoriteId02 = favoriteService.addFavorite(post01, user02);
@@ -142,7 +144,7 @@ class FavoriteServiceTest {
     }
 
     @Test
-     void 유저가_게시글에_좋아요_눌렀는지_체크 () throws Exception {
+     void 유저가_게시글에_좋아요_눌렀는지_체크 ()  {
         //given
         Long favoriteId01 = favoriteService.addFavorite(post01, user);
         Favorites favorites1;

@@ -2,10 +2,7 @@ package com.geulkkoli.domain.admin;
 
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,11 +22,13 @@ class AccountRockRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    void init() {
-        userRepository.deleteAll();
-        accountRockRepository.deleteAll();
+    @AfterEach
+    void teardown() {
+        accountRockRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
+
+
 
     @DisplayName("정지 처분된 유저가 아이디로 찾기")
     @Test

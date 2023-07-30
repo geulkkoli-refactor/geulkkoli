@@ -6,6 +6,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.social.SocialInfoDto;
 import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,24 +27,28 @@ class SocialInfoFindServiceTest {
     SocialInfoFindService socialInfoFindService;
     @Autowired
     SocialInfoService socialInfoService;
+
+    @Autowired
+    SocialInfoRepository socialInfoRepository;
     @Autowired
     UserRepository userRepository;
 
-    @BeforeEach
+    @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
+        socialInfoRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("연동된 소셜 정보를 소셜 타입과 소셜 아이디로 찾는다.")
     @Test
     void findBySocialTypeAndSocialId() {
         User user = User.builder()
-                .email("test12@gmail.com")
+                .email("test1"+ UUID.randomUUID() +"@gmail.com")
                 .userName("test")
                 .password("123")
                 .phoneNo("01133345555")
                 .gender("Male")
-                .nickName("test")
+                .nickName("test" + UUID.randomUUID())
                 .build();
         userRepository.save(user);
         SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", "testType", user);
@@ -72,7 +79,7 @@ class SocialInfoFindServiceTest {
                     .password("123")
                     .phoneNo("01133345555")
                     .gender("Male")
-                    .nickName("test")
+                    .nickName("test" + UUID.randomUUID())
                     .build();
             userRepository.save(user);
             SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", "testType", user);
@@ -91,7 +98,7 @@ class SocialInfoFindServiceTest {
                 .password("123")
                 .phoneNo("01133345555")
                 .gender("Male")
-                .nickName("test")
+                .nickName("test" + UUID.randomUUID())
                 .build();
         userRepository.save(user);
         SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", "testType", user);
@@ -110,7 +117,7 @@ class SocialInfoFindServiceTest {
                 .password("123")
                 .phoneNo("01133345555")
                 .gender("Male")
-                .nickName("test")
+                .nickName("test" + UUID.randomUUID())
                 .build();
         userRepository.save(user);
         SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", "testType", user);
@@ -128,7 +135,7 @@ class SocialInfoFindServiceTest {
                 .password("123")
                 .phoneNo("01133345555")
                 .gender("Male")
-                .nickName("test")
+                .nickName("test" + UUID.randomUUID())
                 .build();
         userRepository.save(user);
         SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", SocialType.KAKAO.getValue(), user);
@@ -158,7 +165,7 @@ class SocialInfoFindServiceTest {
                 .password("123")
                 .phoneNo("01133345555")
                 .gender("Male")
-                .nickName("test")
+                .nickName("test" + UUID.randomUUID())
                 .build();
         userRepository.save(user);
         SocialInfoDto socialInfoDto = SocialInfoDto.of("testId", SocialType.KAKAO.getValue(), user);

@@ -4,12 +4,15 @@ import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
+import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
+import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,15 +38,20 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @SpringBootTest
 @Transactional
 class PostFindServiceTest {
-    @Autowired
-    UserRepository userRepository;
+
     @Autowired
     PostFindService postFindService;
     @Autowired
     PostService postService;
     @Autowired
     HashTagRepository hashTagRepository;
+    @Autowired
+    UserRepository userRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private PostHashTagRepository postHashTagRepository;
 
     @BeforeEach
     void setUp() {
@@ -52,6 +60,14 @@ class PostFindServiceTest {
         HashTag tag4 = hashTagRepository.save(new HashTag("코미디", HashTagType.CATEGORY));
         HashTag 완결 = hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
         HashTag 소설 = hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
+    }
+
+    @AfterEach
+    void tearDown() {
+        postHashTagRepository.deleteAllInBatch();
+        hashTagRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
 

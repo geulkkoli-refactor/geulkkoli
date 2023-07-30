@@ -28,7 +28,7 @@ class TopicRepositoryTest {
 
     @AfterEach
     void afterEach() {
-        //
+        topicRepository.deleteAllInBatch();
     }
 
     @BeforeEach
