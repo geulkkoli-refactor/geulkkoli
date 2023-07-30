@@ -54,11 +54,9 @@ public class HomeController {
     @GetMapping
     public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model,
-                       @RequestParam(defaultValue = "해시태그") String searchType,
                        @RequestParam(defaultValue = "일반") String searchWords) {
         model.addAttribute("list", postHahTagFindService.searchPostsListByHashTag(pageable,  searchWords).toList());
         model.addAttribute("notificationList",postHahTagFindService.searchPostsListByHashTag(pageable, searchWords+"#공지글").toList());
-        model.addAttribute("todayTopic", topicService.showTodayTopic(LocalDate.now()));
         return "home";
     }
 
