@@ -4,8 +4,8 @@ import com.geulkkoli.domain.hashtag.HashTagSign;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostNotExistException;
 import com.geulkkoli.domain.post.PostRepository;
+import com.geulkkoli.domain.post.SearchType;
 import com.geulkkoli.domain.user.User;
-import com.geulkkoli.web.post.dto.PostRequestDto;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,8 @@ public class PostFindService {
         if (SearchType.TITLE.getType().equals(searchType)) return searchPostsListByTitle(pageable, searchWords);
         if (SearchType.NICKNAME.getType().equals(searchType)) return searchPostListByNickName(pageable, searchWords);
         if (SearchType.BODY.getType().equals(searchType)) return searchPostListByPostBody(pageable, searchWords);
-        if (SearchType.Multi_Hash_Tag.getType().equals(searchType)) return searchPostsListByHashTag(pageable, searchWords);
+        if (SearchType.Multi_Hash_Tag.getType().equals(searchType))
+            return searchPostsListByHashTag(pageable, searchWords);
         return postRepository.findAll(pageable)
                 .map(PostRequestListDTO::toDTO);
     }
@@ -55,7 +56,7 @@ public class PostFindService {
         return new PageImpl<>(result, pageable, pageable.getPageSize());
     }
 
-    public Page<PostRequestListDTO> searchPostsListByTitle(Pageable pageable, String title) {
+    private Page<PostRequestListDTO> searchPostsListByTitle(Pageable pageable, String title) {
         if (title.contains(" ")) {
             List<PostRequestListDTO> collect = Arrays.stream(title.split(" "))
                     .map(String::trim)
@@ -70,7 +71,7 @@ public class PostFindService {
                 .map(PostRequestListDTO::toDTO);
     }
 
-    public Page<PostRequestListDTO> searchPostListByNickName(Pageable pageable, String nickName) {
+    private Page<PostRequestListDTO> searchPostListByNickName(Pageable pageable, String nickName) {
         if (nickName.contains(" ")) {
             List<PostRequestListDTO> collect = Arrays.stream(nickName.split(" "))
                     .map(String::trim)
@@ -87,7 +88,7 @@ public class PostFindService {
                 .map(PostRequestListDTO::toDTO);
     }
 
-    public Page<PostRequestListDTO> searchPostListByPostBody(Pageable pageable, String postBody) {
+    private Page<PostRequestListDTO> searchPostListByPostBody(Pageable pageable, String postBody) {
         if (postBody.contains(" ")) {
             List<PostRequestListDTO> collect = Arrays.stream(postBody.split(" "))
                     .map(String::trim)

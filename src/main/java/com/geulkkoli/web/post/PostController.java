@@ -9,9 +9,8 @@ import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
-import com.geulkkoli.domain.post.service.SearchType;
+import com.geulkkoli.domain.post.SearchType;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
-import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
@@ -130,17 +129,11 @@ public class PostController {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
         log.info("addDTO: {}", post);
         User user = userFindService.findById(post.getAuthorId());
-        try {
-            if (bindingResult.hasErrors()) {
-                return "post/postAddForm";
-            }
-        } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("tagCategory", "Tag.Required", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        } catch (AdminTagAccessDenied e) {
-            bindingResult.rejectValue("tagListString", "Tag.Denied", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
+
+        if (bindingResult.hasErrors()) {
+            return "post/postAddForm";
         }
+
         long postId = postService.savePost(post, user).getPostId();
         redirectAttributes.addAttribute("postId", postId);
         response.addCookie(new Cookie(URLEncoder.encode(post.getNickName(), "UTF-8"), "done"));

@@ -1,4 +1,4 @@
-package com.geulkkoli.domain.post.service;
+package com.geulkkoli.domain.post;
 
 public enum SearchType {
     TITLE("제목"),
