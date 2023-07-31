@@ -3,6 +3,7 @@ package com.geulkkoli.domain.posthashtag.service;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostService;
@@ -43,6 +44,9 @@ class PostHahTagFindServiceTest {
     private PostHashTagRepository postHashTagRepository;
     @Autowired
     private HashTagRepository hashTagRepository;
+
+    @Autowired
+    private HashTagFindService hashTagFindService;
     @Autowired
     private PostService postService;
 
@@ -146,11 +150,14 @@ class PostHahTagFindServiceTest {
             postService.savePost(addDTO, user);
         }
 
-        String searchWords = "소설";
+        String searchWords = "소설#완결#신과 함께";
+        List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
 
         //when
         Pageable pageable = PageRequest.of(1, 5);
-        Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable, searchWords);
+
+
+        Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable,hashTag);
         List<PostRequestListDTO> collect = listDTOS.get().collect(Collectors.toList());
 
         //then

@@ -2,6 +2,8 @@ package com.geulkkoli.web.home;
 
 import com.geulkkoli.application.EmailService;
 import com.geulkkoli.application.user.service.PasswordService;
+import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.topic.service.TopicService;
@@ -28,6 +30,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -36,11 +39,11 @@ import java.time.LocalDate;
 @Slf4j
 @RequestMapping("/")
 public class HomeController {
-    private  final String FIND_EMAIL_FORM = "user/find/findEmailForm";
-    private  final String FOUND_EMAIL_FORM = "user/find/foundEmailForm";
-    private  final String FIND_PASSWORD_FORM = "user/find/findPasswordForm";
-    private  final String TEMP_PASSWORD_FORM = "user/find/tempPasswordForm";
-    private  final String JOIN_FORM = "user/joinForm";
+    private final String FIND_EMAIL_FORM = "user/find/findEmailForm";
+    private final String FOUND_EMAIL_FORM = "user/find/foundEmailForm";
+    private final String FIND_PASSWORD_FORM = "user/find/findPasswordForm";
+    private final String TEMP_PASSWORD_FORM = "user/find/tempPasswordForm";
+    private final String JOIN_FORM = "user/joinForm";
     public static final String REDIRECT_INDEX = "redirect:/";
 
 
@@ -49,14 +52,17 @@ public class HomeController {
     private final UserFindService userFindService;
     private final UserService userService;
     private final PasswordService passwordService;
-    private final TopicService topicService;
+    private final HashTagFindService hashTagFindService;
+
 
     @GetMapping
     public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model,
                        @RequestParam(defaultValue = "일반") String searchWords) {
-        model.addAttribute("list", postHahTagFindService.searchPostsListByHashTag(pageable,  searchWords).toList());
-        model.addAttribute("notificationList",postHahTagFindService.searchPostsListByHashTag(pageable, searchWords+"#공지글").toList());
+        List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
+        List<HashTag> noticeHashTag = hashTagFindService.findHashTag("공지글");
+        model.addAttribute("list", postHahTagFindService.searchPostsListByHashTag(pageable, hashTag).toList());
+        model.addAttribute("notificationList", postHahTagFindService.searchPostsListByHashTag(pageable, noticeHashTag).toList());
         return "home";
     }
 

@@ -30,7 +30,7 @@ public class SocialInfoService {
     }
 
     public void disconnect(String email, String socialType) {
-        socialInfoRepository.findSocialInfoBySocialTypeAndAndUser_Email(socialType, email).ifPresent(socialInfo -> {
+        socialInfoRepository.findSocialInfoBySocialTypeAndUserEmail(socialType, email).ifPresent(socialInfo -> {
             socialInfo.disconnect();
             socialInfoRepository.save(socialInfo);
         });

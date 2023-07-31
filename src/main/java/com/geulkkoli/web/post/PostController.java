@@ -3,6 +3,8 @@ package com.geulkkoli.web.post;
 import com.geulkkoli.application.user.CustomAuthenticationPrinciple;
 import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
+import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
@@ -38,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -51,9 +54,9 @@ public class PostController {
     private final PostFindService postFindService;
     private final UserFindService userFindService;
     private final FavoriteService favoriteService;
-    private final PostHashTagService postHashTagService;
     private final PostHahTagFindService postHashTagFindService;
     private final FollowFindService followFindService;
+    private final HashTagFindService hashTagFindService;
     @Value("${comm.uploadPath}")
     private String uploadPath;
 
@@ -97,7 +100,8 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, searchWords);
+            List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
             model.addAttribute("page", pagingDTO);
             searchDefault(model, searchType, searchWords);

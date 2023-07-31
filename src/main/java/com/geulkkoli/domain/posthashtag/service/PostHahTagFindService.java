@@ -22,12 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class PostHahTagFindService {
 
-    private final HashTagFindService hashTagFindService;
     private final PostHashTagRepository postHashTagRepository;
 
-    public Page<PostRequestListDTO> searchPostsListByHashTag(Pageable pageable, String searchWords) {
+    public Page<PostRequestListDTO> searchPostsListByHashTag(Pageable pageable, List<HashTag> tags) {
 
-        List<HashTag> tags = hashTagFindService.findHashTag(searchWords);
         List<Post> resultList = searchPostContainAllHashTags(tags);
 
         return convertPostSearchRequestListDTO(pageable, resultList).map(post -> new PostRequestListDTO(
