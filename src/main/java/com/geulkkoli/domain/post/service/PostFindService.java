@@ -1,5 +1,6 @@
 package com.geulkkoli.domain.post.service;
 
+import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostNotExistException;
@@ -121,5 +122,13 @@ public class PostFindService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(findPageByPostBody, pageable, pageable.getPageSize());
+    }
+
+    public Page<PostRequestListDTO> findPostByTag(Pageable pageable, List<HashTag> hashTag) {
+        List<String> hashTagNames = hashTag.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
+        List<PostRequestListDTO> postRequestListDTOS = postRepository.allPostsMultiHashTags(pageable,hashTagNames)
+                .stream().map(PostRequestListDTO::toDTO).collect(Collectors.toList());
+
+        return new PageImpl<>(postRequestListDTOS, pageable, pageable.getPageSize());
     }
 }

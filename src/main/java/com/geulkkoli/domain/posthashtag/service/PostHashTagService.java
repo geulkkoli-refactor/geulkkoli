@@ -5,7 +5,6 @@ import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.hashtag.service.HashTagService;
 import com.geulkkoli.domain.post.Post;
-import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.EditDTO;
@@ -29,12 +28,12 @@ public class PostHashTagService {
 
     public Post addHashTagsToPost(Post post, AddDTO addDTO) {
         if (addDTO.getTagListString().isEmpty()) {
-            List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
+            List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
             return post;
         }
 
-        List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
+        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
         log.info("hashTags: {}", hashTags);
         Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();
         if (any.isEmpty() && !addDTO.getTagListString().isEmpty()) {
@@ -48,7 +47,7 @@ public class PostHashTagService {
     }
 
     public Post editHashTagsToPost(Post post, EditDTO updateParam) {
-        List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagListString(), updateParam.tageCateGory(), updateParam.tagStatus());
+        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(updateParam.tagListString(), updateParam.tageCateGory(), updateParam.tagStatus());
         Optional<HashTag> any = hashTags.stream().filter(i -> updateParam.getTagListString().equals(i.getHashTagName())).findAny();
         if (any.isEmpty() &&!updateParam.getTagListString().isEmpty()) {
             HashTag newHashTag = hashTagService.createNewHashTag(updateParam.getTagListString(), HashTagType.GENERAL.getTypeName());
@@ -61,7 +60,7 @@ public class PostHashTagService {
     }
 
     public Post addHashTagsToPostNotice(Post post, AddDTO addDTO) {
-        List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.getTagListString(), addDTO.getTagCategory(), addDTO.getTagStatus());
+        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.getTagListString(), addDTO.getTagCategory(), addDTO.getTagStatus());
         Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();
         if (any.isEmpty()) {
             HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagListString(), HashTagType.GENERAL.getTypeName());
@@ -75,7 +74,7 @@ public class PostHashTagService {
     }
 
     public Post editHashTagsToPostNotice(Post post, EditDTO updateParam) {
-        List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.getTagListString(), updateParam.getTagCategory(), updateParam.getTagStatus());
+        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(updateParam.getTagListString(), updateParam.getTagCategory(), updateParam.getTagStatus());
         Optional<HashTag> any = hashTags.stream().filter(i -> updateParam.getTagListString().equals(i.getHashTagName())).findAny();
         if (any.isEmpty()) {
             HashTag newHashTag = hashTagService.createNewHashTag(updateParam.getTagListString(), HashTagType.GENERAL.getTypeName());

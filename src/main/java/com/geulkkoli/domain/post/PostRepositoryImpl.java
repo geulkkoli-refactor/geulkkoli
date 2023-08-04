@@ -5,6 +5,7 @@ import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -64,6 +65,16 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public List<Post> allPostsMultiHashTags(Pageable pageable, List<String> hashTagNames) {
+        return queryFactory.select(post)
+                .from(post)
+                .where(post.in(multiHashTag(hashTagNames)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
     public List<Tuple> allPostsMultiHashTagsWithTuple(String hashTagName, String hashTagName2) {
         return queryFactory
                 .select(post.postId, post.title, post.postBody,hashTag.hashTagName)
@@ -92,5 +103,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .groupBy(postHashTag.post)
                 .having(hashTag.countDistinct().goe((long) hashTagNames.size()));
     }
+
 
 }

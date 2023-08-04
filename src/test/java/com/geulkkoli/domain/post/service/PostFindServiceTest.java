@@ -243,4 +243,41 @@ class PostFindServiceTest {
                 () -> assertThat(postRequestListDTOS).hasSize(3),
                 () -> assertThat(postRequestListDTOS).extracting("title").contains("title", "fsdfsdf", "sdfsdfds"));
     }
+
+    @Test
+    void findPostByTag() {
+        ///given
+        User user1 = User.builder()
+                .email("email@email.com")
+                .userName("userName")
+                .gender("gender")
+                .password("password")
+                .phoneNo("phoneNo")
+                .nickName("nickName12")
+                .build();
+
+        userRepository.save(user1);
+        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO1 = new AddDTO(1L, "title1", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO2 = new AddDTO(1L, "fsdfsdf", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO3 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO4 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO5 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        Post save = postService.savePost(addDTO, user1);
+        Post save1 = postService.savePost(addDTO1, user1);
+        Post save2 = postService.savePost(addDTO2, user1);
+        Post save3 = postService.savePost(addDTO3, user1);
+        Post save4 = postService.savePost(addDTO4, user1);
+        Post save5 = postService.savePost(addDTO5, user1);
+        Pageable pageable = PageRequest.of(0, 5);
+        HashTag 소설 = hashTagRepository.findByHashTagName("소설");
+        HashTag 완결 = hashTagRepository.findByHashTagName("완결");
+
+        //when
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable,List.of(소설, 완결));
+
+        //then
+        assertThat(postRequestListDTOS).hasSize(5);
+        assertThat(postRequestListDTOS).extracting("title").contains("title", "title1", "fsdfsdf", "sdfsdfds", "sdfsdfds");
+    }
 }

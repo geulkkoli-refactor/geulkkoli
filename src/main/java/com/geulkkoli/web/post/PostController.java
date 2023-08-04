@@ -31,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
@@ -84,6 +85,19 @@ public class PostController {
         return src;
     }
 
+
+    @GetMapping("/tag/{tag}/{subTag}")
+    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag, @PathVariable String subTag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/postList");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+
+
     /**
      * @param pageable - get 파라미터 page, size, sort 캐치
      * @return
@@ -93,18 +107,6 @@ public class PostController {
      * sort: 정렬기준
      * direction: 정렬법
      */
-    // 게시판 리스트 html로 이동
-    @GetMapping("/tag/{tag}")
-    public String postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                @PathVariable String tag, Model model) {
-        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
-        Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        model.addAttribute("page", pagingDTO);
-        return "post/postList";
-    }
-
-
     @GetMapping("/list")
     public String postList(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                            @RequestParam(defaultValue = "") String searchType,

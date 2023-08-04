@@ -28,15 +28,14 @@ public class HashTagFindService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
-
-    public List<HashTag> findHashTag(List<String> searchWords) {
-        return searchWords.stream()
-                .map(hashTagRepository::findByHashTagName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    public List<HashTag> findHashTags(final String mainTag, final String subTag) {
+        List<String> hashTagNames = new ArrayList<>();
+        hashTagNames.add(mainTag);
+        hashTagNames.add(subTag);
+        return hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
     }
 
-    public List<HashTag> findHashTags(final String category, final String status, final String generalHashTag) {
+    public List<HashTag> findHashTagByCatogoryStautsAndGeneral(final String category, final String status, final String generalHashTag) {
         List<String> hashTagNames = new ArrayList<>();
         hashTagNames.add(category);
         hashTagNames.add(status);
