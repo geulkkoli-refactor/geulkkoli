@@ -12,6 +12,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -158,10 +159,10 @@ class PostHahTagFindServiceTest {
 
 
         Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable,hashTag);
-        List<PostRequestListDTO> collect = listDTOS.get().collect(Collectors.toList());
+        List<PostRequestListDTO> findPosts = listDTOS.get().collect(Collectors.toList());
 
         //then
-        assertThat(collect).hasSize(5);
-        assertThat(collect).extracting("title").contains("test01");
+        assertThat(findPosts).hasSize(5);
+        assertThat(findPosts).have(new Condition<>(postRequestListDTO -> postRequestListDTO.getTitle().equals("test01"), "test01"));
     }
 }

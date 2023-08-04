@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Slf4j
+@Transactional
 @Service
 public class PostService {
 
@@ -31,7 +32,6 @@ public class PostService {
         this.postHashTagService = postHashTagService;
     }
 
-    @Transactional
     //게시글 상세보기만을 담당하는 메서드
     public Post showDetailPost(Long postId) {
         postRepository.updateHits(postId);
@@ -39,7 +39,6 @@ public class PostService {
                 .orElseThrow(() -> new PostNotExistException("No post found id matches:" + postId));
     }
 
-    @Transactional
     public Post savePost(AddDTO addDTO, User user) {
         Post writePost = user.writePost(addDTO);
         Post save = postRepository.save(writePost);
@@ -49,14 +48,10 @@ public class PostService {
     }
 
     /**
-     *
      * @param post
      * @param updateParam
-     * @return
-     *
-     *  postHashTagService의 hashTagSerparator가 해시태그를 찾아 List<HashTag>로 반환한다. 나
+     * @return postHashTagService의 hashTagSerparator가 해시태그를 찾아 List<HashTag>로 반환한다. 나
      */
-    @Transactional
     public Post updatePost(Post post, EditDTO updateParam) {
         post.getUser().editPost(post, updateParam);
         ArrayList<PostHashTag> postHashTags = new ArrayList<>(post.getPostHashTags());
@@ -70,11 +65,10 @@ public class PostService {
     }
 
 
-    @Transactional
     public void deletePost(Long postId, Long loggingUserId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> {
-                    PostNotExistException postNotExistException = new PostNotExistException("해당 아이디를 가진 게시글이 존재하지 않습니다: "+ postId);
+                    PostNotExistException postNotExistException = new PostNotExistException("해당 아이디를 가진 게시글이 존재하지 않습니다: " + postId);
                     log.error(postNotExistException.getMessage());
                     return postNotExistException;
                 });
@@ -95,7 +89,12 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    @Transactional
+    public void deletePost(Post post, User user) {
+        user.deletePost(post);
+        post.deleteAllPostHashTag();
+        postRepository.delete(post);
+    }
+
     public void deleteAll() {
         postRepository.deleteAll();
     }

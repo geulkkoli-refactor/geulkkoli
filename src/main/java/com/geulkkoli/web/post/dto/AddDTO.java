@@ -1,6 +1,6 @@
 package com.geulkkoli.web.post.dto;
 
-import com.geulkkoli.domain.hashtag.HashTagSign;
+import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import lombok.Builder;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;

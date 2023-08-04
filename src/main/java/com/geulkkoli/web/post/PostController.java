@@ -6,6 +6,7 @@ import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.AdminTagAccessDenied;
+import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
@@ -93,6 +94,17 @@ public class PostController {
      * direction: 정렬법
      */
     // 게시판 리스트 html로 이동
+    @GetMapping("/tag/{tag}")
+    public String postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                @PathVariable String tag, Model model) {
+        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
+        Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        model.addAttribute("page", pagingDTO);
+        return "post/postList";
+    }
+
+
     @GetMapping("/list")
     public String postList(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                            @RequestParam(defaultValue = "") String searchType,
@@ -234,7 +246,16 @@ public class PostController {
     //게시글 삭제
     @DeleteMapping("/request")
     public String deletePost(@RequestParam("postId") Long postId, @RequestParam("userNickName") String userNickName) {
-        postService.deletePost(postId, userFindService.findByNickName(userNickName).getUserId());
+        User requestUser = userFindService.findByNickName(userNickName);
+        Post post = postFindService.findById(postId);
+        if (!post.getUser().equals(requestUser)) {
+            try {
+                NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
+            } catch (NotAuthorException e) {
+                log.error(e.getMessage());
+            }
+        }
+        postService.deletePost(post, requestUser);
         return "redirect:/post/list";
     }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,7 @@
       <div class="collapse show" id="home-collapse">
         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
             <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#시')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
-            <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
+          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
             <ul class="btn-toggle-nav list-group-unstyled fw-normal pb-1 small">
                <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#로맨스')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">로맨스</a></li>
                 <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#판타지')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">판타지</a></li>

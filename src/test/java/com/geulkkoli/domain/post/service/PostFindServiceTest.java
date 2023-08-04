@@ -5,6 +5,7 @@ import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
+import com.geulkkoli.domain.post.SearchType;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
@@ -161,7 +162,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "title", "title");
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, SearchType.TITLE.getType(), "title");
 
         //then
         assertAll(

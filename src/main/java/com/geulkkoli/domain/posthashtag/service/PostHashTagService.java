@@ -37,7 +37,7 @@ public class PostHashTagService {
         List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
         log.info("hashTags: {}", hashTags);
         Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty()) {
+        if (any.isEmpty() && !addDTO.getTagListString().isEmpty()) {
             HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagListString(), HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
@@ -50,7 +50,7 @@ public class PostHashTagService {
     public Post editHashTagsToPost(Post post, EditDTO updateParam) {
         List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagListString(), updateParam.tageCateGory(), updateParam.tagStatus());
         Optional<HashTag> any = hashTags.stream().filter(i -> updateParam.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty()) {
+        if (any.isEmpty() &&!updateParam.getTagListString().isEmpty()) {
             HashTag newHashTag = hashTagService.createNewHashTag(updateParam.getTagListString(), HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
             postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));

@@ -1,8 +1,6 @@
 package com.geulkkoli.web.post.dto;
 
-import com.geulkkoli.domain.hashtag.HashTag;
-import com.geulkkoli.domain.hashtag.HashTagSign;
-import com.geulkkoli.domain.hashtag.HashTagType;
+import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
 import lombok.Builder;
@@ -14,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 public class EditDTO {

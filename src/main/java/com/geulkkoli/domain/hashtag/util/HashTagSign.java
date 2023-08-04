@@ -1,4 +1,4 @@
-package com.geulkkoli.domain.hashtag;
+package com.geulkkoli.domain.hashtag.util;
 
 public enum HashTagSign {
     GENERAL("#");

@@ -1,5 +1,6 @@
 package com.geulkkoli.domain.post;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -59,6 +60,17 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         return queryFactory.selectFrom(post)
                 .where(post.in(subquery))
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> allPostsMultiHashTagsWithTuple(String hashTagName, String hashTagName2) {
+        return queryFactory
+                .select(post.postId, post.title, post.postBody,hashTag.hashTagName)
+                .from(postHashTag)
+                .join(hashTag).on(postHashTag.hashTag.eq(hashTag))
+                .join(post).on(postHashTag.post.eq(post))
+                .where(hashTag.hashTagName.eq(hashTagName).or(hashTag.hashTagName.eq(hashTagName2)))
                 .fetch();
     }
 
