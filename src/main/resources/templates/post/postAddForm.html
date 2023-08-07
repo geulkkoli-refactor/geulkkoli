@@ -232,9 +232,8 @@
         codeMirror: CodeMirror,
         katex: katex,
     });
-    document.getElementById('submit2').addEventListener('click', function() {
+    document.getElementById('submit').addEventListener('click', function() {
         const element = document.querySelector('.sun-editor-editable');
-        console.log(element.innerHTML);
         document.getElementById('editor_classic').innerHTML = element.innerHTML;
     });
 </script>
