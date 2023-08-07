@@ -54,8 +54,11 @@ public class PostService {
      */
     public Post updatePost(Post post, EditDTO updateParam) {
         post.getUser().editPost(post, updateParam);
-        postHashTagService.editHashTagsToPost(post, updateParam);
-        return postRepository.save(post);
+        if (updateParam.getTags().isEmpty()) {
+            post.deleteAllPostHashTag();
+            return postRepository.save(post);
+        }
+       return postHashTagService.editHashTagsToPost(post, updateParam);
     }
 
 

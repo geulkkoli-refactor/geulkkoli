@@ -5,8 +5,6 @@ import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
-import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
-import com.geulkkoli.domain.topic.service.TopicService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDate;
 
 @Controller
 @RequiredArgsConstructor

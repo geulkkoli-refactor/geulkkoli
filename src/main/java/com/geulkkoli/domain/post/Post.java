@@ -5,7 +5,6 @@ import com.geulkkoli.domain.comment.Comments;
 import com.geulkkoli.domain.favorites.Favorites;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
-import com.geulkkoli.domain.user.NoSuchCommnetException;
 import com.geulkkoli.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -125,11 +124,13 @@ public class Post extends ConfigDate {
         return deletePostHashTag;
     }
 
-    public void deleteAllPostHashTag() {
+    public List<PostHashTag> deleteAllPostHashTag() {
         for (PostHashTag postHashTag : postHashTags) {
             postHashTag.getHashTag().getPostHashTags().remove(postHashTag);
         }
         postHashTags.clear();
+
+        return this.postHashTags;
     }
 
     @Override

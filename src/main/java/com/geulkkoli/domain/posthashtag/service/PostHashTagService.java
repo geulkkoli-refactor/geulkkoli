@@ -65,10 +65,7 @@ public class PostHashTagService {
      */
     public Post editHashTagsToPost(Post post, EditDTO updateParam) {
         log.info("updateParam: {}", updateParam.getTags());
-        if (updateParam.getTags().isEmpty()) {
-            post.deleteAllPostHashTag();
-            return post;
-        }
+
         List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagNames());
         List<String> findHashTagNames = hashTags.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
         List<String> newHashTagNames = updateParam.tagNames().stream().filter(name -> !findHashTagNames.contains(name)).collect(Collectors.toList());

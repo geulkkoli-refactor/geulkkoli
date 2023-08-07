@@ -132,6 +132,7 @@ class PostServiceTest {
         assertAll(() -> assertThat(one.getTitle()).isEqualTo("title update"),
                 () -> assertThat(one.getPostBody()).isEqualTo("body update"),
                 () -> assertThat(one.getNickName()).isEqualTo("nick update"),
+                () -> assertThat(one.getPostHashTags()).hasSize(2),
                 () -> assertThat(one.getPostHashTags().get(0).getHashTag().getHashTagName()).isEqualTo("판타지"),
                 () -> assertThat(one.getPostHashTags().get(1).getHashTag().getHashTagName()).isEqualTo("완결"));
     }
