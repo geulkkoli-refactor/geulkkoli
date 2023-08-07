@@ -85,7 +85,7 @@ public class PostController {
         return src;
     }
 
-
+    //사이드 네비게이션의 목록을 누를 시 진입점
     @GetMapping("/tag/{tag}/{subTag}")
     public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                       @PathVariable String tag, @PathVariable String subTag) {
@@ -112,6 +112,7 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
+        //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
             Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
@@ -161,7 +162,9 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords,
                            @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
-        PageDTO postPage = PageDTO.toDTO(postService.showDetailPost(postId));
+        Post post = postService.showDetailPost(postId);
+        log.info("게시글 해시태그 변경 후 조회: {}", post.getPostHashTags());
+        PageDTO postPage = PageDTO.toDTO(post);
         User authorUser = userFindService.findById(postPage.getAuthorId());
         UserProfileDTO userProfile = UserProfileDTO.toDTO(authorUser);
 
@@ -221,22 +224,15 @@ public class PostController {
                            @RequestParam(defaultValue = "0") String page,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return "/post/postEditForm";
-            }
-            Post willUpdate = postFindService.findById(postId);
-            postService.updatePost(willUpdate, updateParam);
-        } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("tagCategory", "Tag.Required", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        } catch (AdminTagAccessDenied e) {
-            bindingResult.rejectValue("tagListString", "Tag.Denied", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        }
+
+
         if (bindingResult.hasErrors()) {
             return "post/postEditForm";
         }
+
+        Post willUpdate = postFindService.findById(postId);
+        postService.updatePost(willUpdate, updateParam);
+
         redirectAttributes.addAttribute("updateStatus", true);
         redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("searchType", searchType);

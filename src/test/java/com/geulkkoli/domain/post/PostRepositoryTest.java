@@ -145,7 +145,7 @@ class PostRepositoryTest {
                 .nickName("점심뭐먹지").build());
         Post savePost = postRepository.save(post);
 
-        Post modifyPost = user.editPost(savePost, new EditDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "#수정test", "시", "연재중"));
+        Post modifyPost = user.editPost(savePost, new EditDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "수정 test"));
 
         postRepository.save(modifyPost);
 

@@ -52,12 +52,12 @@ public class PageDTO {
     private List<CommentListDTO> commentList;
 
     @Setter
-    private List<HashTag> tagList = new ArrayList<>();
+    private List<String> tagList;
 
     @Builder
     public PageDTO(Long postId, Long authorId, String title,
                    String postBody, String nickName, Set<Comments> comments,
-                   String date, int favoriteCount, List<PostHashTag> tagList) {
+                   String date, int favoriteCount, List<String> tagList) {
         this.postId = postId;
         this.authorId = authorId;
         this.title = title;
@@ -66,12 +66,10 @@ public class PageDTO {
         this.commentList = comments.stream().map(CommentListDTO::toDTO).collect(Collectors.toList());
         this.date = date;
         this.favoriteCount = favoriteCount;
-        for(PostHashTag list : tagList) {
-            this.tagList.add(list.getHashTag());
-        }
+        this.tagList = tagList;
     }
 
-    public static PageDTO toDTO (Post post) {
+    public static PageDTO toDTO(Post post) {
         return PageDTO.builder()
                 .postId(post.getPostId())
                 .authorId(post.getUser().getUserId())
@@ -81,7 +79,7 @@ public class PageDTO {
                 .comments(post.getComments())
                 .date(String.valueOf(post.getUpdatedAt()))
                 .favoriteCount(post.getFavorites().size())
-                .tagList(post.getPostHashTags())
+                .tagList(post.getPostHashTags().stream().map(i -> i.getHashTag().getHashTagName()).collect(Collectors.toList()))
                 .build();
     }
 }

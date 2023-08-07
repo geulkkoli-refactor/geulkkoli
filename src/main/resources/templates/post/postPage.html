@@ -79,7 +79,7 @@
         <table style="border: 1px solid #000000;
                       border-collapse: collapse;">
             <td style="border: 1px solid #000000" id="postHashTag" th:each="hashTag : ${post.getTagList()}">
-                <p style="padding: 10px;" th:text="${hashTag.getHashTagName()}">tagName</p>
+                <p style="padding: 10px;" th:text="${hashTag}">tagName</p>
             </td>
         </table>
     </div>

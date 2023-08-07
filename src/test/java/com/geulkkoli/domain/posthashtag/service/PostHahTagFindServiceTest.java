@@ -140,9 +140,7 @@ class PostHahTagFindServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("신과 함께")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tagList("신과 함께 소설 완결")
                 .nickName("test")
                 .authorId(1L)
                 .build();

@@ -35,6 +35,11 @@ public class HashTagFindService {
         return hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
     }
 
+    public List<HashTag> findHashTags(List<String> hashTagNames) {
+        return hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
+    }
+
+
     public List<HashTag> findHashTagByCatogoryStautsAndGeneral(final String category, final String status, final String generalHashTag) {
         List<String> hashTagNames = new ArrayList<>();
         hashTagNames.add(category);

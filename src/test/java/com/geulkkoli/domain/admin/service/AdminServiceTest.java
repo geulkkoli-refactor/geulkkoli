@@ -218,14 +218,13 @@ class AdminServiceImplTest {
         assertThat(postRepository.findById(post.getPostId())).isEmpty();
     }
 
+    @DisplayName("공지사항을 저장한다")
     @Test
     void saveNotice() {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagListString("이벤트")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tagList("이벤트 소설 완결")
                 .nickName("점심뭐먹지").build();
 
 
@@ -238,23 +237,21 @@ class AdminServiceImplTest {
         );
     }
 
+    @DisplayName("공지사항을 수정한다")
     @Test
     void updateNotice() {
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagListString("이벤트")
-                .tagCategory("소설")
-                .tagStatus("완결")
-                .nickName("점심뭐먹지").build();
+                .tagList("이벤트 완결")
+                .nickName("점심뭐먹지")
+                .build();
 
         Post post = adminService.saveNotice(addDTO, user);
         EditDTO editDTO = EditDTO.builder()
                 .title("testTitle1")
                 .postBody("test")
-                .tagCategory("소설")
-                .tagListString("이벤트")
-                .tagStatus("완결")
+                .tags("이벤트 구독 소설")
                 .nickName("밥뭐먹지")
                 .build();
         Post editPost = adminService.updateNotice(post.getPostId(), editDTO);
@@ -262,8 +259,7 @@ class AdminServiceImplTest {
         assertAll(
                 () -> assertThat(editPost.getTitle()).isEqualTo("testTitle1"),
                 () -> assertThat(editPost.getPostBody()).isEqualTo("test"),
-                () -> assertThat(editPost.getPostHashTags()).hasSize(3)
-        );
+                () -> assertThat(editPost.getPostHashTags()).hasSize(3));
 
     }
 

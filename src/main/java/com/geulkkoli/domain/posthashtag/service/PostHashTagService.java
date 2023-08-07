@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,18 +27,26 @@ public class PostHashTagService {
     private final PostHashTagRepository postHashTagRepository;
     private final HashTagService hashTagService;
 
+    /**
+     * 게시글에 해시태그를 추가하는 메서드
+     *
+     * @param post
+     * @param addDTO
+     * @return Post
+     * @see HashTagFindService#findHashTags(List)
+     * @see HashTagService#createNewHashTag(String, String)
+     * @see Post#addMultiHashTags(List)
+     * @see PostHashTagRepository#saveAll(Iterable)
+     */
     public Post addHashTagsToPost(Post post, AddDTO addDTO) {
-        if (addDTO.getTagListString().isEmpty()) {
-            List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
-            postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
+        if (addDTO.getTagList().isEmpty()) {
             return post;
         }
-
-        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.tagListString(), addDTO.tageCateGory(), addDTO.tagStatus());
+        List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagLists());
         log.info("hashTags: {}", hashTags);
-        Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty() && !addDTO.getTagListString().isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagListString(), HashTagType.GENERAL.getTypeName());
+        Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagList().equals(i.getHashTagName())).findAny();
+        if (any.isEmpty() && !addDTO.getTagList().isEmpty()) {
+            HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagList(), HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
             return post;
@@ -46,44 +55,37 @@ public class PostHashTagService {
         return post;
     }
 
+    /**
+     * 게시글에 해시태그를 수정하는 메서드
+     * @param post
+     * @param updateParam
+     * @return Post
+     * @see HashTagFindService#findHashTags(List)
+     * @see HashTagService#createNewHashTag(String, String)
+     */
     public Post editHashTagsToPost(Post post, EditDTO updateParam) {
-        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(updateParam.tagListString(), updateParam.tageCateGory(), updateParam.tagStatus());
-        Optional<HashTag> any = hashTags.stream().filter(i -> updateParam.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty() &&!updateParam.getTagListString().isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(updateParam.getTagListString(), HashTagType.GENERAL.getTypeName());
-            hashTags.add(newHashTag);
+        log.info("updateParam: {}", updateParam.getTags());
+        if (updateParam.getTags().isEmpty()) {
+            post.deleteAllPostHashTag();
+            return post;
+        }
+        List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagNames());
+        List<String> findHashTagNames = hashTags.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
+        List<String> newHashTagNames = updateParam.tagNames().stream().filter(name -> !findHashTagNames.contains(name)).collect(Collectors.toList());
+        if (newHashTagNames.isEmpty()) {
+            log.info("hashTags: {}", hashTags);
+            postHashTagRepository.deleteAll(post.getPostHashTags());
             postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
+            log.info("postHashTags: {}", post.getPostHashTags());
             return post;
         }
-        postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
-        return post;
-    }
-
-    public Post addHashTagsToPostNotice(Post post, AddDTO addDTO) {
-        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(addDTO.getTagListString(), addDTO.getTagCategory(), addDTO.getTagStatus());
-        Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagListString(), HashTagType.GENERAL.getTypeName());
+        newHashTagNames.forEach(tagName -> {
+            HashTag newHashTag = hashTagService.createNewHashTag(tagName, HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
-            postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
-            return post;
-        }
+        });
 
-        postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
+        log.info("hashTags: {}", hashTags);
+        post.editMultiHashTags(hashTags);
         return post;
     }
-
-    public Post editHashTagsToPostNotice(Post post, EditDTO updateParam) {
-        List<HashTag> hashTags = hashTagFindService.findHashTagByCatogoryStautsAndGeneral(updateParam.getTagListString(), updateParam.getTagCategory(), updateParam.getTagStatus());
-        Optional<HashTag> any = hashTags.stream().filter(i -> updateParam.getTagListString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(updateParam.getTagListString(), HashTagType.GENERAL.getTypeName());
-            hashTags.add(newHashTag);
-            postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
-            return post;
-        }
-        postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
-        return post;
-    }
-
 }

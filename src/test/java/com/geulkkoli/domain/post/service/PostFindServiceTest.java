@@ -87,7 +87,13 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("testTitle")
+                .tagList("소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
         Post save = postService.savePost(addDTO, user1);
 
         Post post = postFindService.findById(save.getPostId());
@@ -153,8 +159,20 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO1 = new AddDTO(1L, "title1", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
+        AddDTO addDTO1 = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
         Post save = postService.savePost(addDTO, user1);
 
         Post save1 = postService.savePost(addDTO1, user1);
@@ -185,10 +203,34 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO1 = new AddDTO(1L, "title1", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO2 = new AddDTO(1L, "fsdfsdf", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO3 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
+        AddDTO addDTO1 = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
+        AddDTO addDTO2 = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
+        AddDTO addDTO3 = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
 
 
         Post save = postService.savePost(addDTO, user1);
@@ -209,7 +251,7 @@ class PostFindServiceTest {
 
     @DisplayName("다양한 검색어와 검색 타입으로 검색하기")
     @ParameterizedTest
-    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body","멀티 해시태그, 소설#완결"}, delimiter = ',')
+    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body", "멀티 해시태그, 소설#완결"}, delimiter = ',')
     void searchPostsList(String searchType, String searchWords) {
         //given
         User user1 = User.builder()
@@ -223,10 +265,42 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO1 = new AddDTO(1L, "ㅁㄷ", "ㅇㄹㅁ", "ㅁㄹ", "testTag", "소설", "연재");
-        AddDTO addDTO2 = new AddDTO(1L, "fsdfsdf", "body sdfsd", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO3 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .build();
+        AddDTO addDTO1 = AddDTO.builder()
+                .title("ㅁㄷ")
+                .tagList("testTag 소설 연재")
+                .postBody("ㅇㄹㅁ")
+                .nickName("ㅁㄹ")
+                .build();
+        AddDTO.builder()
+                .title("fsdfsdf")
+                .tagList("testTag 소설 완결")
+                .postBody("body sdfsd")
+                .nickName("nick")
+                .build();
+        AddDTO addDTO2 = AddDTO.builder()
+                .title("fsdfsdf")
+                .tagList("testTag 소설 완결")
+                .postBody("body sdfsd")
+                .nickName("nick")
+                .build();
+        AddDTO.builder()
+                .title("sdfsdfds")
+                .tagList("testTag 소설 완결")
+                .postBody("body")
+                .nickName("nick")
+                .build();
+        AddDTO addDTO3 = AddDTO.builder()
+                .title("sdfsdfds")
+                .tagList("testTag 소설 완결")
+                .postBody("body")
+                .nickName("nick")
+                .build();
 
 
         Post save = postService.savePost(addDTO, user1);
@@ -244,6 +318,7 @@ class PostFindServiceTest {
                 () -> assertThat(postRequestListDTOS).extracting("title").contains("title", "fsdfsdf", "sdfsdfds"));
     }
 
+    @DisplayName("멀티 해시태그로 검색하기")
     @Test
     void findPostByTag() {
         ///given
@@ -257,27 +332,41 @@ class PostFindServiceTest {
                 .build();
 
         userRepository.save(user1);
-        AddDTO addDTO = new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO1 = new AddDTO(1L, "title1", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO2 = new AddDTO(1L, "fsdfsdf", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO3 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO4 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
-        AddDTO addDTO5 = new AddDTO(1L, "sdfsdfds", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("test Title1")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .authorId(user1.getUserId())
+                .build();
+        AddDTO addDTO1 = AddDTO.builder()
+                .title("test Title2")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .authorId(user1.getUserId())
+                .build();
+        AddDTO addDTO2 = AddDTO.builder()
+                .title("test Title3")
+                .tagList("testTag 소설 완결")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .authorId(user1.getUserId())
+                .build();
+
+
         Post save = postService.savePost(addDTO, user1);
         Post save1 = postService.savePost(addDTO1, user1);
         Post save2 = postService.savePost(addDTO2, user1);
-        Post save3 = postService.savePost(addDTO3, user1);
-        Post save4 = postService.savePost(addDTO4, user1);
-        Post save5 = postService.savePost(addDTO5, user1);
         Pageable pageable = PageRequest.of(0, 5);
         HashTag 소설 = hashTagRepository.findByHashTagName("소설");
         HashTag 완결 = hashTagRepository.findByHashTagName("완결");
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable,List.of(소설, 완결));
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, List.of(소설, 완결));
 
         //then
-        assertThat(postRequestListDTOS).hasSize(5);
-        assertThat(postRequestListDTOS).extracting("title").contains("title", "title1", "fsdfsdf", "sdfsdfds", "sdfsdfds");
+        assertThat(postRequestListDTOS).hasSize(3);
+        assertThat(postRequestListDTOS).extracting("title").contains("test Title1", "test Title2", "test Title3");
     }
 }

@@ -148,4 +148,29 @@ class PostTest {
                 () -> assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("test category2"),
                 () -> assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("test category3"));
     }
+
+    @DisplayName("해시태그를 여러개 추가한다.")
+    @Test
+    void editMultiHashTags() {
+        Post post = Post.builder()
+                .nickName("나")
+                .postBody("나나")
+                .title("테스트").build();
+        HashTag category = new HashTag("test", HashTagType.GENERAL);
+        HashTag category2 = new HashTag("test2", HashTagType.GENERAL);
+        HashTag category3 = new HashTag("test3", HashTagType.GENERAL);
+        List<HashTag> hashTags = List.of(category, category2, category3);
+        List<PostHashTag> postHashTags = post.addMultiHashTags(hashTags);
+        List<HashTag> newHashtags = List.of(new HashTag("치킨", HashTagType.CATEGORY),
+                new HashTag("마라탕", HashTagType.CATEGORY),
+                new HashTag("누들국스", HashTagType.CATEGORY));
+         post.editMultiHashTags(newHashtags);
+        List<PostHashTag> editPostHahTags = post.getPostHashTags();
+
+        assertAll(() -> assertThat(editPostHahTags).hasSize(3),
+                () -> assertThat(editPostHahTags).extracting("hashTag").extracting("hashTagName").contains("치킨"),
+                () -> assertThat(editPostHahTags).extracting("hashTag").extracting("hashTagName").contains("마라탕"),
+                () -> assertThat(editPostHahTags).extracting("hashTag").extracting("hashTagName").contains("누들국스"));
+
+    }
 }
