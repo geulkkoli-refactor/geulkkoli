@@ -3,13 +3,15 @@ package com.geulkkoli.web.post;
 import com.geulkkoli.application.user.CustomAuthenticationPrinciple;
 import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
+import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.AdminTagAccessDenied;
+import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
-import com.geulkkoli.domain.post.service.SearchType;
+import com.geulkkoli.domain.post.SearchType;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
-import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
@@ -29,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
@@ -38,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -51,9 +55,9 @@ public class PostController {
     private final PostFindService postFindService;
     private final UserFindService userFindService;
     private final FavoriteService favoriteService;
-    private final PostHashTagService postHashTagService;
     private final PostHahTagFindService postHashTagFindService;
     private final FollowFindService followFindService;
+    private final HashTagFindService hashTagFindService;
     @Value("${comm.uploadPath}")
     private String uploadPath;
 
@@ -81,6 +85,19 @@ public class PostController {
         return src;
     }
 
+    //사이드 네비게이션의 목록을 누를 시 진입점
+    @GetMapping("/tag/{tag}/{subTag}")
+    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag, @PathVariable String subTag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/postList");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+
+
     /**
      * @param pageable - get 파라미터 page, size, sort 캐치
      * @return
@@ -90,14 +107,15 @@ public class PostController {
      * sort: 정렬기준
      * direction: 정렬법
      */
-    // 게시판 리스트 html로 이동
     @GetMapping("/list")
     public String postList(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords, Model model) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
+        //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, searchWords);
+            List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
             model.addAttribute("page", pagingDTO);
             searchDefault(model, searchType, searchWords);
@@ -126,17 +144,11 @@ public class PostController {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
         log.info("addDTO: {}", post);
         User user = userFindService.findById(post.getAuthorId());
-        try {
-            if (bindingResult.hasErrors()) {
-                return "post/postAddForm";
-            }
-        } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("tagCategory", "Tag.Required", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        } catch (AdminTagAccessDenied e) {
-            bindingResult.rejectValue("tagListString", "Tag.Denied", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
+
+        if (bindingResult.hasErrors()) {
+            return "post/postAddForm";
         }
+
         long postId = postService.savePost(post, user).getPostId();
         redirectAttributes.addAttribute("postId", postId);
         response.addCookie(new Cookie(URLEncoder.encode(post.getNickName(), "UTF-8"), "done"));
@@ -150,7 +162,9 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords,
                            @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
-        PageDTO postPage = PageDTO.toDTO(postService.showDetailPost(postId));
+        Post post = postService.showDetailPost(postId);
+        log.info("게시글 해시태그 변경 후 조회: {}", post.getPostHashTags());
+        PageDTO postPage = PageDTO.toDTO(post);
         User authorUser = userFindService.findById(postPage.getAuthorId());
         UserProfileDTO userProfile = UserProfileDTO.toDTO(authorUser);
 
@@ -210,22 +224,15 @@ public class PostController {
                            @RequestParam(defaultValue = "0") String page,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return "/post/postEditForm";
-            }
-            Post willUpdate = postFindService.findById(postId);
-            postService.updatePost(willUpdate, updateParam);
-        } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("tagCategory", "Tag.Required", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        } catch (AdminTagAccessDenied e) {
-            bindingResult.rejectValue("tagListString", "Tag.Denied", new String[]{e.getMessage()}, e.toString());
-            e.getStackTrace();
-        }
+
+
         if (bindingResult.hasErrors()) {
             return "post/postEditForm";
         }
+
+        Post willUpdate = postFindService.findById(postId);
+        postService.updatePost(willUpdate, updateParam);
+
         redirectAttributes.addAttribute("updateStatus", true);
         redirectAttributes.addAttribute("page", page);
         redirectAttributes.addAttribute("searchType", searchType);
@@ -237,7 +244,16 @@ public class PostController {
     //게시글 삭제
     @DeleteMapping("/request")
     public String deletePost(@RequestParam("postId") Long postId, @RequestParam("userNickName") String userNickName) {
-        postService.deletePost(postId, userFindService.findByNickName(userNickName).getUserId());
+        User requestUser = userFindService.findByNickName(userNickName);
+        Post post = postFindService.findById(postId);
+        if (!post.getUser().equals(requestUser)) {
+            try {
+                NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
+            } catch (NotAuthorException e) {
+                log.error(e.getMessage());
+            }
+        }
+        postService.deletePost(post, requestUser);
         return "redirect:/post/list";
     }
 

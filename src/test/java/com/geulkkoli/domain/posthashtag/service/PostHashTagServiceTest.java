@@ -42,8 +42,7 @@ class PostHashTagServiceTest {
     private UserRepository userRepository;
     @Autowired
     private HashTagRepository hashTagRepository;
-    @Autowired
-    private PostHashTagRepository postHashTagRepository;
+
 
 
     private User user;
@@ -89,9 +88,7 @@ class PostHashTagServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("새로운 해시태그")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tagList("해시태그 소설 완결")
                 .nickName("test")
                 .authorId(1L)
                 .build();
@@ -102,7 +99,7 @@ class PostHashTagServiceTest {
         Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
 
         assertThat(post.getPostHashTags()).hasSize(3);
-        assertThat(post.getPostHashTags().get(post.getPostHashTags().size() - 1)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("새로운 해시태그"), "새로운 해시태그"));
+        assertThat(post.getPostHashTags().get(post.getPostHashTags().size() - 1)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("해시태그"), "새로운 해시태그"));
 
     }
 
@@ -112,9 +109,7 @@ class PostHashTagServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("")
-                .tagCategory("")
-                .tagStatus("")
+                .tagList("")
                 .nickName("test")
                 .authorId(1L)
                 .build();
@@ -125,7 +120,6 @@ class PostHashTagServiceTest {
         Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
 
         assertThat(post.getPostHashTags()).isEmpty();
-
     }
 
     @DisplayName("글 작성 후 해시태그를 바꿀 수 있다.")
@@ -134,9 +128,7 @@ class PostHashTagServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("신과 함께")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tagList("신과함께 소설 완결")
                 .nickName("test")
                 .authorId(1L)
                 .build();
@@ -148,69 +140,15 @@ class PostHashTagServiceTest {
         EditDTO editDTO = EditDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("판타지")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tags("완결")
                 .nickName("test")
                 .postId(post.getPostId())
                 .build();
 
         Post editPost = postHashTagService.editHashTagsToPost(post, editDTO);
 
-        assertThat(editPost.getPostHashTags()).hasSize(3);
-        assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fantasy.getHashTagName()), "판타지"));
+        assertThat(editPost.getPostHashTags()).hasSize(1);
+        assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("완결"), "판타지"));
     }
 
-    @DisplayName("공지글 작성 후 해시태그를 추가할 수 있다.")
-    @Test
-    void addHashTagsToPostNotice() {
-        AddDTO addDTO = AddDTO.builder()
-                .title("test01")
-                .postBody("TestingCode01")
-                .tagListString("공지글")
-                .tagCategory("소설")
-                .tagStatus("완결")
-                .nickName("test")
-                .authorId(1L)
-                .build();
-
-        Post post1 = user.writePost(addDTO);
-        postRepository.save(post1);
-        Post post = postHashTagService.addHashTagsToPostNotice(post1, addDTO);
-
-        assertThat(post.getPostHashTags()).hasSize(3);
-        assertThat(post.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(notice.getHashTagName()), "공지글"));
-    }
-
-    @Test
-    void editHashTagsToPostNotice() {
-        AddDTO addDTO = AddDTO.builder()
-                .title("test01")
-                .postBody("TestingCode01")
-                .tagListString("판타지")
-                .tagCategory("소설")
-                .tagStatus("완결")
-                .nickName("test")
-                .authorId(1L)
-                .build();
-
-        Post post1 = user.writePost(addDTO);
-        postRepository.save(post1);
-        Post post = postHashTagService.addHashTagsToPostNotice(post1, addDTO);
-
-        EditDTO editDTO = EditDTO.builder()
-                .title("test01")
-                .postBody("TestingCode01")
-                .tagListString("판게아")
-                .tagCategory("소설")
-                .tagStatus("완결")
-                .nickName("test")
-                .postId(post.getPostId())
-                .build();
-
-        Post editPost = postHashTagService.editHashTagsToPostNotice(post, editDTO);
-
-        assertThat(editPost.getPostHashTags()).hasSize(3);
-        assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains(fangaia.getHashTagName()), "판게아"));
-    }
 }

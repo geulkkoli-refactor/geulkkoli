@@ -81,20 +81,15 @@ public class AdminServiceImpl {
 
     public Post saveNotice(AddDTO addDto, User user) {
         Post save = postRepository.save(user.writePost(addDto));
-        log.info("addDto.getTagListString() = " + addDto.getTagListString());
-        postHashTagService.addHashTagsToPostNotice(save, addDto);
+        log.info("addDto.getTagListString() = " + addDto.getTagList());
+        postHashTagService.addHashTagsToPost(save, addDto);
         return save;
     }
 
     public Post updateNotice(Long postId, EditDTO updateParam) {
         Post post = postFindService.findById(postId);
-        ArrayList<PostHashTag> postHashTags = new ArrayList<>(post.getPostHashTags());
-
-        for (PostHashTag postHashTag : postHashTags) {
-            post.deletePostHashTag(postHashTag);
-        }
-        postHashTagService.editHashTagsToPostNotice(post, updateParam);
-        return postService.updatePost(post, updateParam);
+        postService.updatePost(post, updateParam);
+        return postHashTagService.editHashTagsToPost(post, updateParam);
     }
 
     public List<DailyTopicDto> findWeeklyTopic() {

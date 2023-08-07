@@ -130,6 +130,28 @@ class PostHashTagRepositoryTest {
                 () -> assertThat(postHashTagList).contains(save02));
     }
 
+    @Test
+    void findPostAllByHashTagNames(){
+        HashTag 소설 = creatHashTag("소설", HashTagType.GENERAL);
+        HashTag 로맨스 = creatHashTag("로맨스", HashTagType.GENERAL);
+        HashTag 가로 = creatHashTag("가로", HashTagType.GENERAL);
+        User user = creatUser("test@naver.com", "test", "test", "00000000000", "123", "male");
+        Post post01 = createPost(user, "testTitle01", "test postbody 01");
+        Post post02 = createPost(user, "testTitle02", "test postbody 02");
+        Post post03 = createPost(user, "testTitle03", "test postbody 03");
+        createPostHashTag(post01, 소설);
+        createPostHashTag(post01, 로맨스);
+        createPostHashTag(post02, 소설);
+        createPostHashTag(post02, 가로);
+        createPostHashTag(post03, 소설);
+        createPostHashTag(post03, 로맨스);
+
+        List<Post> posts = postHashTagRepository.findAllByHashTagNames(List.of("소설", "로맨스"));
+
+        assertThat(posts).hasSize(2);
+        assertThat(posts).contains(post01, post03);
+    }
+
     private PostHashTag createPostHashTag(Post post, HashTag hashTag) {
         return post.addHashTag(hashTag);
     }

@@ -29,7 +29,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AjaxBadResponseHandler {
 
-    @Autowired
     MessageSource messageSource;
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -39,7 +38,7 @@ public class AjaxBadResponseHandler {
 
         for (ObjectError error : methodArgumentNotValidException.getBindingResult().getAllErrors()) {
             try {
-                validMessage.add(messageSource.getMessage(error.getCodes()[0], error.getArguments(), LocaleContextHolder.getLocale()));
+                validMessage.add(messageSource.getMessage(Objects.requireNonNull(error.getCodes())[0], error.getArguments(), LocaleContextHolder.getLocale()));
             } catch (Exception e) {
                 validMessage.add(error.getDefaultMessage());
             }

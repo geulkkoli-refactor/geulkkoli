@@ -30,13 +30,15 @@ import java.util.Optional;
 public class LoginFailureHandler implements  AuthenticationFailureHandler {
 
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
+    public LoginFailureHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("exception = {}", exception);
+        log.error("exception message = {}", exception.getMessage());
         String errorMessage;
         if (exception instanceof BadCredentialsException) {  // 비밀번호 틀렸을 때
             errorMessage = messageSource.getMessage("error.BadCredentialsException", null, Locale.KOREA);

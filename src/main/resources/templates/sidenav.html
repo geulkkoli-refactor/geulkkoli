@@ -6,82 +6,89 @@
 </head>
 <body>
 <div th:fragment="nav" class="flex-shrink-0 p-3" style="width: 280px;">
-  <a href="/" class="d-flex align-items-center pb-0 mb-3 link-body-emphasis text-decoration-none border-bottom" style="">
-    <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-    <span class="fs-4fw-semibold">Home</span>
-  </a>
-  <ul class="list-unstyled ps-0">
-    <li class="mb-1">
-      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
-        단편
-      </button>
+    <a href="/" class="d-flex align-items-center pb-0 mb-3 link-body-emphasis text-decoration-none border-bottom"
+       style="">
+        <svg class="bi pe-none me-2" width="30" height="24">
+            <use xlink:href="#bootstrap"></use>
+        </svg>
+        <span class="fs-4fw-semibold">Home</span>
+    </a>
+    <ul class="list-unstyled ps-0">
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#home-collapse" aria-expanded="true">
+                단편
+            </button>
 
-      <div class="collapse show" id="home-collapse">
-        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#시')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
-            <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
-            <ul class="btn-toggle-nav list-group-unstyled fw-normal pb-1 small">
-               <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#로맨스')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">로맨스</a></li>
-                <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#판타지')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">판타지</a></li>
-                <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#추리')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">추리</a></li>
-                <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#공포')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">공포</a></li>
-                <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='단편#소설#스릴러')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">스릴러</a></li>
-            </ul>
-          </li>
-          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='#단편#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
-        </ul>
-      </div>
-    </li>
-    <li class="mb-1">
-      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
-        연재
-      </button>
-      <div class="collapse show" id="dashboard-collapse" style="">
-        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#시')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
-          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
-            <ul class="btn-toggle-nav list-group-unstyled fw-normal pb-1 small">
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설#로맨스')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">로맨스</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설#판타지')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">판타지</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설#추리')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">추리</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설#공포')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">공포</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='연재#소설#스릴러')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">스릴러</a></li>
-            </ul>
-            <li><a th:href="@{/post/list(searchType='해시태그',searchWords='#연재#수필')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
-        </ul>
-      </div>
-    </li>
-    <li class="mb-1">
-      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="true">
-        완결
-      </button>
-      <div class="collapse show" id="orders-collapse" style="">
-        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#시')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
-          <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
-            <ul class="btn-toggle-nav list-group-unstyled fw-normal pb-1 small">
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설#로맨스')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">로맨스</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설#판타지')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">판타지</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설#추리')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">추리</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설#공포')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">공포</a></li>
-              <li><a th:href="@{/post/list(searchType='멀티 해시태그',searchWords='완결#소설#스릴러')}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">스릴러</a></li>
-            </ul>
-            <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
-        </ul>
-      </div>
-    </li>
-    <li class="border-top my-3"></li>
-    <li class="mb-1">
-      <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
-        공지사항
-      </button>
-      <div class="collapse show" id="account-collapse" style="">
-        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-          <li><a th:href="@{/post/list(searchType='해시태그',searchWords='공지글')}" class="link-dark d-inline-flex text-decoration-none rounded">New...</a></li>
-        </ul>
-      </div>
-    </li>
-  </ul>
+            <div class="collapse show" id="home-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                    <li><a th:attr="data-url='/post/tag/단편/시'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">시
+                    </a></li>
+                    <li><a  th:attr="data-url='/post/tag/단편/소설'"
+                            onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
+                    </li>
+                    <li><a th:attr="data-url='/post/tag/단편/수필'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#dashboard-collapse" aria-expanded="true">
+                연재
+            </button>
+            <div class="collapse show" id="dashboard-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a th:attr="data-url='/post/tag/연재/시'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
+                    <li><a th:attr="data-url='/post/tag/연재/소설'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
+                    <li><a th:attr="data-url='/post/tag/연재/수필'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#orders-collapse" aria-expanded="true">
+                완결
+            </button>
+            <div class="collapse show" id="orders-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a th:attr="data-url='/post/tag/완결/시'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">시</a></li>
+                    <li><a th:attr="data-url='/post/tag/완결/소설'"
+                           onclick="location.href=this.getAttribute('data-url')"
+                           class="link-body-emphasis d-inline-flex text-decoration-none rounded">소설</a>
+                    <li><a th:attr="data-url='/post/tag/완결/수필'"
+                            onclick="location.href=this.getAttribute('data-url')"
+                            class="link-body-emphasis d-inline-flex text-decoration-none rounded">수필</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="border-top my-3"></li>
+        <li class="mb-1">
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
+                    data-bs-target="#account-collapse" aria-expanded="true">
+                공지사항
+            </button>
+            <div class="collapse show" id="account-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a th:href="@{/post/list(searchType='해시태그',searchWords='공지글')}"
+                           class="link-dark d-inline-flex text-decoration-none rounded">New...</a></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
 </div>
 </body>
 </html>

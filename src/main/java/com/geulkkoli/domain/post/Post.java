@@ -110,7 +110,7 @@ public class Post extends ConfigDate {
     }
 
     public List<PostHashTag> editMultiHashTags(List<HashTag> hashTags) {
-        deleteAllPostHashTag();
+        this.postHashTags.clear();
         for (HashTag tag : hashTags) {
             PostHashTag postHashTag = new PostHashTag(this, tag);
             postHashTags.add(postHashTag);
@@ -126,7 +126,10 @@ public class Post extends ConfigDate {
     }
 
     public void deleteAllPostHashTag() {
-        this.postHashTags.clear();
+        for (PostHashTag postHashTag : postHashTags) {
+            postHashTag.getHashTag().getPostHashTags().remove(postHashTag);
+        }
+        postHashTags.clear();
     }
 
     @Override

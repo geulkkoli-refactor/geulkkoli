@@ -4,7 +4,6 @@ import com.geulkkoli.application.social.util.SocialType;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.social.SocialInfoDto;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +78,7 @@ class SocialInfoRepositoryTest {
         SocialInfo save1 = socialInfoRepository.save(socialInfoDto2.toEntity());
         SocialInfo save2 = socialInfoRepository.save(socialInfoDto3.toEntity());
 
-        Optional<SocialInfo> test = socialInfoRepository.findSocialInfoBySocialTypeAndAndUser_Email(SocialType.KAKAO.getValue(), user.getEmail());
+        Optional<SocialInfo> test = socialInfoRepository.findSocialInfoBySocialTypeAndUserEmail(SocialType.KAKAO.getValue(), user.getEmail());
 
         assertAll(
                 () -> assertThat(test).hasValue(save).get().has(new Condition<>(s -> s.getSocialId().equals("testId"), "testId")),

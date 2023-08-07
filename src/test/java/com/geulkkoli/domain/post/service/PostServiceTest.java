@@ -60,6 +60,7 @@ class PostServiceTest {
         HashTag 완결 = hashTagRepository.save(new HashTag("완결", HashTagType.STATUS));
         HashTag 소설 = hashTagRepository.save(new HashTag("소설", HashTagType.CATEGORY));
     }
+
     @AfterEach
     void tearDown() {
         postHashTagRepository.deleteAllInBatch();
@@ -82,7 +83,13 @@ class PostServiceTest {
 
         userRepository.save(user1);
 
-        AddDTO addDTO = new AddDTO(user1.getUserId(), "title", "body", "nick", "testTag", "소설", "완결");
+        AddDTO addDTO = AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag testTag2, testTag3")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build();
         Post save = postService.savePost(addDTO, user1);
 
 
@@ -92,7 +99,6 @@ class PostServiceTest {
                 () -> assertThat(save.getPostHashTags()).hasSize(3));
 
     }
-
 
 
     @DisplayName("게시글 수정")
@@ -110,8 +116,14 @@ class PostServiceTest {
         userRepository.save(user1);
 
 
-        Post post = postService.savePost(new AddDTO(1L, "title", "body", "nick", "testTag", "소설", "완결"), user1);
-        EditDTO editDTO = new EditDTO(post.getPostId(), "title update", "body update", "nick update", "수정test", "판타지", "완결");
+        Post post = postService.savePost(AddDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("소설 판타지 완결").nickName(user1.getNickName()).build(), user1);
+        EditDTO editDTO = EditDTO.builder()
+                .postId(post.getPostId())
+                .postBody("body update")
+                .title("title update")
+                .tags("판타지 완결")
+                .nickName("nick update")
+                .build();
         postService.updatePost(post, editDTO);
 
         Post one = postFindService.findById(post.getPostId());
@@ -138,7 +150,13 @@ class PostServiceTest {
 
         userRepository.save(user1);
 
-        Post post = postService.savePost(new AddDTO(1L, "title", "body", user1.getNickName(), "testTag", "소설", "완결"), user1);
+        Post post = postService.savePost( AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag testTag2")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build(), user1);
 
         postService.deletePost(post.getPostId(), user1.getUserId());
 
@@ -160,11 +178,10 @@ class PostServiceTest {
 
         AddDTO addDTO = AddDTO.builder()
                 .title("testTitle")
+                .tagList("testTag testTag2")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
-                .tagListString("")
-                .tagCategory("#코미디")
-                .tagStatus("#완결")
+                .tagList("")
                 .build();
 
         Post post = postService.savePost(addDTO, user1);
@@ -198,7 +215,13 @@ class PostServiceTest {
                 .build();
 
         userRepository.save(user1);
-        Post post = postService.savePost(new AddDTO(1L, "title", "body", user1.getNickName(), "testTag", "소설", "완결"), user1);
+        Post post = postService.savePost( AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag testTag2")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build(), user1);
 
         assertThatThrownBy(() -> postService.deletePost(post.getPostId(), 2L))
                 .isInstanceOf(UserNotExistException.class)
@@ -229,7 +252,13 @@ class PostServiceTest {
 
         userRepository.save(user1);
         userRepository.save(user2);
-        Post post = postService.savePost(new AddDTO(1L, "title", "body", user1.getNickName(), "testTag", "소설", "완결"), user1);
+        Post post = postService.savePost( AddDTO.builder()
+                .title("testTitle")
+                .tagList("testTag testTag2")
+                .postBody("test postbody")
+                .nickName("점심뭐먹지")
+                .tagList("")
+                .build(), user1);
 
         assertThatThrownBy(() -> postService.deletePost(post.getPostId(), user2.getUserId()))
                 .isInstanceOf(NotAuthorException.class)

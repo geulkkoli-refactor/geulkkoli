@@ -2,7 +2,7 @@ package com.geulkkoli.domain.hashtag.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
-import com.geulkkoli.domain.hashtag.HashTagSign;
+import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +28,20 @@ public class HashTagFindService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
+    public List<HashTag> findHashTags(final String mainTag, final String subTag) {
+        List<String> hashTagNames = new ArrayList<>();
+        hashTagNames.add(mainTag);
+        hashTagNames.add(subTag);
+        return hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
+    }
 
-    public List<HashTag> findHashTags(final String category,final String status, final String generalHashTag) {
-        List<String> hashTagNames =new ArrayList<>();
+    public List<HashTag> findHashTags(List<String> hashTagNames) {
+        return hashTagRepository.findAllHashTagByHashTagNames(hashTagNames);
+    }
+
+
+    public List<HashTag> findHashTagByCatogoryStautsAndGeneral(final String category, final String status, final String generalHashTag) {
+        List<String> hashTagNames = new ArrayList<>();
         hashTagNames.add(category);
         hashTagNames.add(status);
         hashTagNames.add(generalHashTag);

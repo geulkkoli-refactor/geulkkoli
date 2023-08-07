@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="/css/post.css">
 
     <!-- wysiwyg editor summernote -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <link href="/summernote/summernote-lite.css" rel="stylesheet">
-    <script src="/summernote/summernote-lite.js"></script>
+
     <!-- wysiwyg editor summernote -->
 
     <title>게시글 추가 폼</title>
@@ -41,23 +39,6 @@
                 <input type="hidden" name="nickName" th:value="${#authentication.principal.nickName}">
                 <input type="hidden" name="authorId" th:value="${#authentication.principal.userId}">
 
-                <div class="mb=3">
-                    <label for="tag-category" th:text="분류">category</label>
-                    <select th:field="*{tagCategory}" class="form-select" id="tag-category" name="tag-category">
-                        <option th:value="'#시'" th:selected="${tagCategory}=='#시'">시</option>
-                        <option th:value="'#수필'" th:selected="${tagCategory}=='#수필'">수필</option>
-                        <option th:value="'#소설'" th:selected="${tagCategory}=='#소설'">소설</option>
-                    </select>
-                </div>
-                <div class="mb=3">
-                    <label for="tag-status" th:text="상태">status</label>
-                    <select th:field="*{tagStatus}" class="form-select" id="tag-status" name="tag-status">
-                        <option th:value="'#단편'" th:selected="${tagStatus}=='#단편'">단편</option>
-                        <option th:value="'#연재'" th:selected="${tagStatus}=='#연재'">연재</option>
-                        <option th:value="'#완결'" th:selected="${tagStatus}=='#완결'">완결</option>
-                    </select>
-                </div>
-
                 <div class="mb-3">
                     <p th:text="내용">내용</p>
                     <textarea class="form-control"
@@ -72,9 +53,9 @@
                     <input class="form-control"
                            type="text"
                            id="tagListString"
-                           th:field="*{tagListString}" form="add"
-                           rows="8" placeholder="#태그1 #태그2 ...">
-                    <div class="field-error" th:errors="*{tagListString}">태그 오류</div>
+                           th:field="*{tagList}" form="add"
+                           rows="8" placeholder="해시태그 이름 사이에 공백을 넣어주세요">
+                    <div class="field-error" th:errors="*{tagList}">태그 오류</div>
 
                 </div>
 
@@ -103,56 +84,6 @@
 <div th:include="footer"></div>
 
 <script type="text/javascript" th:inline="javascript">
-
-    $(document).ready(function () {
-
-        const user = encodeURIComponent([[${#authentication.principal.nickName}]]);
-
-        function imageUpload(files, editor) {
-            const data = new FormData();
-            data.append('file', files);
-            $.ajax({
-                enctype: 'multipart/form-data',
-                processData: false,
-                contentType: false,
-                data: data,
-                type: 'POST',
-                url: '/post/upload-file',
-                success: function (url) {
-                    $(editor).summernote('insertImage', url);
-                }
-            });
-        }
-
-        $('#postBody').summernote({
-            height: 300,
-            callbacks: {
-                onImageUpload: function (files) {
-                    imageUpload(files[0], this);
-                },
-                onChange: function (e) {
-                    window.localStorage.setItem(user + 'PostBody', $('#postBody').summernote('code'));
-                },
-            }
-        });
-
-        const title = document.getElementById('title');
-
-        if (getCookie(user) == 'done') {
-            window.localStorage.removeItem(user + 'Title');
-            window.localStorage.removeItem(user + 'PostBody');
-
-            fetch("/post/savedone");
-        }
-
-        title.value = window.localStorage.getItem(user + 'Title');
-        $('#postBody').summernote('code', window.localStorage.getItem(user + 'PostBody'));
-
-        title.addEventListener('keyup', function () {
-            window.localStorage.setItem(user + 'Title', title.value);
-        })
-    });
-
 </script>
 <script src="/js/cookie.js"></script>
 

@@ -3,6 +3,7 @@ package com.geulkkoli.domain.posthashtag.service;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
+import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostService;
@@ -11,6 +12,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +45,9 @@ class PostHahTagFindServiceTest {
     private PostHashTagRepository postHashTagRepository;
     @Autowired
     private HashTagRepository hashTagRepository;
+
+    @Autowired
+    private HashTagFindService hashTagFindService;
     @Autowired
     private PostService postService;
 
@@ -135,9 +140,7 @@ class PostHahTagFindServiceTest {
         AddDTO addDTO = AddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
-                .tagListString("신과 함께")
-                .tagCategory("소설")
-                .tagStatus("완결")
+                .tagList("신과 함께 소설 완결")
                 .nickName("test")
                 .authorId(1L)
                 .build();
@@ -146,15 +149,18 @@ class PostHahTagFindServiceTest {
             postService.savePost(addDTO, user);
         }
 
-        String searchWords = "소설";
+        String searchWords = "소설#완결#신과 함께";
+        List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
 
         //when
         Pageable pageable = PageRequest.of(1, 5);
-        Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable, searchWords);
-        List<PostRequestListDTO> collect = listDTOS.get().collect(Collectors.toList());
+
+
+        Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable,hashTag);
+        List<PostRequestListDTO> findPosts = listDTOS.get().collect(Collectors.toList());
 
         //then
-        assertThat(collect).hasSize(5);
-        assertThat(collect).extracting("title").contains("test01");
+        assertThat(findPosts).hasSize(5);
+        assertThat(findPosts).have(new Condition<>(postRequestListDTO -> postRequestListDTO.getTitle().equals("test01"), "test01"));
     }
 }

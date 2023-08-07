@@ -1,9 +1,11 @@
 package com.geulkkoli.domain.post;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -63,6 +65,27 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
+    public List<Post> allPostsMultiHashTags(Pageable pageable, List<String> hashTagNames) {
+        return queryFactory.select(post)
+                .from(post)
+                .where(post.in(multiHashTag(hashTagNames)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> allPostsMultiHashTagsWithTuple(String hashTagName, String hashTagName2) {
+        return queryFactory
+                .select(post.postId, post.title, post.postBody,hashTag.hashTagName)
+                .from(postHashTag)
+                .join(hashTag).on(postHashTag.hashTag.eq(hashTag))
+                .join(post).on(postHashTag.post.eq(post))
+                .where(hashTag.hashTagName.eq(hashTagName).or(hashTag.hashTagName.eq(hashTagName2)))
+                .fetch();
+    }
+
+    @Override
     public List<Post> allPostsTitleAndMultiPosts(String title, List<String> hashTagNames) {
         SubQueryExpression<Post> subquery = multiHashTag(hashTagNames);
 
@@ -80,5 +103,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .groupBy(postHashTag.post)
                 .having(hashTag.countDistinct().goe((long) hashTagNames.size()));
     }
+
 
 }

@@ -1,12 +1,15 @@
 package com.geulkkoli.web.post.dto;
 
-import com.geulkkoli.domain.hashtag.HashTagSign;
+import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import lombok.Builder;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Setter
@@ -26,25 +29,20 @@ public class AddDTO {
     @NotBlank
     private String nickName;
 
-    private String tagListString = "";
-
-    private String tagCategory;
-
-    private String tagStatus;
+    private String tagList = "";
 
     public AddDTO() {
     }
 
     @Builder
     public AddDTO(Long authorId, String title, String postBody
-            , String nickName, String tagListString, String tagCategory, String tagStatus) {
+            , String nickName, String tagList) {
         this.authorId = authorId;
         this.title = title;
         this.postBody = postBody;
         this.nickName = nickName;
-        this.tagListString = tagListString;
-        this.tagCategory = tagCategory;
-        this.tagStatus = tagStatus;
+        this.tagList = tagList;
+
     }
 
     public Long getAuthorId() {
@@ -63,29 +61,12 @@ public class AddDTO {
         return nickName;
     }
 
-    public String getTagListString() {
-        return tagListString;
+    public String getTagList() {
+        return tagList;
     }
 
-    public String getTagCategory() {
-        return tagCategory;
-    }
-
-    public String getTagStatus() {
-        return tagStatus;
-    }
-
-    public String tageCateGory() {
-        return String.join("", tagCategory.split(HashTagSign.GENERAL.getSign()));
-    }
-
-    public String tagListString() {
-        return String.join("", tagListString.split(HashTagSign.GENERAL.getSign()));
-    }
-
-    public String tagStatus() {
-        return
-                String.join("", tagStatus.split(HashTagSign.GENERAL.getSign()));
+    public List<String> tagLists() {
+        return Arrays.stream(tagList.split(" ")).collect(Collectors.toList());
     }
 
     @Override
@@ -95,9 +76,7 @@ public class AddDTO {
                 ", title='" + title + '\'' +
                 ", postBody='" + postBody + '\'' +
                 ", nickName='" + nickName + '\'' +
-                ", tagListString='" + tagListString + '\'' +
-                ", tagCategory='" + tagCategory + '\'' +
-                ", tagStatus='" + tagStatus + '\'' +
+                ", tagList='" + tagList + '\'' +
                 '}';
     }
 }

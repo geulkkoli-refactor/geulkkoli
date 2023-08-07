@@ -1,4 +1,4 @@
-package com.geulkkoli.application.user;
+package com.geulkkoli.application;
 
 import lombok.*;
 

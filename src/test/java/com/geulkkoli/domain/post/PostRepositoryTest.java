@@ -9,6 +9,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
 import com.geulkkoli.web.post.dto.EditDTO;
+import com.querydsl.core.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,7 +145,7 @@ class PostRepositoryTest {
                 .nickName("점심뭐먹지").build());
         Post savePost = postRepository.save(post);
 
-        Post modifyPost = user.editPost(savePost, new EditDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "#수정test", "시", "연재중"));
+        Post modifyPost = user.editPost(savePost, new EditDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "수정 test"));
 
         postRepository.save(modifyPost);
 

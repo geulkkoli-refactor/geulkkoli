@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface SocialInfoRepository extends JpaRepository<SocialInfo, Long> {
     Optional<SocialInfo> findSocialInfoBySocialTypeAndSocialId(String socialType, String socialId);
 
-    Optional<SocialInfo> findSocialInfoBySocialTypeAndAndUser_Email(String socialType, String email);
+    Optional<SocialInfo> findSocialInfoBySocialTypeAndUserEmail(String socialType, String email);
 
     Boolean existsBySocialTypeAndSocialId(String socialType, String socialId);
 
