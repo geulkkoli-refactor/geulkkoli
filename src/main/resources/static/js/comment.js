@@ -9,7 +9,7 @@ commentSubmit.addEventListener('click', function (ev) {
 
     ev.preventDefault();
     const commentForm = document.getElementById('comment');
-
+    console.log(commentForm);
     const str_json = JSON.stringify(
         Object.fromEntries(
             new FormData(commentForm)));
@@ -207,11 +207,11 @@ function commentRemake(list, isClear) {
         validName = document.getElementById("auth-user-nickName").innerText;
         if (newComment.nickName === validName) {
             editButton = document.createElement('button');
-            editButton.setAttribute('class', 'btn btn-primary btn-sm commentEdit');
+            editButton.setAttribute('class', 'btn btn-outline-warning btn-sm commentEdit');
             editButton.innerText = '수정';
 
             deleteButton = document.createElement('button');
-            deleteButton.setAttribute('class', 'btn btn-primary btn-sm commentDelete');
+            deleteButton.setAttribute('class', 'btn btn-outline-danger btn-sm commentDelete');
             deleteButton.innerText = '삭제';
 
             buttonDiv.appendChild(editButton);

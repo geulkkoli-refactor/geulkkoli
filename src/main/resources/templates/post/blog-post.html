@@ -99,10 +99,11 @@
                 <div class="card bg-light">
                     <div class="card-body">
                         <!-- Comment form-->
-                        <form sec:authorize="hasRole('USER')"
+                        <form id="comment" sec:authorize="hasRole('USER')"
                               th:object="${comments}"
                               th:action="@{/comments/{postId}(postId=${post.postId})}"
-                              class="mb-4">
+                              class="mb-4"
+                              method="post">
                             <textarea th:field="*{commentBody}" class="form-control" rows="3"
                                       placeholder="댓글을 남겨 보세요"></textarea>
                             <div class="mt-2">
@@ -110,34 +111,30 @@
                                     <input type="submit" id="commentSubmit" th:value="등록" class="btn btn-success">
                                 </div>
                             </div>
+                            <div class="field-error"></div>
                         </form>
                         <!-- Comment with nested comments-->
 
-                        <div class="d-flex mb-4">
-                            <!-- Parent comment-->
-                            <div class="flex-shrink-0"><img class="rounded-circle"
-                                                            src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
-                                                            alt="..."/></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                If you're going to lead a space frontier, it has to be government; it'll never be
-                                private enterprise. Because the space frontier is dangerous, and it's expensive, and it
-                                has unquantified risks.
-                                <!-- Child comment 1-->
-
-                                <!-- Child comment 2-->
-
-                            </div>
-                        </div>
-                        <!-- Single comment-->
-                        <div class="d-flex">
-                            <div class="flex-shrink-0"><img class="rounded-circle"
-                                                            src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
-                                                            alt="..."/></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                When I look at the universe and all the ways the universe wants to kill us, I find it
-                                hard to reconcile that with statements of beneficence.
+                        <div class="mt-3 col" id="postComment">
+                            <div th:each="commentDTO : ${commentList}">
+                                <div class="mt-2 card w-100">
+                                    <div class="col card-header">
+                                        <h5 class="card-title" th:id="${commentDTO.commentId}" th:text="${commentDTO.nickName}"></h5>
+                                        <h6 class="card-subtitle" th:text="${commentDTO.date}"></h6>
+                                    </div>
+                                    <div class="col card-body">
+                                        <p class="card-text" th:text="${commentDTO.commentBody}"></p>
+                                        <div class="field-error"></div>
+                                        <div sec:authorize="hasRole('USER')"
+                                             th:with="userNickName=${#authentication.principal.nickName}">
+                                            <div th:if="${#strings.equals(commentDTO.nickName, userNickName)}"
+                                                 class="mt-1 d-grid gap-2 d-md-flex justify-content-md-end">
+                                                <button type="button" class="btn btn-outline-warning btn-sm commentEdit" th:text="수정"></button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm commentDelete" th:text="삭제"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -189,6 +186,11 @@
         </div>
     </div>
 </div>
+<!--댓글 삭제를 위해 작성자 본인이 맞는지 확인 하기 위한 닉네임 확인-->
+<div sec:authorize="isFullyAuthenticated()">
+    <div id="auth-user-nickName" sec:authentication="principal.nickName">
+    </div>
+</div>
 <!-- Footer-->
 <footer class="py-5 bg-dark">
     <div class="container"><p class="m-0 text-center text-white">Copyright &copy; hogokok 2023</p></div>
@@ -200,5 +202,6 @@
 <script src="/js/cookie.js"></script>
 <script src="/js/deletePost.js"></script>
 <script src="/js/readTextEditor.js"></script>
+<script src="/js/comment.js"></script>
 </body>
 </html>
