@@ -32,7 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SocialController {
     private static final String SIGN_UP_VIEW_NAME = "social/oauth2/signup";
-    private static final String HOME = "/home";
+    private static final String HOME = "home2";
     private final UserService userService;
 
     private final SocialInfoService socialService;

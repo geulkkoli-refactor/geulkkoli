@@ -84,6 +84,29 @@ public class PostController {
         return src;
     }
 
+    @GetMapping("/channels")
+    public ModelAndView channels(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                           @RequestParam(defaultValue = "") String searchType,
+                           @RequestParam(defaultValue = "") String searchWords) {
+        log.info("searchType: {}, searchWords: {}", searchType, searchWords);
+        ModelAndView mv = new ModelAndView("/post/channels");
+        //searchType이 해시태그 일때
+        if (SearchType.HASH_TAG.getType().equals(searchType)) {
+            List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
+            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
+            PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+            mv.addObject("page", pagingDTO);
+            searchDefault(mv, searchType, searchWords);
+            return mv;
+        }
+
+        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        mv.addObject("page", pagingDTO);
+        searchDefault(mv, searchType, searchWords);
+       return mv;
+    }
+
     //사이드 네비게이션의 목록을 누를 시 진입점
     @GetMapping("/tag/{tag}/{subTag}")
     public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
@@ -269,5 +292,10 @@ public class PostController {
     private static void searchDefault(Model model, String searchType, String searchWords) {
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchWords", searchWords);
+    }
+
+    private static void searchDefault(ModelAndView model, String searchType, String searchWords) {
+        model.addObject("searchType", searchType);
+        model.addObject("searchWords", searchWords);
     }
 }

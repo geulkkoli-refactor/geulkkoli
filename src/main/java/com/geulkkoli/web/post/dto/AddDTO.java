@@ -21,7 +21,7 @@ public class AddDTO {
     private String title;
 
     @NotBlank
-    @Length(min = 10, max = 100000)
+    @Length(min = 10, max = 10000)
     private String postBody;
 
     @NotBlank

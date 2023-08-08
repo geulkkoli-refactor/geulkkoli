@@ -1,0 +1,47 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="nav" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#!">hogokok</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">홈</a></li>
+                <li class="nav-item"><a class="nav-link" href="/post/channels">채널</a></li>
+                <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
+                <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link" href="/loginPage">로그인 </a></li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" href="/admin/">Admin</a></li>
+                <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link" href="/join">가입하기</a></li>
+
+                <li class="nav-item" th:if="${#request.getAttribute('loginError') != null}">
+                    <a class="nav-item" sec:authorize="isAnonymous()">
+                        <a  sec:authorize="isAnonymous()" class="nav-link" href="/loginPage">로그인</a>
+                    </a>
+                    <a sec:authorize="isAnonymous()" class="nav-link" href="/join">가입하기</a>
+                </li>
+
+
+                <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
+                    <a class="nav-link" type="button"
+                       sec:authorize="hasAnyRole('USER')"
+                       th:attr="data-url='/user/'+${#authentication.principal.nickName}"
+                       onclick="location.href=this.getAttribute('data-url')">블로그 이동 </a>
+                </li>
+                <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
+                    <a type="button"
+                       class="nav-link"
+                       sec:authorize="hasAnyRole('USER')"
+                       onclick="location.href='/user/edit'"
+                    >계정 설정
+                    </a>
+                </li>
+                <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
+                    <a class="nav-link" href="/logout">로그아웃</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

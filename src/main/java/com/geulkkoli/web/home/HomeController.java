@@ -57,9 +57,7 @@ public class HomeController {
                        Model model,
                        @RequestParam(defaultValue = "일반") String searchWords) {
         List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-        List<HashTag> noticeHashTag = hashTagFindService.findHashTag("공지글");
         model.addAttribute("list", postHahTagFindService.searchPostsListByHashTag(pageable, hashTag).toList());
-        model.addAttribute("notificationList", postHahTagFindService.searchPostsListByHashTag(pageable, noticeHashTag).toList());
         return "home";
     }
 
