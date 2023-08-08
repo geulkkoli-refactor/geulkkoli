@@ -9,6 +9,8 @@
 
     <!-- wysiwyg editor summernote -->
 
+    <script src="https://cdn.jsdelivr.net/npm/suneditor@2.45.1/dist/suneditor.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/suneditor@2.45.1/dist/css/suneditor.min.css" rel="stylesheet">
     <!-- wysiwyg editor summernote -->
 
 </head>
@@ -38,8 +40,9 @@
                     <div class="field-error" th:errors="*{title}"></div>
                 </div>
                 <div class="mb-3">
-                    <label th:text="내용">내용</label>
+                    <label for="editor_classic" th:text="내용">내용</label>
                     <textarea class="form-control"
+                              id="editor_classic"
                               th:field="*{postBody}" form="edit"
                               rows="8">내용</textarea>
                     <div class="field-error" th:errors="*{postBody}"></div>
@@ -71,6 +74,8 @@
                                 type="submit" id="submit" th:value="등록">등록
                         </button>
                     </div>
+                    <input class="csrf_input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input class="csrf_input" type="hidden" th:name="${_csrf.getHeaderName()}">
                 </div>
             </form>
         </div>
@@ -79,11 +84,13 @@
 </div>
 
 <div th:include="footer"></div>
-
-<script type="text/javascript">
-
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/htmlmixed/htmlmixed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/xml/xml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/css/css.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+<script src="/js/cookie.js"></script>
+<script src="/js/writePostTextEditor.js"></script>
 </body>
 <div th:include="footer"></div>
 </html>

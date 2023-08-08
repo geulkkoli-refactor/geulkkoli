@@ -5,7 +5,6 @@ import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
-import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;

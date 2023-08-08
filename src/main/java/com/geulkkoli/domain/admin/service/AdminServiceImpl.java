@@ -5,7 +5,6 @@ import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
-import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.topic.Topic;
 import com.geulkkoli.domain.topic.TopicRepository;
@@ -81,7 +80,7 @@ public class AdminServiceImpl {
 
     public Post saveNotice(AddDTO addDto, User user) {
         Post save = postRepository.save(user.writePost(addDto));
-        log.info("addDto.getTagListString() = " + addDto.getTagList());
+        log.info("addDto.getTagListString() = " + addDto.getHashTagString());
         postHashTagService.addHashTagsToPost(save, addDto);
         return save;
     }
