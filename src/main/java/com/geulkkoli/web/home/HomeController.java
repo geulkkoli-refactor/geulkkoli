@@ -56,8 +56,6 @@ public class HomeController {
     public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model,
                        @RequestParam(defaultValue = "일반") String searchWords) {
-        List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-        model.addAttribute("list", postHahTagFindService.searchPostsListByHashTag(pageable, hashTag).toList());
         return "home";
     }
 

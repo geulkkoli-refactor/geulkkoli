@@ -21,7 +21,7 @@
             <!-- 검색 위젯 -->
             <div class="card mb-5">
                 <div class="card-header">다양한 채널의 글을 검색해 보세요</div>
-                <form th:action="@{/post/list}">
+                <form th:action="@{/post/channels}">
                     <div class="input-group">
                         <div class="input-group-text">
                             <label for="search-type" hidden>검색 유형</label>
@@ -51,73 +51,22 @@
         <!-- Blog entries-->
         <div class="col-lg-8">
             <!-- Featured blog post-->
-            <div class="card mb-4">
-                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg"
-                                  alt="..."/></a>
-                <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title">Featured Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid
-                        atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero
-                        voluptate voluptatibus possimus, veniam magni quis!</p>
-                    <a class="btn btn-outline-success" href="#!">Read more →</a>
-                </div>
-            </div>
+
             <!-- Nested row for non-featured blog posts-->
-            <div class="row">
-                <div class="col-lg-6">
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                          alt="..."/></a>
+            <div class="row" th:each ="posts : ${page.list}">
+                <div class="col-lg-10">
+                    <!--블로그 게시글 -->
+                    <div class="card mb-3">
                         <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
-                                aliquid atque, nulla.</p>
-                            <a class="btn btn-outline-success" href="#!">Read more →</a>
-                        </div>
-                    </div>
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                          alt="..."/></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
-                                aliquid atque, nulla.</p>
-                            <a class="btn btn-outline-success" href="#!">Read more →</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                          alt="..."/></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
-                                aliquid atque, nulla.</p>
-                            <a class="btn btn-outline-success" href="#!">Read more →</a>
-                        </div>
-                    </div>
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                          alt="..."/></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
-                                aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                            <a class="btn btn-outline-success" href="#!">Read more →</a>
+                            <div class="small text-muted" th:text="${posts.date}"></div>
+                            <h2 class="card-title h4" th:text="${posts.title}"></h2>
+                            <p class="card-text" th:text="${posts.contentSummary}"></p>
+                            <a class="btn btn-outline-success" th:href="@{/post/read/{postId}(postId=${posts.postId})}">더 읽기 →</a>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- Pagination-->
             <nav aria-label="Pagination">
                 <hr class="my-0"/>
@@ -135,9 +84,6 @@
         </div>
         <!-- Side widgets-->
         <div class="col-lg-4">
-            <!-- Search widget-->
-
-
             <!-- Categories widget-->
             <div class="card mb-4">
                 <div class="card-header">Categories</div>

@@ -19,7 +19,7 @@ import com.geulkkoli.web.follow.dto.FollowsCount;
 import com.geulkkoli.web.post.UserProfileDTO;
 import com.geulkkoli.web.post.dto.PageDTO;
 import com.geulkkoli.web.post.dto.PagingDTO;
-import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import com.geulkkoli.web.post.dto.PostRequestDTO;
 import com.geulkkoli.web.user.dto.edit.PasswordEditFormDto;
 import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
 import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
@@ -121,7 +121,7 @@ public class UserController {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
         int totalPosts = posts.size();
         Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
-        Page<PostRequestListDTO> readInfos = pagePost.map(PostRequestListDTO::toDTO);
+        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
 
 
@@ -166,7 +166,7 @@ public class UserController {
         List<Post> subPosts = favoritePosts.subList(startIndex, endIndex);
 
         Page<Post> favoritsPost = new PageImpl<>(subPosts, pageable, favoritePosts.size());
-        Page<PostRequestListDTO> readInfos = favoritsPost.map(PostRequestListDTO::toDTO);
+        Page<PostRequestDTO> readInfos = favoritsPost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
         log.info("pagingDTO = {}", pagingDTO);
         ModelAndView modelAndView = new ModelAndView("user/favorites", "pagingResponses", pagingDTO);

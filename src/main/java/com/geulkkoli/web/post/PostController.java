@@ -93,14 +93,14 @@ public class PostController {
         //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
+            Page<PostRequestDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
             mv.addObject("page", pagingDTO);
             searchDefault(mv, searchType, searchWords);
             return mv;
         }
 
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         mv.addObject("page", pagingDTO);
         searchDefault(mv, searchType, searchWords);
@@ -112,7 +112,7 @@ public class PostController {
     public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                       @PathVariable String tag, @PathVariable String subTag) {
         List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         ModelAndView modelAndView = new ModelAndView("post/postList");
         modelAndView.addObject("page", pagingDTO);
@@ -137,14 +137,14 @@ public class PostController {
         //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
+            Page<PostRequestDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
             model.addAttribute("page", pagingDTO);
             searchDefault(model, searchType, searchWords);
             return "post/postList";
         }
 
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         model.addAttribute("page", pagingDTO);
         searchDefault(model, searchType, searchWords);
@@ -201,7 +201,7 @@ public class PostController {
             model.addAttribute("authorUser", userProfile);
             model.addAttribute("checkFavorite", checkFavorite);
             searchDefault(model, searchType, searchWords);
-            return "post/postPage";
+            return "post/blog-post";
         }
 
         User loggingUser = userFindService.findById(Long.parseLong(authUser.getUserId()));
@@ -224,7 +224,7 @@ public class PostController {
         model.addAttribute("loginUserId", authUser.getUserId());
         model.addAttribute("comments", new CommentBodyDTO());
         searchDefault(model, searchType, searchWords);
-        return "post/postPage";
+        return "post/blog-post";
     }
 
     //게시글 수정 html로 이동

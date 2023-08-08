@@ -4,43 +4,40 @@ import com.geulkkoli.domain.post.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class PostRequestListDTO {
+public class PostRequestDTO {
 
-    @NotBlank
     private Long postId;
 
-    @NotBlank
     private String title;
 
-    @NotBlank
     private String nickName;
 
-    @NotBlank
+    private String contentSummary;
+
     private String date;
 
-    @NotBlank
     private int postHits;
 
     @Builder
-    public PostRequestListDTO(Long postId, String title, String nickName, String date, int postHits) {
+    public PostRequestDTO(Long postId, String title, String nickName, String contentSummary, String date, int postHits) {
         this.postId = postId;
         this.title = title;
         this.nickName = nickName;
+        this.contentSummary = contentSummary.replaceAll("<[^>]*>", "").substring(0, 10);
         this.date = date;
         this.postHits = postHits;
-
     }
 
-    public static PostRequestListDTO toDTO (Post post) {
-        return PostRequestListDTO.builder()
+    public static PostRequestDTO toDTO(Post post) {
+        return PostRequestDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
+                .contentSummary(post.getPostBody())
                 .nickName(post.getNickName())
                 .date(String.valueOf(post.getUpdatedAt()))
                 .postHits(post.getPostHits())

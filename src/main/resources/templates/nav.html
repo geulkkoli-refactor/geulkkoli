@@ -28,7 +28,7 @@
                     <a class="nav-link" type="button"
                        sec:authorize="hasAnyRole('USER')"
                        th:attr="data-url='/user/'+${#authentication.principal.nickName}"
-                       onclick="location.href=this.getAttribute('data-url')">블로그 이동 </a>
+                       onclick="location.href=this.getAttribute('data-url')">블로그</a>
                 </li>
                 <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
                     <a type="button"
