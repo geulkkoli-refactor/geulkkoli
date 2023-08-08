@@ -84,12 +84,6 @@ public class PostController {
         return src;
     }
 
-    @PostMapping("/v3")
-    public ModelAndView writePost(@RequestBody AddDTO addDTO){
-        log.info("addDTO: {}", addDTO);
-        return new ModelAndView("home");
-    }
-
     //사이드 네비게이션의 목록을 누를 시 진입점
     @GetMapping("/tag/{tag}/{subTag}")
     public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
