@@ -306,23 +306,7 @@
 
     document.getElementById("deletePostButton").addEventListener("click", deletePost);
 </script>
-<script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const editorInstance = SUNEDITOR.create('editor_classic', {
-            width: '100%',
-            height: 'auto',
-            buttonList: {
-
-            }
-
-
-        });
-        document.querySelector(".sun-editor-editable").setAttribute("contenteditable", false);
-        document.querySelector(".sun-editor-editable").ariaReadOnly = true;
-    });
-</script>
-
+<script type="text/javascript" src="/js/readTextEditor.js"></script>
 <script type="text/javascript" src="/js/comment.js"></script>
 <script type="text/javascript" src="/js/follow.js"></script>
 
