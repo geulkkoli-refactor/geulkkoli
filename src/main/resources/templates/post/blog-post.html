@@ -47,31 +47,25 @@
                 <!-- Preview image figure-->
 
                 <!-- Post content-->
-                <section class="mb-5">
+                <section class="mb-3">
                     <textarea id="editor_classic" th:text="${post.postBody}"></textarea>
                 </section>
-            </article>
-            <div class="row">
-                <div sec:authorize="hasRole('USER')"
-                     th:with="userNickName=${#authentication.principal.nickName}">
-                    <div class="col">
-
-                        <button class="w-100 btn btn-primary" onclick="location.href='postUpdateForm.html'"
+                <!-- 수정 삭제 버튼-->
+                <section class="mb-3">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="hasRole('USER')"
+                         th:with="userNickName=${#authentication.principal.nickName}">
+                        <button class="btn btn-warning btn-lg" onclick="location.href='postUpdateForm.html'"
                                 th:onclick="|location.href='@{/post/update/{postId}(postId=${post.postId},page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
                                 th:if="${#strings.equals(authorUser.nickName, userNickName)}"
-                                type="button">게시글 수정
+                                type="button">수정
                         </button>
+                        <!-- 삭제 모달 -->
 
-                    </div>
-
-                    <!-- Button trigger modal -->
-                    <div class="col">
-                        <button type="button" class="w-100 btn btn-primary" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal"
                                 data-bs-target="#deletePost"
                                 th:if="${#strings.equals(authorUser.nickName, userNickName)}">삭제
                         </button>
                     </div>
-
                     <!-- Modal -->
                     <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deletePostLabel"
                          aria-hidden="true">
@@ -92,21 +86,33 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                                    <button id="deletePostButton" type="button" class="btn btn-primary">삭제</button>
+                                    <button id="deletePostButton" type="button" class="btn btn-outline-danger">삭제
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            </article>
             <!-- Comments section-->
             <section class="mb-5">
                 <div class="card bg-light">
                     <div class="card-body">
                         <!-- Comment form-->
-                        <form class="mb-4"><textarea class="form-control" rows="3" placeholder="댓글을 남겨 보세요"></textarea>
+                        <form sec:authorize="hasRole('USER')"
+                              th:object="${comments}"
+                              th:action="@{/comments/{postId}(postId=${post.postId})}"
+                              class="mb-4">
+                            <textarea th:field="*{commentBody}" class="form-control" rows="3"
+                                      placeholder="댓글을 남겨 보세요"></textarea>
+                            <div class="mt-2">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <input type="submit" id="commentSubmit" th:value="등록" class="btn btn-success">
+                                </div>
+                            </div>
                         </form>
                         <!-- Comment with nested comments-->
+
                         <div class="d-flex mb-4">
                             <!-- Parent comment-->
                             <div class="flex-shrink-0"><img class="rounded-circle"
