@@ -39,14 +39,14 @@ public class PostHashTagService {
      * @see PostHashTagRepository#saveAll(Iterable)
      */
     public Post addHashTagsToPost(Post post, AddDTO addDTO) {
-        if (addDTO.getTagList().isEmpty()) {
+        if (addDTO.getHashTagString().isEmpty()) {
             return post;
         }
         List<HashTag> hashTags = hashTagFindService.findHashTags(addDTO.tagLists());
         log.info("hashTags: {}", hashTags);
-        Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getTagList().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty() && !addDTO.getTagList().isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getTagList(), HashTagType.GENERAL.getTypeName());
+        Optional<HashTag> any = hashTags.stream().filter(i -> addDTO.getHashTagString().equals(i.getHashTagName())).findAny();
+        if (any.isEmpty() && !addDTO.getHashTagString().isEmpty()) {
+            HashTag newHashTag = hashTagService.createNewHashTag(addDTO.getHashTagString(), HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
             return post;

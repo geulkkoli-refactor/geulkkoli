@@ -5,7 +5,6 @@ import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
-import com.geulkkoli.domain.post.AdminTagAccessDenied;
 import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
@@ -83,6 +82,12 @@ public class PostController {
         }
 
         return src;
+    }
+
+    @PostMapping("/v3")
+    public ModelAndView writePost(@RequestBody AddDTO addDTO){
+        log.info("addDTO: {}", addDTO);
+        return new ModelAndView("home");
     }
 
     //사이드 네비게이션의 목록을 누를 시 진입점

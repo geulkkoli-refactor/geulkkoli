@@ -34,8 +34,8 @@
                            placeholder="제목을 입력하세요 ...">
                     <div class="field-error" th:errors="*{title}">타이틀 오류</div>
                 </div>
-                <input type="hidden" name="nickName" th:value="${#authentication.principal.nickName}">
-                <input type="hidden" name="authorId" th:value="${#authentication.principal.userId}">
+                <input type="hidden" id="nickName" name="nickName" th:value="${#authentication.principal.nickName}">
+                <input type="hidden" id ="authorId" name="authorId" th:value="${#authentication.principal.userId}">
 
                 <div class="mb-3">
                     <p th:text="내용">내용</p>
@@ -51,10 +51,10 @@
                     <label th:text="해시태그">해시태그</label>
                     <input class="form-control"
                            type="text"
-                           id="tagListString"
-                           th:field="*{tagList}" form="add"
+                           id="hashtag-strings"
+                           th:field="*{hashTagString}" form="add"
                            rows="8" placeholder="해시태그 이름 사이에 공백을 넣어주세요">
-                    <div class="field-error" th:errors="*{tagList}">태그 오류</div>
+                    <div class="field-error" th:errors="*{hashTagString}">태그 오류</div>
 
                 </div>
 
@@ -65,11 +65,8 @@
                                 type="submit" id="submit" th:value="등록">등록
                         </button>
                     </div>
-                    <div class="col">
-                        <button class="w-100 btn btn-primary btn-lg"
-                                type="button" id="submit2" th:value="등록">등록
-                        </button>
-                    </div>
+                    <input class="csrf_input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input class="csrf_input" type="hidden" th:name="${_csrf.getHeaderName()}">
                     <div class="col">
                         <button class="w-100 btn btn-primary btn-lg"
                                 type="button"
@@ -103,7 +100,7 @@
         height: 'auto',
         popupDisplay: 'full',
         charCounter: true,
-        charCounterLabel: 'Characters :',
+        charCounterLabel: '글자수 :',
         imageGalleryUrl: 'https://etyswjpn79.execute-api.ap-northeast-1.amazonaws.com/suneditor-demo',
         buttonList: [
             // default
@@ -232,9 +229,11 @@
         codeMirror: CodeMirror,
         katex: katex,
     });
-    document.getElementById('submit').addEventListener('click', function() {
-        const element = document.querySelector('.sun-editor-editable');
-        document.getElementById('editor_classic').innerHTML = element.innerHTML;
+
+    document.getElementById('submit').addEventListener('mouseover', function() {
+
+        const content = document.querySelector('.sun-editor-editable').innerHTML;
+        document.getElementById('editor_classic').innerHTML = content;
     });
 </script>
 </body>

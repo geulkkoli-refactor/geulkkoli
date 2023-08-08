@@ -1,6 +1,5 @@
 package com.geulkkoli.web.post.dto;
 
-import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import lombok.Builder;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -10,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Setter
 public class AddDTO {
@@ -29,7 +27,7 @@ public class AddDTO {
     @NotBlank
     private String nickName;
 
-    private String tagList = "";
+    private String hashTagString = "";
 
     public AddDTO() {
     }
@@ -41,7 +39,7 @@ public class AddDTO {
         this.title = title;
         this.postBody = postBody;
         this.nickName = nickName;
-        this.tagList = tagList;
+        this.hashTagString = tagList;
 
     }
 
@@ -61,12 +59,12 @@ public class AddDTO {
         return nickName;
     }
 
-    public String getTagList() {
-        return tagList;
+    public String getHashTagString() {
+        return hashTagString;
     }
 
     public List<String> tagLists() {
-        return Arrays.stream(tagList.split(" ")).collect(Collectors.toList());
+        return Arrays.stream(hashTagString.split(" ")).collect(Collectors.toList());
     }
 
     @Override
@@ -76,7 +74,7 @@ public class AddDTO {
                 ", title='" + title + '\'' +
                 ", postBody='" + postBody + '\'' +
                 ", nickName='" + nickName + '\'' +
-                ", tagList='" + tagList + '\'' +
+                ", tagList='" + hashTagString + '\'' +
                 '}';
     }
 }
