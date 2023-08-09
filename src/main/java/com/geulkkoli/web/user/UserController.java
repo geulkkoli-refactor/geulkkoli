@@ -6,8 +6,10 @@ import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.favorites.Favorites;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.follow.service.FollowService;
+import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
+import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.social.service.SocialInfoFindService;
 import com.geulkkoli.domain.social.service.SocialInfoService;
 import com.geulkkoli.domain.user.User;
@@ -25,6 +27,8 @@ import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
 import com.geulkkoli.web.user.dto.mypage.calendar.CalendarDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.buf.Utf8Encoder;
+import org.bouncycastle.util.encoders.UTF8;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +40,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 
@@ -56,6 +64,7 @@ public class UserController {
     private final UserService userService;
     private final UserFindService userFindService;
     private final PostFindService postFindService;
+    private final PostService postService;
     private final PasswordService passwordService;
     private final FollowFindService followFindService;
     private final SocialInfoService socialInfoService;
@@ -78,6 +87,28 @@ public class UserController {
         modelAndView.addObject("page",pagingDTO);
         return modelAndView;
     }
+
+    @DeleteMapping("/{nickName}/delete/{postId}")
+    public RedirectView deletePost(@PathVariable("nickName") String userNickName , @PathVariable("postId") Long postId) {
+        User requestUser = userFindService.findByNickName(userNickName);
+        Post post = postFindService.findById(postId);
+        if (!post.getUser().equals(requestUser)) {
+            try {
+                NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
+            } catch (NotAuthorException e) {
+                log.error(e.getMessage());
+                return new RedirectView("/error");
+            }
+        }
+        postService.deletePost(post, requestUser);
+        String encode = UriComponentsBuilder.newInstance().path(userNickName).build().encode().toUriString();
+        log.info("userNickName : {}", encode);
+
+        RedirectView redirectView = new RedirectView("/user/" + encode);
+        log.info("redirectView : {}", redirectView.getUrl());
+        return redirectView;
+    }
+
 
     @GetMapping("{nickName}/calendar")
     @ResponseBody

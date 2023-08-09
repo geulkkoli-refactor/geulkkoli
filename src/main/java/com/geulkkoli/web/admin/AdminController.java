@@ -6,8 +6,8 @@ import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.post.dto.PostEditRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -86,13 +86,13 @@ public class AdminController {
 
     @GetMapping("/add")
     public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new AddDTO());
+        model.addAttribute("addDTO", new PostAddDTO());
         return "admin/noticeAddForm";
     }
 
     //새 게시글 등록
     @PostMapping("/add")
-    public String postAdd(@Validated @ModelAttribute AddDTO post, BindingResult bindingResult,
+    public String postAdd(@Validated @ModelAttribute PostAddDTO post, BindingResult bindingResult,
                           RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest request) {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
 
@@ -114,7 +114,7 @@ public class AdminController {
     public String movePostEditForm(Model model, @PathVariable Long postId,
                                    @RequestParam(defaultValue = "") String searchType,
                                    @RequestParam(defaultValue = "") String searchWords) {
-        EditDTO postPage = EditDTO.toDTO(postFindService.findById(postId));
+        PostEditRequestDTO postPage = PostEditRequestDTO.toDTO(postFindService.findById(postId));
         model.addAttribute("editDTO", postPage);
         searchDefault(model, searchType, searchWords);
         return "admin/noticeEditForm";
@@ -122,7 +122,7 @@ public class AdminController {
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public String editPost(@Validated @ModelAttribute EditDTO updateParam, BindingResult bindingResult,
+    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
                            @PathVariable Long postId, RedirectAttributes redirectAttributes, HttpServletRequest request,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {

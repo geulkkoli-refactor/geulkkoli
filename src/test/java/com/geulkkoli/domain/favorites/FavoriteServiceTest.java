@@ -5,7 +5,7 @@ import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.AddDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,19 +73,19 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void beforeEach () {
-        AddDTO addDTO01 = AddDTO.builder()
+        PostAddDTO postAddDTO01 = PostAddDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        post01 = postRepository.save(user.writePost(addDTO01));
+        post01 = postRepository.save(user.writePost(postAddDTO01));
 
-        AddDTO addDTO02 = AddDTO.builder()
+        PostAddDTO postAddDTO02 = PostAddDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
-        post02 = postRepository.save(user.writePost(addDTO02));
+        post02 = postRepository.save(user.writePost(postAddDTO02));
     }
 
     @Test

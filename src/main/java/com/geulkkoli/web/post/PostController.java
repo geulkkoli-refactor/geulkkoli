@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -97,7 +96,7 @@ public class PostController {
                                  @RequestParam(defaultValue = "") String searchType,
                                  @RequestParam(defaultValue = "") String searchWords) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        ModelAndView mv = new ModelAndView("/post/channels");
+        ModelAndView mv = new ModelAndView("post/channels");
         //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
@@ -142,13 +141,13 @@ public class PostController {
     //게시글 addForm html 로 이동
     @GetMapping("/add")
     public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new AddDTO());
+        model.addAttribute("addDTO", new PostAddDTO());
         return "post/postAddForm";
     }
 
     //새 게시글 등록
     @PostMapping("/add")
-    public String postAdd(@Validated @ModelAttribute AddDTO post, BindingResult bindingResult,
+    public String postAdd(@Validated @ModelAttribute PostAddDTO post, BindingResult bindingResult,
                           RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest request)
             throws UnsupportedEncodingException {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
@@ -220,8 +219,9 @@ public class PostController {
     public String movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
                                    @RequestParam(defaultValue = "") String searchType,
                                    @RequestParam(defaultValue = "") String searchWords) {
-        EditDTO postPage = EditDTO.toDTO(postFindService.findById(postId));
-        model.addAttribute("editDTO", postPage);
+        PostEditRequestDTO editPost = PostEditRequestDTO.toDTO(postFindService.findById(postId));
+        log.info("editPost: {}", editPost);
+        model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
         return "post/postEditForm";
@@ -229,7 +229,7 @@ public class PostController {
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public String editPost(@Validated @ModelAttribute EditDTO updateParam, BindingResult bindingResult,
+    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
                            @PathVariable Long postId, RedirectAttributes redirectAttributes,
                            @RequestParam(defaultValue = "0") String page,
                            @RequestParam(defaultValue = "") String searchType,
@@ -251,23 +251,6 @@ public class PostController {
     }
 
     //게시글 삭제
-    @DeleteMapping("/request")
-    public RedirectView deletePost(@RequestParam("postId") Long postId,
-                                   @RequestParam("userNickName") String userNickName) {
-        User requestUser = userFindService.findByNickName(userNickName);
-        Post post = postFindService.findById(postId);
-        if (!post.getUser().equals(requestUser)) {
-            try {
-                NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
-            } catch (NotAuthorException e) {
-                log.error(e.getMessage());
-                return new RedirectView("/user/" + userNickName);
-            }
-        }
-        postService.deletePost(post, requestUser);
-
-        return new RedirectView("/user/" + userNickName);
-    }
 
     //임시저장기능 (현재는 빈 값만 들어옴)
     @GetMapping("/savedone")

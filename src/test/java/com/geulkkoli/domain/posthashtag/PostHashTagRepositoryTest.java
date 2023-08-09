@@ -7,20 +7,14 @@ import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.AddDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -161,12 +155,12 @@ class PostHashTagRepositoryTest {
     }
 
     private Post createPost(User user, String title, String postBody) {
-        AddDTO addDTO01 = AddDTO.builder()
+        PostAddDTO postAddDTO01 = PostAddDTO.builder()
                 .title(title)
                 .postBody(postBody)
                 .nickName(user.getNickName())
                 .build();
-        return postRepository.save(user.writePost(addDTO01));
+        return postRepository.save(user.writePost(postAddDTO01));
     }
 
     private User creatUser(String userName, String nickName, String email, String phoneNo, String password, String gender) {

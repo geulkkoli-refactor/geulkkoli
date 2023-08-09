@@ -11,13 +11,12 @@ import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class EditDTO {
+public class PostEditRequestDTO {
 
     @NotNull
     private Long postId;
@@ -39,8 +38,8 @@ public class EditDTO {
 
 
     @Builder
-    public EditDTO(Long postId, String title, String postBody,
-                   String nickName, String tags) {
+    public PostEditRequestDTO(Long postId, String title, String postBody,
+                              String nickName, String tags) {
         this.postId = postId;
         this.title = title;
         this.postBody = HtmlUtils.htmlEscape(postBody);
@@ -48,11 +47,10 @@ public class EditDTO {
         this.tags = tags;
     }
 
-    public static EditDTO toDTO(Post post) {
+    public static PostEditRequestDTO toDTO(Post post) {
         List<PostHashTag> postHashTags = post.getPostHashTags();
         String tagNames = postHashTags.stream().map(i -> i.getHashTag().getHashTagName()).collect(Collectors.joining(HashTagSign.GENERAL.getSign()));
-
-        return EditDTO.builder()
+        return PostEditRequestDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .postBody(post.getPostBody())

@@ -4,18 +4,15 @@ import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostNotExistException;
 import com.geulkkoli.domain.post.PostRepository;
-import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserNotExistException;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.post.dto.PostEditRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Slf4j
 @Transactional
@@ -39,10 +36,10 @@ public class PostService {
                 .orElseThrow(() -> new PostNotExistException("No post found id matches:" + postId));
     }
 
-    public Post savePost(AddDTO addDTO, User user) {
-        Post writePost = user.writePost(addDTO);
+    public Post savePost(PostAddDTO postAddDTO, User user) {
+        Post writePost = user.writePost(postAddDTO);
         Post save = postRepository.save(writePost);
-        postHashTagService.addHashTagsToPost(save, addDTO);
+        postHashTagService.addHashTagsToPost(save, postAddDTO);
 
         return save;
     }
@@ -52,7 +49,7 @@ public class PostService {
      * @param updateParam
      * @return postHashTagService의 hashTagSerparator가 해시태그를 찾아 List<HashTag>로 반환한다. 나
      */
-    public Post updatePost(Post post, EditDTO updateParam) {
+    public Post updatePost(Post post, PostEditRequestDTO updateParam) {
         post.getUser().editPost(post, updateParam);
         if (updateParam.getTags().isEmpty()) {
             post.deleteAllPostHashTag();

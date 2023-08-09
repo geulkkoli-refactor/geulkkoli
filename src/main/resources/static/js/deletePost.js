@@ -10,11 +10,10 @@ function deletePost() {
         postId: postId,
         userNickName: userNickName
     };
-    let query = Object.keys(params)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
-        .join('&');
+
+    const uri = '/user/' + userNickName+ '/delete/' + postId;
     if (compareTitle === deleteTitle) {
-        fetch('/post/request?' + query, {
+        fetch(uri, {
             headers: {
                 'header': headerName,
                 'X-Requested-With': 'XMLHttpRequest',
@@ -27,7 +26,9 @@ function deletePost() {
             })
             .then(
                 alert("삭제되었습니다.")
-            )
+            ).catch(error => {
+            console.log(error);
+        })
     } else {
         alert("제목이 일치하지 않습니다.");
     }
