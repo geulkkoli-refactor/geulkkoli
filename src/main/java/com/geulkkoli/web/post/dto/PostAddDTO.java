@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Setter
-public class AddDTO {
+public class PostAddDTO {
 
     @NotNull
     private Long authorId;
@@ -30,11 +30,11 @@ public class AddDTO {
 
     private String hashTagString = "";
 
-    public AddDTO() {
+    public PostAddDTO() {
     }
 
     @Builder
-    public AddDTO(Long authorId, String title, String postBody
+    public PostAddDTO(Long authorId, String title, String postBody
             , String nickName, String tagList) {
         this.authorId = authorId;
         this.title = title;

@@ -20,7 +20,7 @@
   <hr class="my-4">
   <div class="container">
     <div>
-      <form id="edit" th:action="@{/admin/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}" th:object="${editDTO}" method="post">
+      <form id="edit" th:action="@{/admin/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}" th:object="${postEditRequestDTO}" method="post">
         <input type="hidden" th:field="*{nickName}" form="edit">
         <div class="mb-3">
           <label th:text="제목">제목</label>

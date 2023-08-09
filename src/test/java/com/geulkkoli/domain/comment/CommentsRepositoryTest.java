@@ -6,7 +6,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.comment.dto.CommentEditDTO;
-import com.geulkkoli.web.post.dto.AddDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -62,20 +61,20 @@ class CommentsRepositoryTest {
 
     @BeforeEach
     void beforeEach () {
-        AddDTO addDTO01 = AddDTO.builder()
+        PostAddDTO postAddDTO01 = PostAddDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        post01 = user.writePost(addDTO01);
+        post01 = user.writePost(postAddDTO01);
         postRepository.save(post01);
 
-        AddDTO addDTO02 = AddDTO.builder()
+        PostAddDTO postAddDTO02 = PostAddDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
-        post02 = user.writePost(addDTO02);
+        post02 = user.writePost(postAddDTO02);
         postRepository.save(post02);
     }
 

@@ -5,12 +5,10 @@ import com.geulkkoli.domain.hashtag.HashTagRepository;
 import com.geulkkoli.domain.hashtag.HashTagType;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
-import com.geulkkoli.domain.post.service.PostService;
-import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.post.dto.PostEditRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,7 +82,7 @@ class PostHashTagServiceTest {
     @DisplayName("글 작성 후 해시태그를 추가할 수 있다.")
     @Test
     void addHashTagsToPost() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
                 .tagList("해시태그 소설 완결")
@@ -93,10 +90,10 @@ class PostHashTagServiceTest {
                 .authorId(1L)
                 .build();
 
-        Post post1 = user.writePost(addDTO);
+        Post post1 = user.writePost(postAddDTO);
         postRepository.save(post1);
 
-        Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
+        Post post = postHashTagService.addHashTagsToPost(post1, postAddDTO);
 
         assertThat(post.getPostHashTags()).hasSize(3);
         assertThat(post.getPostHashTags().get(post.getPostHashTags().size() - 1)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("해시태그"), "새로운 해시태그"));
@@ -106,7 +103,7 @@ class PostHashTagServiceTest {
     @DisplayName("글 작성 후 빈 해시태그가 들어올 시 아무것도 추가하지 않는다.")
     @Test
     void addHashTagsToPost_blank() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
                 .tagList("")
@@ -114,10 +111,10 @@ class PostHashTagServiceTest {
                 .authorId(1L)
                 .build();
 
-        Post post1 = user.writePost(addDTO);
+        Post post1 = user.writePost(postAddDTO);
         postRepository.save(post1);
 
-        Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
+        Post post = postHashTagService.addHashTagsToPost(post1, postAddDTO);
 
         assertThat(post.getPostHashTags()).isEmpty();
     }
@@ -125,7 +122,7 @@ class PostHashTagServiceTest {
     @DisplayName("글 작성 후 해시태그를 바꿀 수 있다.")
     @Test
     void editHashTagsToPost() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
                 .tagList("신과함께 소설 완결")
@@ -133,11 +130,11 @@ class PostHashTagServiceTest {
                 .authorId(1L)
                 .build();
 
-        Post post1 = user.writePost(addDTO);
+        Post post1 = user.writePost(postAddDTO);
         postRepository.save(post1);
-        Post post = postHashTagService.addHashTagsToPost(post1, addDTO);
+        Post post = postHashTagService.addHashTagsToPost(post1, postAddDTO);
 
-        EditDTO editDTO = EditDTO.builder()
+        PostEditRequestDTO postEditRequestDTO = PostEditRequestDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
                 .tags("완결")
@@ -145,7 +142,7 @@ class PostHashTagServiceTest {
                 .postId(post.getPostId())
                 .build();
 
-        Post editPost = postHashTagService.editHashTagsToPost(post, editDTO);
+        Post editPost = postHashTagService.editHashTagsToPost(post, postEditRequestDTO);
 
         assertThat(editPost.getPostHashTags()).hasSize(1);
         assertThat(editPost.getPostHashTags().get(0)).has(new Condition<>(postHashTag -> postHashTag.getHashTag().getHashTagName().contains("완결"), "판타지"));

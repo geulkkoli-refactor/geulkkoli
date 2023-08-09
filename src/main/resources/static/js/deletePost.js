@@ -10,11 +10,10 @@ function deletePost() {
         postId: postId,
         userNickName: userNickName
     };
-    let query = Object.keys(params)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
-        .join('&');
+
+    const uri = '/user/' + userNickName+ '/delete/' + postId;
     if (compareTitle === deleteTitle) {
-        fetch('/post/request?' + query, {
+        fetch(uri, {
             headers: {
                 'header': headerName,
                 'X-Requested-With': 'XMLHttpRequest',

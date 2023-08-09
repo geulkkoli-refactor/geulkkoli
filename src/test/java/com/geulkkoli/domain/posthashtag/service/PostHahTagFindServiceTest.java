@@ -10,7 +10,7 @@ import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.AddDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
 import com.geulkkoli.web.post.dto.PostRequestDTO;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
@@ -83,38 +83,38 @@ class PostHahTagFindServiceTest {
     @BeforeEach
     void beforeEach() {
         for (int i = 0; i < 10; i++) {
-            AddDTO addDTO = AddDTO.builder()
+            PostAddDTO postAddDTO = PostAddDTO.builder()
                     .title("testTitle" + i)
                     .postBody("test postbody " + i)
                     .nickName(user.getNickName())
                     .build();
-            post = user.writePost(addDTO);
+            post = user.writePost(postAddDTO);
             postRepository.save(post);
         }
 
 
-        AddDTO addDTO01 = AddDTO.builder()
+        PostAddDTO postAddDTO01 = PostAddDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        post01 = user.writePost(addDTO01);
+        post01 = user.writePost(postAddDTO01);
         postRepository.save(post01);
 
-        AddDTO addDTO02 = AddDTO.builder()
+        PostAddDTO postAddDTO02 = PostAddDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
-        post02 = user.writePost(addDTO02);
+        post02 = user.writePost(postAddDTO02);
         postRepository.save(post02);
 
-        AddDTO addDTO03 = AddDTO.builder()
+        PostAddDTO postAddDTO03 = PostAddDTO.builder()
                 .title("testTitle03")
                 .postBody("test postbody 03")
                 .nickName(user.getNickName())
                 .build();
-        post03 = user.writePost(addDTO03);
+        post03 = user.writePost(postAddDTO03);
         postRepository.save(post03);
 
         posts = postRepository.findAll();
@@ -137,7 +137,7 @@ class PostHahTagFindServiceTest {
     @DisplayName("실제로 검색 타입, 검색어에 따라 잘 찾을 수 있는지")
     public void searchPostsListByHashTagVer() {
         //given
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("test01")
                 .postBody("TestingCode01")
                 .tagList("신과 함께 소설 완결")
@@ -146,7 +146,7 @@ class PostHahTagFindServiceTest {
                 .build();
 
         for (int i = 0; i < 10; i++) {
-            postService.savePost(addDTO, user);
+            postService.savePost(postAddDTO, user);
         }
 
         String searchWords = "소설#완결#신과 함께";

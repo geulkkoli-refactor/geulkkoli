@@ -3,6 +3,12 @@ spring:
     activate:
       on-profile: default
 
+  server:
+    servlet:
+      encoding:
+        charset: UTF-8
+        enabled: true
+
   servlet:
     multipart:
       max-file-size: 10MB

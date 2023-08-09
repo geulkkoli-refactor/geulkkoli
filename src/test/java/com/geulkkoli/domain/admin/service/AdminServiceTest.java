@@ -16,8 +16,8 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.admin.DailyTopicDto;
 import com.geulkkoli.web.admin.ReportDto;
-import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.EditDTO;
+import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.post.dto.PostEditRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
@@ -26,14 +26,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,12 +112,12 @@ class AdminServiceImplTest {
     @DisplayName("게시글 작성자 조회")
     void findUserByPostId() {
         //given
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build();
 
-        Post post = user.writePost(addDTO);
+        Post post = user.writePost(postAddDTO);
         postRepository.save(post);
 
         //when
@@ -133,20 +131,20 @@ class AdminServiceImplTest {
     @DisplayName("신고받은 게시글 조회")
     void findReportedPosts() {
         //given
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build();
 
-        Post post = user.writePost(addDTO);
+        Post post = user.writePost(postAddDTO);
         postRepository.save(post);
 
 
-        AddDTO addDTO1 = AddDTO.builder()
+        PostAddDTO postAddDTO1 = PostAddDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName("점심뭐먹지").build();
-        Post post1 = user.writePost(addDTO1);
+        Post post1 = user.writePost(postAddDTO1);
 
         postRepository.save(post1);
 
@@ -203,12 +201,12 @@ class AdminServiceImplTest {
     @DisplayName("게시글을 삭제한다")
     @Test
     void deletePost() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build();
 
-        Post post = user.writePost(addDTO);
+        Post post = user.writePost(postAddDTO);
         postRepository.save(post);
 
         //when
@@ -221,14 +219,14 @@ class AdminServiceImplTest {
     @DisplayName("공지사항을 저장한다")
     @Test
     void saveNotice() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .tagList("이벤트 소설 완결")
                 .nickName("점심뭐먹지").build();
 
 
-        Post post = adminService.saveNotice(addDTO, user);
+        Post post = adminService.saveNotice(postAddDTO, user);
 
         assertAll(
                 () -> assertThat(post.getTitle()).isEqualTo("testTitle"),
@@ -240,21 +238,21 @@ class AdminServiceImplTest {
     @DisplayName("공지사항을 수정한다")
     @Test
     void updateNotice() {
-        AddDTO addDTO = AddDTO.builder()
+        PostAddDTO postAddDTO = PostAddDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .tagList("이벤트 완결")
                 .nickName("점심뭐먹지")
                 .build();
 
-        Post post = adminService.saveNotice(addDTO, user);
-        EditDTO editDTO = EditDTO.builder()
+        Post post = adminService.saveNotice(postAddDTO, user);
+        PostEditRequestDTO postEditRequestDTO = PostEditRequestDTO.builder()
                 .title("testTitle1")
                 .postBody("test")
                 .tags("이벤트 구독 소설")
                 .nickName("밥뭐먹지")
                 .build();
-        Post editPost = adminService.updateNotice(post.getPostId(), editDTO);
+        Post editPost = adminService.updateNotice(post.getPostId(), postEditRequestDTO);
 
         assertAll(
                 () -> assertThat(editPost.getTitle()).isEqualTo("testTitle1"),
