@@ -17,9 +17,9 @@
   </style>
 </head>
 <body>
-<header id="header" th:include="header"></header>
+<div th:include="nav"></div>
 <div class="contentBox">
-  <h2 style="text-align: center">로그인</h2>
+
   <br>
   <br>
   <form action th:action="@{/login-process}" th:object="${loginForm}" method="post">
@@ -56,32 +56,33 @@
 
     <div class="row">
       <div class="col">
-        <button class="w-100 btn btn-primary btn-lg" type="submit">로그인</button>
+        <button class="w-100 btn btn-outline-success btn-lg" type="submit">로그인</button>
       </div>
     </div>
 
+      <div class="my-md-3">
+        <a th:href="@{/oauth2/authorization/kakao} " class="ms-lg-0">
+          <img src="/images/login/kakao_login.png" alt="카카오 로그인">
+        </a>
+        <a th:href="@{/oauth2/authorization/naver}" class="mt-2">
+          <img src="/images/login/naver_full_name.png" alt="네이버 로그인" style="width: 183px" height=45px>
+        </a>
+        <a th:href="@{/oauth2/authorization/google}" class="mt-2">
+          <img src="/images/login/google_login.png" style="width: 183px" height="45px" alt="구글 로그인">
+        </a>
+      </div>
 
-    <div class="col">
-      <a th:href="@{/oauth2/authorization/kakao} " class="btn btn-block">
-        <i class="fa fa-kakao fa-fw"></i> 카카오 로그인
-      </a>
-      <a th:href="@{/oauth2/authorization/naver}" class="btn btn-block">
-        <i class="fa fa-naver fa-fw"></i> 네이버 로그인
-      </a>
-      <a th:href="@{/oauth2/authorization/google}" class="btn btn-block">
-        <i class="fa fa-google fa-fw"></i> 구글 로그인
-      </a>
+    <div class="m-sm-auto">
+      <button type="button"
+              onclick="location.href='/findEmail'"
+              class="noBack">이메일 찾기
+      </button>
+      &nbsp
+      <button type="button"
+              onclick="location.href='/findPassword'"
+              class="noBack">비밀번호 찾기
+      </button>
     </div>
-
-    <button type="button"
-            onclick="location.href='/findEmail'"
-            class="noBack">이메일 찾기
-    </button>
-    &nbsp
-    <button type="button"
-            onclick="location.href='/findPassword'"
-            class="noBack">비밀번호 찾기
-    </button>
   </form>
 </div>
 <br>

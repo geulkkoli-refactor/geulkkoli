@@ -8,16 +8,13 @@
     <title>회원 정보 수정</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/userForm.css">
-    <link rel="stylesheet" href="/css/header.css">
 </head>
 
 <body>
-<header id="header" th:include="header"></header>
-<h1>회원 정보 수정</h1>
-
-<br>
-<br>
-
+<div th:include="nav"></div>
+<div class="my-md-5">
+    <h3 class="text-center"> 회원 정보 수정</h3>
+</div>
 <form action th:action="@{/user/edit}" th:object="${editForm}" method="post">
     <div class="mb-3">
         <label for="userName">
@@ -125,11 +122,11 @@
         <input type="button" value="취소하기" class="btn btn-outline-primary form-control-lg" onclick="location.href='/'">
     </div>
     <div class="d-grid gap-2 col-1 mx-auto">
-        <button class="btn btn-primary" type="button" th:attr="data-url='/user/'+${editForm.getNickName()+'/unsubscribed'}"
+        <button class="btn btn-primary" type="button"
+                th:attr="data-url='/user/'+${editForm.getNickName()+'/unsubscribed'}"
                 onclick="location.href=this.getAttribute('data-url')">탈퇴하기
         </button>
     </div>
 </form>
-<div id="footer" th:include="footer"></div>
 </body>
 </html>

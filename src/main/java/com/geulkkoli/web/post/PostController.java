@@ -63,7 +63,6 @@ public class PostController {
     @PostMapping("/upload-file")
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile multipartFile) {
-
         String originalFileName = multipartFile.getOriginalFilename();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String fileName = UUID.randomUUID() + extension;
@@ -83,20 +82,6 @@ public class PostController {
 
         return src;
     }
-
-    //사이드 네비게이션의 목록을 누를 시 진입점
-    @GetMapping("/tag/{tag}/{subTag}")
-    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                      @PathVariable String tag, @PathVariable String subTag) {
-        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        ModelAndView modelAndView = new ModelAndView("post/postList");
-        modelAndView.addObject("page", pagingDTO);
-        return modelAndView;
-    }
-
-
     /**
      * @param pageable - get 파라미터 page, size, sort 캐치
      * @return
@@ -106,27 +91,52 @@ public class PostController {
      * sort: 정렬기준
      * direction: 정렬법
      */
-    @GetMapping("/list")
-    public String postList(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords, Model model) {
+
+    @GetMapping("/channels")
+    public ModelAndView channels(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                 @RequestParam(defaultValue = "") String searchType,
+                                 @RequestParam(defaultValue = "") String searchWords) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
+        ModelAndView mv = new ModelAndView("/post/channels");
         //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-            Page<PostRequestListDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
+            Page<PostRequestDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
             PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-            model.addAttribute("page", pagingDTO);
-            searchDefault(model, searchType, searchWords);
-            return "post/postList";
+            mv.addObject("page", pagingDTO);
+            searchDefault(mv, searchType, searchWords);
+            return mv;
         }
 
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        model.addAttribute("page", pagingDTO);
-        searchDefault(model, searchType, searchWords);
-        return "post/postList";
+        mv.addObject("page", pagingDTO);
+        searchDefault(mv, searchType, searchWords);
+        return mv;
     }
+
+    //사이드 네비게이션의 목록을 누를 시 진입점
+    @GetMapping("/tag/{tag}/{subTag}")
+    public ModelAndView postListByTags(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag, @PathVariable(required = false) String subTag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/channels");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+    @GetMapping("/tag/{tag}")
+    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/channels");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+
 
     //게시글 addForm html 로 이동
     @GetMapping("/add")
@@ -178,7 +188,7 @@ public class PostController {
             model.addAttribute("authorUser", userProfile);
             model.addAttribute("checkFavorite", checkFavorite);
             searchDefault(model, searchType, searchWords);
-            return "post/postPage";
+            return "post/blog-post";
         }
 
         User loggingUser = userFindService.findById(Long.parseLong(authUser.getUserId()));
@@ -201,7 +211,7 @@ public class PostController {
         model.addAttribute("loginUserId", authUser.getUserId());
         model.addAttribute("comments", new CommentBodyDTO());
         searchDefault(model, searchType, searchWords);
-        return "post/postPage";
+        return "post/blog-post";
     }
 
     //게시글 수정 html로 이동
@@ -223,7 +233,6 @@ public class PostController {
                            @RequestParam(defaultValue = "0") String page,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {
-
 
         if (bindingResult.hasErrors()) {
             return "post/postEditForm";
@@ -253,7 +262,7 @@ public class PostController {
             }
         }
         postService.deletePost(post, requestUser);
-        return "redirect:/post/list";
+        return "redirect:/user/" + userNickName;
     }
 
     //임시저장기능 (현재는 빈 값만 들어옴)
@@ -269,5 +278,10 @@ public class PostController {
     private static void searchDefault(Model model, String searchType, String searchWords) {
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchWords", searchWords);
+    }
+
+    private static void searchDefault(ModelAndView model, String searchType, String searchWords) {
+        model.addObject("searchType", searchType);
+        model.addObject("searchWords", searchWords);
     }
 }

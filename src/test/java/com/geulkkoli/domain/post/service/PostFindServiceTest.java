@@ -11,7 +11,7 @@ import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import com.geulkkoli.web.post.dto.PostRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,9 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -180,7 +178,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, SearchType.TITLE.getType(), "title");
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, SearchType.TITLE.getType(), "title");
 
         //then
         assertAll(
@@ -241,7 +239,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "제목", "title fsdfsdf sdfsdfds");
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "제목", "title fsdfsdf sdfsdfds");
 
         //then
         assertAll(
@@ -311,7 +309,7 @@ class PostFindServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
 
         assertAll(
                 () -> assertThat(postRequestListDTOS).hasSize(3),
@@ -363,7 +361,7 @@ class PostFindServiceTest {
         HashTag 완결 = hashTagRepository.findByHashTagName("완결");
 
         //when
-        Page<PostRequestListDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, List.of(소설, 완결));
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, List.of(소설, 완결));
 
         //then
         assertThat(postRequestListDTOS).hasSize(3);

@@ -11,7 +11,7 @@ import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.post.dto.AddDTO;
-import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import com.geulkkoli.web.post.dto.PostRequestDTO;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -156,8 +156,8 @@ class PostHahTagFindServiceTest {
         Pageable pageable = PageRequest.of(1, 5);
 
 
-        Page<PostRequestListDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable,hashTag);
-        List<PostRequestListDTO> findPosts = listDTOS.get().collect(Collectors.toList());
+        Page<PostRequestDTO> listDTOS = postHahTagFindService.searchPostsListByHashTag(pageable,hashTag);
+        List<PostRequestDTO> findPosts = listDTOS.get().collect(Collectors.toList());
 
         //then
         assertThat(findPosts).hasSize(5);

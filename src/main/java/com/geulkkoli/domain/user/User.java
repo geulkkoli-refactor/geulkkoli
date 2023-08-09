@@ -66,7 +66,7 @@ public class User extends ConfigDate {
 
     //게시글의 유저 매핑
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Post> posts = new LinkedHashSet<>();
+    private List<Post> posts = new ArrayList<>();
 
     //댓글의 유저 매핑
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

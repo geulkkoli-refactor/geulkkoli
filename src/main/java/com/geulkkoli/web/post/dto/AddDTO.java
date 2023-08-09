@@ -3,6 +3,7 @@ package com.geulkkoli.web.post.dto;
 import lombok.Builder;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ public class AddDTO {
     private String title;
 
     @NotBlank
-    @Length(min = 10, max = 100000)
+    @Length(min = 10, max = 10000)
     private String postBody;
 
     @NotBlank
@@ -37,7 +38,7 @@ public class AddDTO {
             , String nickName, String tagList) {
         this.authorId = authorId;
         this.title = title;
-        this.postBody = postBody;
+        this.postBody = HtmlUtils.htmlEscape(postBody);
         this.nickName = nickName;
         this.hashTagString = tagList;
 

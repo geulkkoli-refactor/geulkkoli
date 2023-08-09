@@ -1,11 +1,10 @@
 package com.geulkkoli.domain.posthashtag.service;
 
 import com.geulkkoli.domain.hashtag.HashTag;
-import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
-import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import com.geulkkoli.web.post.dto.PostRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,17 +23,11 @@ public class PostHahTagFindService {
 
     private final PostHashTagRepository postHashTagRepository;
 
-    public Page<PostRequestListDTO> searchPostsListByHashTag(Pageable pageable, List<HashTag> tags) {
+    public Page<PostRequestDTO> searchPostsListByHashTag(Pageable pageable, List<HashTag> tags) {
 
         List<Post> resultList = searchPostContainAllHashTags(tags);
 
-        return convertPostSearchRequestListDTO(pageable, resultList).map(post -> new PostRequestListDTO(
-                post.getPostId(),
-                post.getTitle(),
-                post.getNickName(),
-                post.getUpdatedAt(),
-                post.getPostHits()
-        ));
+        return convertPostSearchRequestListDTO(pageable, resultList).map(PostRequestDTO::toDTO);
     }
 
     //searchPostsListByHashTag의 페이징 처리를 위해, 페이징 값을 반환해줍니다.

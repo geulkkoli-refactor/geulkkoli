@@ -15,11 +15,10 @@ import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.follow.dto.FollowsCount;
 import com.geulkkoli.web.post.UserProfileDTO;
 import com.geulkkoli.web.post.dto.PageDTO;
 import com.geulkkoli.web.post.dto.PagingDTO;
-import com.geulkkoli.web.post.dto.PostRequestListDTO;
+import com.geulkkoli.web.post.dto.PostRequestDTO;
 import com.geulkkoli.web.user.dto.edit.PasswordEditFormDto;
 import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
 import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
@@ -65,15 +64,18 @@ public class UserController {
 
 
     @GetMapping("/{nickName}")
-    public ModelAndView getMyPage(@PathVariable("nickName") String nickName) {
+    public ModelAndView getMyPage(@PathVariable("nickName") String nickName,@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         User user = userFindService.findByNickName(nickName);
-        Integer followee = followFindService.countFolloweeByFollowerId(user.getUserId());
-        Integer follower = followFindService.countFollowerByFolloweeId(user.getUserId());
-        FollowsCount followsCount = FollowsCount.of(followee, follower);
-        ModelAndView modelAndView = new ModelAndView("user/mypage");
-        modelAndView.addObject("nickName",nickName);
-        modelAndView.addObject("followsCount", followsCount);
-
+        List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
+        List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+        int totalPosts = posts.size();
+        Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
+        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+        ModelAndView modelAndView = new ModelAndView("/user/blog-home");
+        modelAndView.addObject("loggingNickName", nickName);
+        modelAndView.addObject("page",pagingDTO);
         return modelAndView;
     }
 
@@ -121,13 +123,12 @@ public class UserController {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
         int totalPosts = posts.size();
         Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
-        Page<PostRequestListDTO> readInfos = pagePost.map(PostRequestListDTO::toDTO);
+        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
 
 
-        ModelAndView modelAndView = new ModelAndView("user/writepost", "pagingResponses", pagingDTO);
+        ModelAndView modelAndView = new ModelAndView("blog-home", "pagingResponses", pagingDTO);
         modelAndView.addObject("loggingNickName", nickName);
-
         return modelAndView;
     }
 
@@ -166,7 +167,7 @@ public class UserController {
         List<Post> subPosts = favoritePosts.subList(startIndex, endIndex);
 
         Page<Post> favoritsPost = new PageImpl<>(subPosts, pageable, favoritePosts.size());
-        Page<PostRequestListDTO> readInfos = favoritsPost.map(PostRequestListDTO::toDTO);
+        Page<PostRequestDTO> readInfos = favoritsPost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
         log.info("pagingDTO = {}", pagingDTO);
         ModelAndView modelAndView = new ModelAndView("user/favorites", "pagingResponses", pagingDTO);
