@@ -27,8 +27,6 @@ for (let page = block, index = 0;
     liPage.append(a);
     ul.appendChild(liPage);
 }
-console.log(li[0]);
-console.log(li[1]);
 
 isVisible(isFirst, li[0]);
 li[0].querySelector('a').href = makeURI(0, size);

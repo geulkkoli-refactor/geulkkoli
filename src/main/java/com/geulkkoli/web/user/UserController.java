@@ -40,6 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
@@ -65,15 +66,18 @@ public class UserController {
 
 
     @GetMapping("/{nickName}")
-    public ModelAndView getMyPage(@PathVariable("nickName") String nickName) {
+    public ModelAndView getMyPage(@PathVariable("nickName") String nickName,@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         User user = userFindService.findByNickName(nickName);
-        Integer followee = followFindService.countFolloweeByFollowerId(user.getUserId());
-        Integer follower = followFindService.countFollowerByFolloweeId(user.getUserId());
-        FollowsCount followsCount = FollowsCount.of(followee, follower);
-        ModelAndView modelAndView = new ModelAndView("user/mypage");
-        modelAndView.addObject("nickName",nickName);
-        modelAndView.addObject("followsCount", followsCount);
-
+        List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
+        List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+        int totalPosts = posts.size();
+        Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
+        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+        ModelAndView modelAndView = new ModelAndView("user/blog");
+        modelAndView.addObject("loggingNickName", nickName);
+        modelAndView.addObject("page",pagingDTO);
         return modelAndView;
     }
 
@@ -127,7 +131,6 @@ public class UserController {
 
         ModelAndView modelAndView = new ModelAndView("user/writepost", "pagingResponses", pagingDTO);
         modelAndView.addObject("loggingNickName", nickName);
-
         return modelAndView;
     }
 

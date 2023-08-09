@@ -188,7 +188,7 @@
 </div>
 <!--댓글 삭제를 위해 작성자 본인이 맞는지 확인 하기 위한 닉네임 확인-->
 <div sec:authorize="isFullyAuthenticated()">
-    <div id="auth-user-nickName" sec:authentication="principal.nickName">
+    <div hidden="hidden" id="auth-user-nickName" sec:authentication="principal.nickName">
     </div>
 </div>
 <!-- Footer-->

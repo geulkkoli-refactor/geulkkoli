@@ -63,7 +63,6 @@ public class PostController {
     @PostMapping("/upload-file")
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile multipartFile) {
-
         String originalFileName = multipartFile.getOriginalFilename();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String fileName = UUID.randomUUID() + extension;
@@ -86,8 +85,8 @@ public class PostController {
 
     @GetMapping("/channels")
     public ModelAndView channels(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords) {
+                                 @RequestParam(defaultValue = "") String searchType,
+                                 @RequestParam(defaultValue = "") String searchWords) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
         ModelAndView mv = new ModelAndView("/post/channels");
         //searchType이 해시태그 일때
@@ -104,7 +103,7 @@ public class PostController {
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
         mv.addObject("page", pagingDTO);
         searchDefault(mv, searchType, searchWords);
-       return mv;
+        return mv;
     }
 
     //사이드 네비게이션의 목록을 누를 시 진입점
@@ -118,7 +117,6 @@ public class PostController {
         modelAndView.addObject("page", pagingDTO);
         return modelAndView;
     }
-
 
     /**
      * @param pageable - get 파라미터 page, size, sort 캐치
@@ -247,7 +245,6 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {
 
-
         if (bindingResult.hasErrors()) {
             return "post/postEditForm";
         }
@@ -276,7 +273,7 @@ public class PostController {
             }
         }
         postService.deletePost(post, requestUser);
-        return "redirect:/post/list";
+        return "redirect:/user/" + userNickName;
     }
 
     //임시저장기능 (현재는 빈 값만 들어옴)
