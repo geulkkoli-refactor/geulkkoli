@@ -65,7 +65,7 @@
                     <div class="col">
                         <button class="w-100 btn btn-primary btn-lg"
                                 type="button"
-                                th:onclick="|location.href='@{/post/list(page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
+                                th:onclick="history.back()"
                                 th:value="취소">취소
                         </button>
                     </div>
