@@ -252,7 +252,7 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/request")
-    public RedirectView deletePost(@RequestParam("postId") Long postId,
+    public ModelAndView deletePost(@RequestParam("postId") Long postId,
                                    @RequestParam("userNickName") String userNickName) {
         User requestUser = userFindService.findByNickName(userNickName);
         Post post = postFindService.findById(postId);
@@ -261,12 +261,12 @@ public class PostController {
                 NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
             } catch (NotAuthorException e) {
                 log.error(e.getMessage());
-                return new RedirectView("/user/" + userNickName);
+                return new ModelAndView("redirect:/error");
             }
         }
         postService.deletePost(post, requestUser);
 
-        return new RedirectView("/user/" + userNickName);
+        return new ModelAndView("redirect:/");
     }
 
     //임시저장기능 (현재는 빈 값만 들어옴)

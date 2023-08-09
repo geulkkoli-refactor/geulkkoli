@@ -27,7 +27,9 @@ function deletePost() {
             })
             .then(
                 alert("삭제되었습니다.")
-            )
+            ).catch(error => {
+            console.log(error);
+        })
     } else {
         alert("제목이 일치하지 않습니다.");
     }
