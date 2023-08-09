@@ -113,7 +113,7 @@ public class PostController {
         List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
         Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        ModelAndView modelAndView = new ModelAndView("post/postList");
+        ModelAndView modelAndView = new ModelAndView("post/channels");
         modelAndView.addObject("page", pagingDTO);
         return modelAndView;
     }
@@ -127,27 +127,7 @@ public class PostController {
      * sort: 정렬기준
      * direction: 정렬법
      */
-    @GetMapping("/list")
-    public String postList(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords, Model model) {
-        log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        //searchType이 해시태그 일때
-        if (SearchType.HASH_TAG.getType().equals(searchType)) {
-            List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
-            Page<PostRequestDTO> postRequestListDTOS = postHashTagFindService.searchPostsListByHashTag(pageable, hashTag);
-            PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-            model.addAttribute("page", pagingDTO);
-            searchDefault(model, searchType, searchWords);
-            return "post/postList";
-        }
 
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        model.addAttribute("page", pagingDTO);
-        searchDefault(model, searchType, searchWords);
-        return "post/postList";
-    }
 
     //게시글 addForm html 로 이동
     @GetMapping("/add")
