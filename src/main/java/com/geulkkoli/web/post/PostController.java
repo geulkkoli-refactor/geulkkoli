@@ -97,7 +97,7 @@ public class PostController {
                                  @RequestParam(defaultValue = "") String searchType,
                                  @RequestParam(defaultValue = "") String searchWords) {
         log.info("searchType: {}, searchWords: {}", searchType, searchWords);
-        ModelAndView mv = new ModelAndView("/post/channels");
+        ModelAndView mv = new ModelAndView("post/channels");
         //searchType이 해시태그 일때
         if (SearchType.HASH_TAG.getType().equals(searchType)) {
             List<HashTag> hashTag = hashTagFindService.findHashTag(searchWords);
