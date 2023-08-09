@@ -73,7 +73,7 @@ public class UserController {
         Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
         Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
-        ModelAndView modelAndView = new ModelAndView("/user/blog-home");
+        ModelAndView modelAndView = new ModelAndView("user/blog-home");
         modelAndView.addObject("loggingNickName", nickName);
         modelAndView.addObject("page",pagingDTO);
         return modelAndView;
