@@ -28,7 +28,7 @@ public class PostRequestDTO {
         this.postId = postId;
         this.title = title;
         this.nickName = nickName;
-        this.contentSummary = contentSummary.replaceAll("<[^>]*>", "").substring(0, 10);
+        this.contentSummary = contentSummary.replaceAll("<[^>]*>", "").substring(0, 1);
         this.date = date;
         this.postHits = postHits;
     }
