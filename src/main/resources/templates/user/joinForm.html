@@ -14,12 +14,10 @@
 </head>
 
 <body>
-<header id="header" th:include="header"></header>
+<div th:include="nav"></div>
+<br>
 <h1>회원가입</h1>
-
 <br>
-<br>
-
 <form action="" th:action th:object="${joinForm}" method="post">
   <div class="mb-3">
     <label for="userName">
