@@ -15,7 +15,6 @@ import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.follow.dto.FollowsCount;
 import com.geulkkoli.web.post.UserProfileDTO;
 import com.geulkkoli.web.post.dto.PageDTO;
 import com.geulkkoli.web.post.dto.PagingDTO;
@@ -40,7 +39,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
@@ -75,7 +73,7 @@ public class UserController {
         Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
         Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
-        ModelAndView modelAndView = new ModelAndView("user/blog");
+        ModelAndView modelAndView = new ModelAndView("blog-home");
         modelAndView.addObject("loggingNickName", nickName);
         modelAndView.addObject("page",pagingDTO);
         return modelAndView;
@@ -129,7 +127,7 @@ public class UserController {
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
 
 
-        ModelAndView modelAndView = new ModelAndView("user/writepost", "pagingResponses", pagingDTO);
+        ModelAndView modelAndView = new ModelAndView("blog-home", "pagingResponses", pagingDTO);
         modelAndView.addObject("loggingNickName", nickName);
         return modelAndView;
     }

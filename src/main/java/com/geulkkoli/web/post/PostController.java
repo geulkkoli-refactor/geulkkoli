@@ -82,6 +82,15 @@ public class PostController {
 
         return src;
     }
+    /**
+     * @param pageable - get 파라미터 page, size, sort 캐치
+     * @return
+     * @PageableDefault - get 파라미터가 없을 때 기본설정 변경(기본값: page=0, size=20)
+     * page: 배열과 같이 0부터 시작한다. 즉, 0 = 1page
+     * size: 한 페이지에 보여줄 게시물 수
+     * sort: 정렬기준
+     * direction: 정렬법
+     */
 
     @GetMapping("/channels")
     public ModelAndView channels(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
@@ -108,8 +117,8 @@ public class PostController {
 
     //사이드 네비게이션의 목록을 누를 시 진입점
     @GetMapping("/tag/{tag}/{subTag}")
-    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                      @PathVariable String tag, @PathVariable String subTag) {
+    public ModelAndView postListByTags(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag, @PathVariable(required = false) String subTag) {
         List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
         Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
@@ -117,16 +126,16 @@ public class PostController {
         modelAndView.addObject("page", pagingDTO);
         return modelAndView;
     }
-
-    /**
-     * @param pageable - get 파라미터 page, size, sort 캐치
-     * @return
-     * @PageableDefault - get 파라미터가 없을 때 기본설정 변경(기본값: page=0, size=20)
-     * page: 배열과 같이 0부터 시작한다. 즉, 0 = 1page
-     * size: 한 페이지에 보여줄 게시물 수
-     * sort: 정렬기준
-     * direction: 정렬법
-     */
+    @GetMapping("/tag/{tag}")
+    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
+        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/channels");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
 
 
     //게시글 addForm html 로 이동
