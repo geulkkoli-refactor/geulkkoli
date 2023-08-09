@@ -4,7 +4,9 @@ import com.geulkkoli.domain.post.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.util.HtmlUtils;
 
+import javax.swing.text.html.HTML;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -28,7 +30,7 @@ public class PostRequestDTO {
         this.postId = postId;
         this.title = title;
         this.nickName = nickName;
-        this.contentSummary = contentSummary.replaceAll("<[^>]*>", "").substring(0, 1);
+        this.contentSummary = HtmlUtils.htmlUnescape(contentSummary).replaceAll("<[^>]*>", "").substring(0, 1);
         this.date = date;
         this.postHits = postHits;
     }

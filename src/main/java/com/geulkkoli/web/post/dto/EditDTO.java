@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class EditDTO {
                    String nickName, String tags) {
         this.postId = postId;
         this.title = title;
-        this.postBody = postBody;
+        this.postBody = HtmlUtils.htmlEscape(postBody);
         this.nickName = nickName;
         this.tags = tags;
     }

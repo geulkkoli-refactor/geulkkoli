@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -61,7 +62,7 @@ public class PageDTO {
         this.postId = postId;
         this.authorId = authorId;
         this.title = title;
-        this.postBody = postBody;
+        this.postBody = HtmlUtils.htmlUnescape(postBody);
         this.nickName = nickName;
         this.commentList = comments.stream().map(CommentListDTO::toDTO).collect(Collectors.toList());
         this.date = date;
