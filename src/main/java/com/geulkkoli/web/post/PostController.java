@@ -19,9 +19,7 @@ import com.geulkkoli.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -82,6 +81,7 @@ public class PostController {
 
         return src;
     }
+
     /**
      * @param pageable - get 파라미터 page, size, sort 캐치
      * @return
@@ -118,7 +118,7 @@ public class PostController {
     //사이드 네비게이션의 목록을 누를 시 진입점
     @GetMapping("/tag/{tag}/{subTag}")
     public ModelAndView postListByTags(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                      @PathVariable String tag, @PathVariable(required = false) String subTag) {
+                                       @PathVariable String tag, @PathVariable(required = false) String subTag) {
         List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
         Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
@@ -126,6 +126,7 @@ public class PostController {
         modelAndView.addObject("page", pagingDTO);
         return modelAndView;
     }
+
     @GetMapping("/tag/{tag}")
     public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                       @PathVariable String tag) {
@@ -251,7 +252,8 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/request")
-    public String deletePost(@RequestParam("postId") Long postId, @RequestParam("userNickName") String userNickName) {
+    public RedirectView deletePost(@RequestParam("postId") Long postId,
+                                   @RequestParam("userNickName") String userNickName) {
         User requestUser = userFindService.findByNickName(userNickName);
         Post post = postFindService.findById(postId);
         if (!post.getUser().equals(requestUser)) {
@@ -259,10 +261,12 @@ public class PostController {
                 NotAuthorException notAuthorException = new NotAuthorException("해당 게시글의 작성자가 아닙니다.");
             } catch (NotAuthorException e) {
                 log.error(e.getMessage());
+                return new RedirectView("/user/" + userNickName);
             }
         }
         postService.deletePost(post, requestUser);
-        return "redirect:/user/" + userNickName;
+
+        return new RedirectView("/user/" + userNickName);
     }
 
     //임시저장기능 (현재는 빈 값만 들어옴)
