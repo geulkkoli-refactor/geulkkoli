@@ -53,8 +53,8 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 @RequestMapping("/user")
 public class UserController {
 
-    public static final String EDIT_FORM = "userInfo-edit";
-    public static final String EDIT_PASSWORD_FORM = "password-edit";
+    public static final String EDIT_FORM = "/user/userInfo-edit";
+    public static final String EDIT_PASSWORD_FORM = "/password-edit";
     public static final String REDIRECT_INDEX = "redirect:/";
     public static final String REDIRECT_EDIT_INDEX = "redirect:/user/edit";
     private final UserService userService;

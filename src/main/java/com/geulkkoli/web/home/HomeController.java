@@ -34,11 +34,11 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping("/")
 public class HomeController {
-    private final String FIND_EMAIL_FORM = "find-email";
-    private final String FOUND_EMAIL_FORM = "found-email";
-    private final String FIND_PASSWORD_FORM = "find-password";
-    private final String TEMP_PASSWORD_FORM = "temp-password";
-    private final String JOIN_FORM = "user-signup";
+    private final String FIND_EMAIL_FORM = "/find/find-email";
+    private final String FOUND_EMAIL_FORM = "/find/found-email";
+    private final String FIND_PASSWORD_FORM = "find/find-password";
+    private final String TEMP_PASSWORD_FORM = "/find/temp-password";
+    private final String SIGN_UP_FORM = "/form-signup";
     public static final String REDIRECT_INDEX = "redirect:/";
 
 
@@ -144,7 +144,7 @@ public class HomeController {
     //join
     @GetMapping("/join")
     public String joinForm(@ModelAttribute("joinForm") JoinFormDto form) {
-        return JOIN_FORM;
+        return SIGN_UP_FORM;
     }
 
     @PostMapping("/join")
@@ -177,7 +177,7 @@ public class HomeController {
 
             return REDIRECT_INDEX;
         } else {
-            return JOIN_FORM;
+            return SIGN_UP_FORM;
         }
     }
 

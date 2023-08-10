@@ -65,8 +65,11 @@ dependencies {
 
     implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
 
-    //
-    implementation 'org.springframework.boot:spring-boot-devtools'}
+    //devtools 추가
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    //html parser jsop 추가
+    implementation 'org.jsoup:jsoup:1.16.1'
+}
 
 tasks.named('test') {
     useJUnitPlatform()

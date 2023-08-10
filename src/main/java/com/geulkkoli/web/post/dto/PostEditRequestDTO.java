@@ -42,7 +42,7 @@ public class PostEditRequestDTO {
                               String nickName, String tags) {
         this.postId = postId;
         this.title = title;
-        this.postBody = HtmlUtils.htmlEscape(postBody);
+        this.postBody = postBody;
         this.nickName = nickName;
         this.tags = tags;
     }
