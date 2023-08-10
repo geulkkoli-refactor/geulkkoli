@@ -1,5 +1,5 @@
-document.getElementById("deletePostButton").addEventListener("click", deletePost);
-function deletePost() {
+document.getElementById("deletePostButton").addEventListener("click", postDelete);
+function postDelete() {
     const deleteTitle = document.getElementById("content-title").outerText;
     const postId = document.getElementById("post-id").getAttribute("name");
     const userNickName = document.getElementById("nickName").getAttribute("name");

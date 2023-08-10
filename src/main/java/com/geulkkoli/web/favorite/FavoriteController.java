@@ -13,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,8 +28,8 @@ public class FavoriteController {
     private final PostFindService postFindService;
     private final UserFindService userFindService;
 
-    @PostMapping("/pressFavorite/{postId}")
-    public ResponseEntity<String> pressFavoriteButton(@PathVariable("postId") Long postId,
+    @GetMapping("/pressFavorite/{postId}")
+    public ResponseEntity<FavoriteRequestDTO> pressFavoriteButton(@PathVariable("postId") Long postId,
                                                       @AuthenticationPrincipal CustomAuthenticationPrinciple user) throws Exception {
         log.info("pressFavoriteButton");
         Post post = postFindService.findById(postId);
@@ -42,13 +39,17 @@ public class FavoriteController {
             Optional<Favorites> optionalFavorites = favoriteService.checkFavorite(post, loginUser);
             if (optionalFavorites.isEmpty()) {
                 favoriteService.addFavorite(post, loginUser);
-                return ResponseEntity.ok("Add Success");
+                FavoriteRequestDTO addSuccess = new FavoriteRequestDTO("Add Success", post.getFavorites().size());
+                return ResponseEntity.ok(addSuccess);
             } else {
                 favoriteService.undoFavorite(optionalFavorites.get());
-                return ResponseEntity.ok("Cancel Success");
+                FavoriteRequestDTO cancelSuccess = new FavoriteRequestDTO("Cancel Success", post.getFavorites().size());
+                return ResponseEntity.ok(cancelSuccess);
             }
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new FavoriteRequestDTO("Error", post.getFavorites().size())
+            );
         }
     }
 }

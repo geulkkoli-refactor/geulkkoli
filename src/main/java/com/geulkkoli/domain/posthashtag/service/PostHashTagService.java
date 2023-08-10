@@ -57,6 +57,7 @@ public class PostHashTagService {
 
     /**
      * 게시글에 해시태그를 수정하는 메서드
+     *
      * @param post
      * @param updateParam
      * @return Post
@@ -71,7 +72,7 @@ public class PostHashTagService {
         List<String> newHashTagNames = updateParam.tagNames().stream().filter(name -> !findHashTagNames.contains(name)).collect(Collectors.toList());
         if (newHashTagNames.isEmpty()) {
             log.info("hashTags: {}", hashTags);
-            postHashTagRepository.deleteAll(post.getPostHashTags());
+            postHashTagRepository.deleteAll(post.deleteAllPostHashTag());
             postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
             log.info("postHashTags: {}", post.getPostHashTags());
             return post;
@@ -82,7 +83,8 @@ public class PostHashTagService {
         });
 
         log.info("hashTags: {}", hashTags);
-        post.editMultiHashTags(hashTags);
+        postHashTagRepository.deleteAll(post.deleteAllPostHashTag());
+        postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
         return post;
     }
 }

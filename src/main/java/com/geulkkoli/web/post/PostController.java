@@ -140,8 +140,8 @@ public class PostController {
     //게시글 addForm html 로 이동
     @GetMapping("/add")
     public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new PostAddDTO());
-        return "postAdd";
+       model.addAttribute("addDTO", new PostAddDTO());
+        return "post/post-add";
     }
 
     //새 게시글 등록
@@ -154,13 +154,14 @@ public class PostController {
         User user = userFindService.findById(post.getAuthorId());
 
         if (bindingResult.hasErrors()) {
-            return "postAdd";
+            return "post/post-add";
         }
 
         long postId = postService.savePost(post, user).getPostId();
         redirectAttributes.addAttribute("postId", postId);
         response.addCookie(new Cookie(URLEncoder.encode(post.getNickName(), "UTF-8"), "done"));
-        return "redirect:/post/read/{postId}";
+
+        return "redirect:/post/read/" + postId;
     }
 
     //게시글 읽기 Page로 이동
@@ -215,27 +216,27 @@ public class PostController {
 
     //게시글 수정 html로 이동
     @GetMapping("/update/{postId}")
-    public String movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
-                                   @RequestParam(defaultValue = "") String searchType,
-                                   @RequestParam(defaultValue = "") String searchWords) {
+    public ModelAndView movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
+                                         @RequestParam(defaultValue = "") String searchType,
+                                         @RequestParam(defaultValue = "") String searchWords) {
         PostEditRequestDTO editPost = PostEditRequestDTO.toDTO(postFindService.findById(postId));
         log.info("editPost: {}", editPost);
         model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
-        return "postEdit";
+        return new ModelAndView("post/post-edit");
     }
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
-                           @PathVariable Long postId, RedirectAttributes redirectAttributes,
-                           @RequestParam(defaultValue = "0") String page,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords) {
+    public ModelAndView editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
+                                 @PathVariable Long postId, RedirectAttributes redirectAttributes,
+                                 @RequestParam(defaultValue = "0") String page,
+                                 @RequestParam(defaultValue = "") String searchType,
+                                 @RequestParam(defaultValue = "") String searchWords) {
 
         if (bindingResult.hasErrors()) {
-            return "postEdit";
+            return new ModelAndView("post/post-edit");
         }
 
         Post willUpdate = postFindService.findById(postId);
@@ -246,20 +247,13 @@ public class PostController {
         redirectAttributes.addAttribute("searchType", searchType);
         redirectAttributes.addAttribute("searchWords", searchWords);
 
-        return "redirect:/post/read/{postId}?page={page}&searchType={searchType}&searchWords={searchWords}";
+        return new ModelAndView("redirect:/post/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords);
     }
 
     //게시글 삭제
 
     //임시저장기능 (현재는 빈 값만 들어옴)
-    @GetMapping("/savedone")
-    public void testBlanc(@AuthenticationPrincipal CustomAuthenticationPrinciple authUser,
-                          HttpServletResponse response) {
 
-        Cookie cookie = new Cookie(URLEncoder.encode(authUser.getNickName()), null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
 
     private static void searchDefault(Model model, String searchType, String searchWords) {
         model.addAttribute("searchType", searchType);
