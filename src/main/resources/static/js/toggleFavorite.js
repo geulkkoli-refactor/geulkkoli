@@ -1,10 +1,14 @@
-const nickName = document.getElementById("nickName").getAttribute("name");
-// var author_nickName = document.querySelector("h6").innerText;
-// if (nickName !== author_nickName) {
-//
-// }
-document.addEventListener("DOMContentLoaded", event => {
-    document.getElementById("favoriteForm").addEventListener("click", toggleFavorite);
+document.getElementById("favoriteForm").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    // Perform necessary AJAX request
+
+    // 자기 자신의 글이면 좋아요 함수를 실행하지 않는다.
+    nickName = document.getElementById("auth-user-nickName").innerText;
+    var author_nickName = document.getElementById("auth-nick-name").innerText;
+    if (nickName !== author_nickName) {
+        toggleFavorite();
+    }
 });
 
 function toggleFavorite(event) {

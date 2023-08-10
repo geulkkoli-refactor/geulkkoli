@@ -12,8 +12,11 @@
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet"/>
+    <!--  구독  -->
+    <link rel="stylesheet" href="/css/followdetail.css">
     <!--  ckeditor -->
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
+
 </head>
 <body>
 <!-- csrf token-->
@@ -46,72 +49,100 @@
                 </header>
                 <!-- Preview image figure-->
 
-                <!-- Post content-->
-                <section class="mb-3">
-                    <!-- 좋아요 영역-->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <form id="favoriteForm">
-                            <input id="favorite_disLike" th:if="${checkFavorite eq 'none'}" type="image"
-                                   th:src="@{/images/free-icon-like-3984190.png}" alt="favoriteImage_disLike" width="30"
-                                   height="30"
-                                   src="">
-                            <input id="favorite_like" th:if="${checkFavorite eq 'exist'}" type="image"
-                                   th:src="@{/images/free-icon-like-3984277.png}" alt="favoriteImage_like" width="30"
-                                   height="30">
-                            <img th:if="${#strings.equals(checkFavorite, 'never clicked')}" type="image"
-                                 th:src="@{/images/free-icon-like-3984190.png}" alt="favoriteImage_noneUser" width="30"
-                                 height="30"
-                                 src="">
-                        </form>
-                        <!-- 좋아요 수-->
-                        <div id="favoriteCount" th:text="${post.getFavoriteCount()}"></div>
-                    </div>
-                    <!-- 게시글 내용-->
-                    <textarea id="editor" th:text="${post.postBody}"></textarea>
-                </section>
-                <!-- 수정 삭제 버튼-->
-                <section class="mb-3">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="hasRole('USER')"
-                         th:with="userNickName=${#authentication.principal.nickName}">
-                        <button class="btn btn-warning btn-lg" onclick="location.href='postUpdateForm.html'"
-                                th:onclick="|location.href='@{/post/update/{postId}(postId=${post.postId},page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
-                                th:if="${#strings.equals(authorUser.nickName, userNickName)}"
-                                type="button">수정
-                        </button>
-                        <!-- 삭제 모달 -->
-
-                        <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal"
-                                data-bs-target="#deletePost"
-                                th:if="${#strings.equals(authorUser.nickName, userNickName)}">삭제
-                        </button>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deletePostLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deletePostLabel">삭제하시려면 밑의 글을 따라 치세요.</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div>
-                                        <label for="post-Title">제목</label>
-                                        <input type="text" id="post-Title" name="post-Title" class="form-control"
-                                               value="제목1" th:value="${post.title}" readonly>
-                                        <input type="text" id="post-Compare" name="post-Compare" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                                    <button id="deletePostButton" type="button" class="btn btn-outline-danger">삭제
-                                    </button>
-                                </div>
+                <div class="row mb-3 text-center">
+                    <div class="col-md-8 themed-grid-col">
+                        <img class="pb-3" th:src="@{/images/defaultProfile.png}" width="50" height="65">
+                        <div class="row">
+                            <div class="mb-0 lh-100"  id="auth-nick-name" th:text="${authorUser.nickName}"></div>
+                            <form id="favoriteForm" class="col-md-6 themed-grid-col">
+                                <!-- 좋아요 영역-->
+                                <small hidden="hidden" id="userId" th:text="${authorUser.userId}"></small>
+                                <input id="favorite_disLike" th:if="${checkFavorite eq 'none'}" type="image"
+                                       th:src="@{/images/free-icon-like-3984190.png}" alt="favoriteImage_disLike"
+                                       width="30"
+                                       height="30"
+                                       src="">
+                                <input id="favorite_like" th:if="${checkFavorite eq 'exist'}" type="image"
+                                       th:src="@{/images/free-icon-like-3984277.png}" alt="favoriteImage_like"
+                                       width="30"
+                                       height="30">
+                                <img th:if="${#strings.equals(checkFavorite, 'never clicked')}" type="image"
+                                     th:src="@{/images/free-icon-like-3984190.png}" alt="favoriteImage_noneUser"
+                                     width="30"
+                                     height="30"
+                                     src="">
+                            </form>
+                            <!-- 좋아요 수-->
+                            <div class="col-md-6 themed-grid-col">
+                                <div id="favoriteCount" th:text="${post.getFavoriteCount()}"></div>
                             </div>
                         </div>
                     </div>
-                </section>
+                    <!-- 구독 버튼-->
+                    <div class="col-md-4 themed-grid-col" sec:authorize="hasRole('USER')"
+                         th:if="${!followResult.isMine()}">
+                        <button id="btn-follow" th:unless="${followResult.isFollow()}"
+                                class="w-3 btn btn-primary"
+                                type="button">구독하기
+                        </button>
+                        <button id="btn-unfollow" th:if="${followResult.isFollow()}" class="w-3 btn btn-primary"
+                                type="button">
+                            <span class="txt_default">구독중</span>
+                            <span class="txt_on">구독취소</span>
+                        </button>
+                    </div>
+                </div>
+
+                    <!-- Post content-->
+                    <section class="mb-3">
+                        <!-- 게시글 내용-->
+                        <textarea id="editor" th:text="${post.postBody}"></textarea>
+                    </section>
+                    <!-- 수정 삭제 버튼-->
+                    <section class="mb-3">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="hasRole('USER')"
+                             th:with="userNickName=${#authentication.principal.nickName}">
+                            <button class="btn btn-warning btn-lg" onclick="location.href='postUpdateForm.html'"
+                                    th:onclick="|location.href='@{/post/update/{postId}(postId=${post.postId},page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
+                                    th:if="${#strings.equals(authorUser.nickName, userNickName)}"
+                                    type="button">수정
+                            </button>
+                            <!-- 삭제 모달 -->
+
+                            <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal"
+                                    data-bs-target="#deletePost"
+                                    th:if="${#strings.equals(authorUser.nickName, userNickName)}">삭제
+                            </button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deletePostLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deletePostLabel">삭제하시려면 밑의 글을 따라 치세요.</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <label for="post-Title">제목</label>
+                                            <input type="text" id="post-Title" name="post-Title" class="form-control"
+                                                   value="제목1" th:value="${post.title}" readonly>
+                                            <input type="text" id="post-Compare" name="post-Compare"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소
+                                        </button>
+                                        <button id="deletePostButton" type="button" class="btn btn-outline-danger">삭제
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
             </article>
             <!-- Comments section-->
             <section class="mb-5">
@@ -227,5 +258,6 @@
 <script src="/js/readTextEditor.js"></script>
 <script src="/js/toggleFavorite.js"></script>
 <script src="/js/comment.js"></script>
+<script src="/js/follow.js"></script>
 </body>
 </html>
