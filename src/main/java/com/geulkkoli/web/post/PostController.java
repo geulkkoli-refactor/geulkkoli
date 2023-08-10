@@ -5,7 +5,6 @@ import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
-import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
@@ -142,7 +141,7 @@ public class PostController {
     @GetMapping("/add")
     public String postAddForm(Model model) {
         model.addAttribute("addDTO", new PostAddDTO());
-        return "post/postAddForm";
+        return "postAdd";
     }
 
     //새 게시글 등록
@@ -155,7 +154,7 @@ public class PostController {
         User user = userFindService.findById(post.getAuthorId());
 
         if (bindingResult.hasErrors()) {
-            return "post/postAddForm";
+            return "postAdd";
         }
 
         long postId = postService.savePost(post, user).getPostId();
@@ -224,7 +223,7 @@ public class PostController {
         model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
-        return "post/postEditForm";
+        return "postEdit";
     }
 
     //게시글 수정
@@ -236,7 +235,7 @@ public class PostController {
                            @RequestParam(defaultValue = "") String searchWords) {
 
         if (bindingResult.hasErrors()) {
-            return "post/postEditForm";
+            return "postEdit";
         }
 
         Post willUpdate = postFindService.findById(postId);

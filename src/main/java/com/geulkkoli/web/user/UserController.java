@@ -27,8 +27,6 @@ import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
 import com.geulkkoli.web.user.dto.mypage.calendar.CalendarDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.buf.Utf8Encoder;
-import org.bouncycastle.util.encoders.UTF8;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -41,10 +39,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 
@@ -57,8 +53,8 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 @RequestMapping("/user")
 public class UserController {
 
-    public static final String EDIT_FORM = "user/edit/userInfoEditForm";
-    public static final String EDIT_PASSWORD_FORM = "user/edit/passwordEditForm";
+    public static final String EDIT_FORM = "userInfo-edit";
+    public static final String EDIT_PASSWORD_FORM = "password-edit";
     public static final String REDIRECT_INDEX = "redirect:/";
     public static final String REDIRECT_EDIT_INDEX = "redirect:/user/edit";
     private final UserService userService;
@@ -73,7 +69,7 @@ public class UserController {
 
 
     @GetMapping("/{nickName}")
-    public ModelAndView getMyPage(@PathVariable("nickName") String nickName,@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView getBlog(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         User user = userFindService.findByNickName(nickName);
         List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
         List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
@@ -173,7 +169,7 @@ public class UserController {
         String checkFavorite = "none";
         UserProfileDTO authorUser = UserProfileDTO.toDTO(byId.getUser());
 
-        ModelAndView modelAndView = new ModelAndView("post/postPage");
+        ModelAndView modelAndView = new ModelAndView("post_page");
         modelAndView.addObject("post", post);
         modelAndView.addObject("authorUser", authorUser);
         modelAndView.addObject("followResult", followResult);
@@ -216,7 +212,7 @@ public class UserController {
         String checkFavorite = "exist";
 
         UserProfileDTO authorUser = UserProfileDTO.toDTO(findPost.getUser());
-        ModelAndView modelAndView = new ModelAndView("post/postPage");
+        ModelAndView modelAndView = new ModelAndView("post_page");
         modelAndView.addObject("post", post);
         modelAndView.addObject("authorUser", authorUser);
         modelAndView.addObject("followResult", followResult);
