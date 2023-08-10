@@ -12,7 +12,6 @@ document.getElementById("favoriteForm").addEventListener("click", function (even
 });
 
 function toggleFavorite(event) {
-    event.preventDefault(); // 기본 이벤트 중단
     const postId = document.getElementById("post-id").getAttribute("name");
     const likeImage = document.getElementById("favorite_like");
     const disLikeImage = document.getElementById("favorite_disLike");
