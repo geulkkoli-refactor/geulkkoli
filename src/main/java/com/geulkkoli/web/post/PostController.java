@@ -151,11 +151,11 @@ public class PostController {
             throws UnsupportedEncodingException {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
         log.info("addDTO: {}", post);
-        User user = userFindService.findById(post.getAuthorId());
-
         if (bindingResult.hasErrors()) {
             return "post/post-add";
         }
+
+        User user = userFindService.findById(post.getAuthorId());
 
         long postId = postService.savePost(post, user).getPostId();
         redirectAttributes.addAttribute("postId", postId);
@@ -216,27 +216,28 @@ public class PostController {
 
     //게시글 수정 html로 이동
     @GetMapping("/update/{postId}")
-    public ModelAndView movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
-                                         @RequestParam(defaultValue = "") String searchType,
-                                         @RequestParam(defaultValue = "") String searchWords) {
+    public String movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
+                                   @RequestParam(defaultValue = "") String searchType,
+                                   @RequestParam(defaultValue = "") String searchWords) {
         PostEditRequestDTO editPost = PostEditRequestDTO.toDTO(postFindService.findById(postId));
         log.info("editPost: {}", editPost);
         model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
-        return new ModelAndView("post/post-edit");
+
+        return"post/edit";
     }
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public ModelAndView editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
+    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
                                  @PathVariable Long postId, RedirectAttributes redirectAttributes,
                                  @RequestParam(defaultValue = "0") String page,
                                  @RequestParam(defaultValue = "") String searchType,
                                  @RequestParam(defaultValue = "") String searchWords) {
 
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("post/post-edit");
+            return "post/edit";
         }
 
         Post willUpdate = postFindService.findById(postId);
@@ -247,7 +248,7 @@ public class PostController {
         redirectAttributes.addAttribute("searchType", searchType);
         redirectAttributes.addAttribute("searchWords", searchWords);
 
-        return new ModelAndView("redirect:/post/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords);
+        return "redirect:/post/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords;
     }
 
     //게시글 삭제

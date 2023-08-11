@@ -74,10 +74,13 @@ public class UserController {
         List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
         List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+
         int totalPosts = posts.size();
         Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
         Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+
+
         ModelAndView modelAndView = new ModelAndView("user/blog-home");
         modelAndView.addObject("loggingNickName", nickName);
         modelAndView.addObject("page",pagingDTO);

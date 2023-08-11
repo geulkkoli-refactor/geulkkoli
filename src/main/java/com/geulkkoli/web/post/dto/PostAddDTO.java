@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Setter
 public class PostAddDTO {
 
@@ -18,11 +17,11 @@ public class PostAddDTO {
     private Long authorId;
 
     @NotBlank
-    @Length(min = 1, max = 100)
+    @Length(min = 2, max = 100)
     private String title;
 
     @NotBlank
-    @Length(min = 10, max = 10000)
+    @Length(min = 20, max = 10000)
     private String postBody;
 
     @NotBlank
@@ -32,6 +31,7 @@ public class PostAddDTO {
 
     public PostAddDTO() {
     }
+
 
     @Builder
     public PostAddDTO(Long authorId, String title, String postBody

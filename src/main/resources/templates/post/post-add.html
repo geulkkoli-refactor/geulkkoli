@@ -39,7 +39,6 @@
                 <input type="hidden" id ="authorId" name="authorId" th:value="${#authentication.principal.userId}">
 
                 <div class="mb-3">
-                    <p th:text="내용">내용</p>
                     <label for="editor" class="form-label"></label>
                     <textarea class="form-control"
                               id="editor"
@@ -60,7 +59,6 @@
                     <div class="field-error" th:errors="*{hashTagString}">태그 오류</div>
 
                 </div>
-
                 <hr class="my-4">
                 <div class="row">
                     <div class="col">
@@ -79,6 +77,7 @@
                     </div>
                 </div>
             </form>
+            <div id="word-count"></div>
         </div>
     </div>
 

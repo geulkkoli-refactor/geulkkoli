@@ -110,6 +110,11 @@ CKEDITOR.ClassicEditor.create(document.querySelector("#editor"), {
             }
         ]
     },
+    wordCount: {
+      onUpdate: stats =>{
+
+      }
+    },
     // The "super-build" contains more premium features that require additional configuration, disable them below.
     // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
     removePlugins: [
@@ -145,4 +150,9 @@ CKEDITOR.ClassicEditor.create(document.querySelector("#editor"), {
         'FormatPainter',
         'TableOfContents'
     ]
+}).then(editor => {
+    const wordCountPlugin = editor.plugins.get( 'WordCount' );
+    const wordCountWrapper = document.getElementById( 'word-count' );
+
+    wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
 });
