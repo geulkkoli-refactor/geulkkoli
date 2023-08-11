@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <link href="../css/bootstrap.min.css"
+        th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link rel="stylesheet" href="/css/post.css">
+  <title>게시글 수정 폼</title>
+</head>
+<body>
+
+<header id="header"></header>
+<div th:include="header" ></div>
+
+<div class="container">
+  <div class="py-5 text-center">
+    <h2>게시글 수정하기</h2>
+  </div>
+
+  <hr class="my-4">
+  <div class="container">
+    <div>
+      <form id="edit" th:action="@{/admin/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}" th:object="${postEditRequestDTO}" method="post">
+        <input type="hidden" th:field="*{nickName}" form="edit">
+        <div class="mb-3">
+          <label th:text="제목">제목</label>
+          <input class="form-control"
+                 type="text"
+                 id="title"
+                 th:field="*{title}">
+          <div class="field-error" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb-3">
+          <label th:text="내용">내용</label>
+          <textarea class="form-control"
+                    th:field="*{postBody}" form="edit"
+                    rows="8">내용</textarea>
+          <div class="field-error" th:errors="*{postBody}"></div>
+        </div>
+
+        <div class="mb-3">
+          <label th:text="해시태그">해시태그</label>
+          <input class="form-control"
+                 type="text"
+                 id="tagListString"
+                 th:field="*{tags}">
+          <div class="field-error" th:errors="*{tags}"></div>
+        </div>
+
+        <input type="hidden" th:field="*{postId}">
+
+        <hr class="my-4">
+        <div class="row">
+          <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    type="button"
+                    th:onclick="|location.href='@{/post/list(page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
+                    th:value="취소">취소</button>
+          </div>
+          <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    type="submit" id="submit" th:value="등록">등록</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<footer id="footer"></footer>
+<div th:include="footer" ></div>
+
+</body>
+</html>

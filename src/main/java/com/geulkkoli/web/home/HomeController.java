@@ -42,12 +42,10 @@ public class HomeController {
     public static final String REDIRECT_INDEX = "redirect:/";
 
 
-    private final PostHahTagFindService postHahTagFindService;
     private final EmailService emailService;
     private final UserFindService userFindService;
     private final UserService userService;
     private final PasswordService passwordService;
-    private final HashTagFindService hashTagFindService;
 
 
     @GetMapping

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="utf-8">
+    <link href="../css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/post.css">
+    <title>게시글 추가 폼</title>
+</head>
+<body>
+
+<header id="header"></header>
+<div th:include="header"></div>
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>게시글 등록하기</h2>
+    </div>
+
+    <hr class="my-4">
+    <div class="container">
+        <div>
+            <form id="add" th:action th:object="${postAddDTO}" method="post">
+                <div class="mb-3">
+                    <label th:text="제목">제목</label>
+                    <input class="form-control"
+                           type="text"
+                           id="title"
+                           th:field="*{title}"
+                           placeholder="제목을 입력하세요 ...">
+                    <div class="field-error" th:errors="*{title}">타이틀 오류</div>
+                </div>
+                <input type="hidden" name="nickName" th:value="${#authentication.principal.nickName}">
+                <input type="hidden" name="authorId" th:value="${#authentication.principal.userId}">
+
+
+                <div class="mb-3">
+                    <label th:text="내용">내용</label>
+                    <textarea class="form-control"
+                              th:field="*{postBody}" form="add"
+                              rows="8"
+                              placeholder="내용을 입력하세요 ...">내용</textarea>
+                    <div class="field-error" th:errors="*{postBody}">본문 오류</div>
+                </div>
+
+                <div class="mb-3">
+                    <label th:text="해시태그">해시태그</label>
+                    <input class="form-control"
+                           type="text"
+                           id="tagListString"
+                           th:field="*{tagListString}" form="add"
+                           rows="8" placeholder="#태그1 #태그2 ...">
+                    <div class="field-error" th:errors="*{tagListString}">태그 오류</div>
+                </div>
+
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col">
+                        <button class="w-100 btn btn-primary btn-lg"
+                                type="submit" id="submit" th:value="등록">등록</button>
+                    </div>
+                    <div class="col">
+                        <button class="w-100 btn btn-primary btn-lg"
+                                type="button"
+                                th:onclick="|location.href='@{/post/list}'|"
+                                th:value="취소">취소</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<footer id="footer"></footer>
+<div th:include="footer"></div>
+
+<script type="text/javascript" th:inline="javascript">
+
+    window.onload = function () {
+
+        const user = encodeURIComponent([[${#authentication.principal.nickName}]]);
+        console.log('user =' + user);
+        const title = document.getElementById('title');
+        const postBody = document.getElementById('postBody');
+
+        if(getCookie(user) == 'done') {
+            title.value = window.localStorage.removeItem(user+'Title')
+            postBody.value = window.localStorage.removeItem(user+'PostBody');
+
+            fetch("/post/savedone");
+        }
+
+        console.log('불러오기 > ' + getCookie(user))
+        title.value = window.localStorage.getItem(user+'Title');
+        postBody.value = window.localStorage.getItem(user+'PostBody');
+
+        title.addEventListener('keyup', function () {
+            window.localStorage.setItem(user+'Title', title.value);
+        })
+
+        postBody.addEventListener('keyup', function () {
+            window.localStorage.setItem(user+'PostBody', postBody.value);
+        })
+    }
+
+</script>
+<script src="/js/cookie.js"></script>
+
+</body>
+</html>

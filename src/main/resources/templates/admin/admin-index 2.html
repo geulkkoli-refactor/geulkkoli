@@ -1,0 +1,62 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/header.css" rel="stylesheet">
+    <title>관리 페이지</title>
+</head>
+<body>
+<header id="header"></header>
+<div th:include="header"></div>
+<div class="col-5">
+    <div class="row no-gutters m-5 ">
+        <button type="button"
+                onclick="location.href='/admin/reportedPostList'"
+                class="btn btn-primary">신고받은 게시글
+        </button>
+        <button type="button"
+                onclick="location.href='/admin/add'"
+                class="btn btn-primary">공지사항 작성
+        </button>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>날짜</th>
+        <th>주제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${data}">
+        <td th:text="${item.getDate()}"></td>
+        <td th:text="${item.getTopic}" contenteditable="true"
+            th:attr="data-id=${item.date}"
+            th:onblur="updateTheme([[${item.getDate}]],this.innerText)">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<footer id="footer"></footer>
+<div th:include="footer"></div>
+
+</body>
+
+<script th:inline="javascript">
+    function updateTheme(date, topic) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/calendar/update");
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify({date: date, topic: topic}));
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Updated successfully.');
+            } else {
+                console.error('error with : ' + date + " and " + topic);
+            }
+        };
+    }
+</script>
+</html>
