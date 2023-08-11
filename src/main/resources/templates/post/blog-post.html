@@ -15,8 +15,11 @@
     <!--  구독  -->
     <link rel="stylesheet" href="/css/followdetail.css">
     <!--  ckeditor -->
-<!--    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>-->
-
+    <!--    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>-->
+    <!--  tinyMce -->
+    <script src="https://cdn.tiny.cloud/1/5tnsr1h3mrs2d5stx1dtq8r7d2hqkm63hxn3ee7j3hjniywm/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <title>게시글 추가 폼</title>
 </head>
 <body>
 <!-- csrf token-->
@@ -256,5 +259,12 @@
 <script src="/js/toggleFavorite.js"></script>
 <script src="/js/comment.js"></script>
 <script src="/js/follow.js"></script>
+
+<script type="text/javascript">
+    tinymce.init({
+        selector: '#editor',  // change this value according to your HTML
+        readonly: true
+    });
+</script>
 </body>
 </html>
