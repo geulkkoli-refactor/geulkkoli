@@ -29,7 +29,7 @@
                   th:object="${editDTO}" method="post">
                 <input type="hidden" th:field="*{nickName}" form="edit">
                 <div class="mb-3">
-                    <label th:text="제목">제목</label>
+                    <label for="title" th:text="제목">제목</label>
                     <input class="form-control"
                            type="text"
                            id="title"
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label th:text="해시태그">해시태그</label>
+                    <label for="tagListString" th:text="해시태그">해시태그</label>
                     <input class="form-control"
                            type="text"
                            id="tagListString"
