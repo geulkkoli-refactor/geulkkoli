@@ -1,7 +1,7 @@
 package com.geulkkoli.domain.hashtag.util;
 
 public enum HashTagSign {
-    GENERAL(" ");
+    GENERAL("#");
 
     private final String sign;
 

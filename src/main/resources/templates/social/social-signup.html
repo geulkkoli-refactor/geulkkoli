@@ -6,16 +6,15 @@
     <link th:href="@{/css/header.css}" rel="stylesheet">
     <link th:href="@{/css/nav.css}" rel="stylesheet">
     <link th:href="@{/css/signup.css}" rel="stylesheet">
-    <link th:href="@{/css/sidenav.css}" rel="stylesheet">
     <link th:href="@{/css/social.css}" rel="stylesheet">
 </head>
 <header id="header" th:include="header"></header>
 
 <body>
+<div th:include="nav"></div>
 <div class="d-flex" style="font-size: 20px">
     <div th:replace="header::header"></div>
     <div class="d-flex">
-        <div th:include="nav"></div>
         <div class="align-self-stretch">
             <form th:action="@{/social/oauth2/signup}" th:object="${signUpDto}" method="post">
                 <div class="mb-3">

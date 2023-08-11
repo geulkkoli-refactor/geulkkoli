@@ -86,7 +86,7 @@
                     </details>
                 </td>
                 <td>
-                    <button type="button" th:onclick="deletePost([[${reportedPost.postId}]])">삭제</button>
+                    <button type="button" th:onclick="postDelete([[${reportedPost.postId}]])">삭제</button>
                 </td>
             </tr>
             </tbody>
@@ -171,7 +171,7 @@
         });
     }
 
-    function deletePost (id) {
+    function postDelete (id) {
         console.log("deletePostId=" + id);
         fetch('/admin/delete/'+id, {
             method: 'DELETE',

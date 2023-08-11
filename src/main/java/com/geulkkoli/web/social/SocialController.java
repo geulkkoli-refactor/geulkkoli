@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class SocialController {
-    private static final String SIGN_UP_VIEW_NAME = "social/oauth2/signup";
+    private static final String SIGN_UP_VIEW_NAME = "social-signup";
     private static final String HOME = "home";
     private final UserService userService;
 

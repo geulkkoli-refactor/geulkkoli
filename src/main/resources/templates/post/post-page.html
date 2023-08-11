@@ -102,7 +102,7 @@
 
             <!-- Button trigger modal -->
             <div class="col">
-                <button type="button" class="w-100 btn btn-primary" data-bs-toggle="modal" data-bs-target="#deletePost"
+                <button type="button" class="w-100 btn btn-primary" data-bs-toggle="modal" data-bs-target="#postDelete"
                         th:if="${#strings.equals(authorUser.nickName, userNickName)}">삭제
                 </button>
             </div>
@@ -196,7 +196,7 @@
 
     const postId = [[${post.postId}]];
 
-    function deletePost() {
+    function postDelete() {
 
         const deleteTitle = [[${post.title}]];
         const postId = '[[${post.postId}]]';

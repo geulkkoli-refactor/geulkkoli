@@ -25,6 +25,7 @@ public class PostRequestDTO {
 
     private int postHits;
 
+
     @Builder
     public PostRequestDTO(Long postId, String title, String nickName, String contentSummary, String date, int postHits) {
         this.postId = postId;
@@ -48,10 +49,11 @@ public class PostRequestDTO {
 
     @Override
     public String toString() {
-        return "PostRequestListDTO{" +
+        return "PostRequestDTO{" +
                 "postId=" + postId +
                 ", title='" + title + '\'' +
                 ", nickName='" + nickName + '\'' +
+                ", contentSummary='" + contentSummary + '\'' +
                 ", date='" + date + '\'' +
                 ", postHits=" + postHits +
                 '}';

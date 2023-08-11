@@ -2,7 +2,6 @@ package com.geulkkoli.web.home;
 
 import com.geulkkoli.application.EmailService;
 import com.geulkkoli.application.user.service.PasswordService;
-import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
 import com.geulkkoli.domain.user.User;
@@ -28,7 +27,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -36,11 +34,11 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping("/")
 public class HomeController {
-    private final String FIND_EMAIL_FORM = "user/find/findEmailForm";
-    private final String FOUND_EMAIL_FORM = "user/find/foundEmailForm";
-    private final String FIND_PASSWORD_FORM = "user/find/findPasswordForm";
-    private final String TEMP_PASSWORD_FORM = "user/find/tempPasswordForm";
-    private final String JOIN_FORM = "user/joinForm";
+    private final String FIND_EMAIL_FORM = "/find/find-email";
+    private final String FOUND_EMAIL_FORM = "/find/found-email";
+    private final String FIND_PASSWORD_FORM = "find/find-password";
+    private final String TEMP_PASSWORD_FORM = "/find/temp-password";
+    private final String SIGN_UP_FORM = "/form-signup";
     public static final String REDIRECT_INDEX = "redirect:/";
 
 
@@ -62,13 +60,13 @@ public class HomeController {
     @GetMapping("/loginPage")
     public String loginForm(@ModelAttribute("loginForm") LoginFormDto form) {
 
-        return "user/loginForm";
+        return "login";
     }
 
     @PostMapping("/loginPage")
     public String processLoginForm(@ModelAttribute("loginForm") LoginFormDto form) {
 
-        return "user/loginForm"; // 실패 메시지를 포함한 GET 요청으로 리다이렉트
+        return "login"; // 실패 메시지를 포함한 GET 요청으로 리다이렉트
     }
 
     @GetMapping("/findEmail")
@@ -146,7 +144,7 @@ public class HomeController {
     //join
     @GetMapping("/join")
     public String joinForm(@ModelAttribute("joinForm") JoinFormDto form) {
-        return JOIN_FORM;
+        return SIGN_UP_FORM;
     }
 
     @PostMapping("/join")
@@ -179,7 +177,7 @@ public class HomeController {
 
             return REDIRECT_INDEX;
         } else {
-            return JOIN_FORM;
+            return SIGN_UP_FORM;
         }
     }
 

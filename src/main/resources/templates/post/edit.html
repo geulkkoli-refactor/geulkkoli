@@ -6,14 +6,9 @@
     <link href="/css/bootstrap.min.css"
           th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link rel="stylesheet" href="/css/post.css">
+    <!--  ckeditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>
     <title>게시글 수정 폼</title>
-
-    <!-- wysiwyg editor summernote -->
-
-    <script src="https://cdn.jsdelivr.net/npm/suneditor@2.45.1/dist/suneditor.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/suneditor@2.45.1/dist/css/suneditor.min.css" rel="stylesheet">
-    <!-- wysiwyg editor summernote -->
-
 </head>
 <body>
 
@@ -40,9 +35,9 @@
                     <div class="field-error" th:errors="*{title}"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="editor_classic" th:text="내용">내용</label>
+                    <label for="editor" th:text="내용">내용</label>
                     <textarea class="form-control"
-                              id="editor_classic"
+                              id="editor"
                               th:field="*{postBody}" form="edit"
                               rows="8">내용</textarea>
                     <div class="field-error" th:errors="*{postBody}"></div>
@@ -53,7 +48,7 @@
                     <input class="form-control"
                            type="text"
                            id="tagListString"
-                           rows="8" placeholder="해시태그 이름 사이에 공백을 넣어주세요"
+                           rows="8" placeholder="해시태그 앞에 #을 붙여주세요"
                            th:field="*{tags}">
                     <div class="field-error" th:errors="*{tags}"></div>
                 </div>
@@ -82,15 +77,11 @@
     </div>
 
 </div>
-
-<div th:include="footer"></div>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/htmlmixed/htmlmixed.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/xml/xml.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/css/css.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
-<script src="/js/cookie.js"></script>
-<script src="/js/writePostTextEditor.js"></script>
 </body>
 <div th:include="footer"></div>
+<script src="/js/cookie.js"></script>
+<script src="/js/writePostTextEditor.js"></script>
+<script type="text/javascript">
+
+</script>
 </html>

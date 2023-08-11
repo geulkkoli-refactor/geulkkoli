@@ -1,3 +1,4 @@
+
 function followButtonHandler() {
     var followButton = document.getElementById('btn-follow');
     if (followButton) {
@@ -11,7 +12,7 @@ function followButtonHandler() {
                     if (response.ok) {
                         var unfollowButton = document.createElement('button');
                         unfollowButton.id = 'btn-unfollow';
-                        unfollowButton.className = 'w-100 btn btn-primary';
+                        unfollowButton.className = 'w-3 btn btn-primary';
                         unfollowButton.setAttribute('type', 'button');
 
                         const buttonInnerSpan = document.createElement('span');
@@ -51,7 +52,7 @@ function unFollowButtonHandler() {
                     if (response.ok) {
                         var followButton = document.createElement('button');
                         followButton.id = 'btn-follow';
-                        followButton.className = 'w-100 btn btn-primary';
+                        followButton.className = 'w-3 btn btn-primary';
                         followButton.setAttribute('type', 'button');
                         followButton.textContent = '구독하기';
 

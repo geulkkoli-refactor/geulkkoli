@@ -112,7 +112,7 @@ function commentEditButtonEvent(event) {
         formData.set('commentBody', target.closest('.card-body').firstElementChild.value);
         var headerName = document.getElementsByClassName("csrf_input")[1].getAttribute("name");
         var token = document.getElementsByClassName("csrf_input")[0].getAttribute("value");
-        console.log(postId)
+        const postId = document.getElementById("post-id").getAttribute("name");
         fetch('/comments/' + postId, {
             method: 'PUT',
             headers: { 'header': headerName,

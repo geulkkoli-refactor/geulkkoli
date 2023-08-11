@@ -5,7 +5,6 @@ import com.geulkkoli.domain.favorites.service.FavoriteService;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.service.HashTagFindService;
-import com.geulkkoli.domain.post.NotAuthorException;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
@@ -141,8 +140,8 @@ public class PostController {
     //게시글 addForm html 로 이동
     @GetMapping("/add")
     public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new PostAddDTO());
-        return "post/postAddForm";
+       model.addAttribute("addDTO", new PostAddDTO());
+        return "post/post-add";
     }
 
     //새 게시글 등록
@@ -152,16 +151,17 @@ public class PostController {
             throws UnsupportedEncodingException {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
         log.info("addDTO: {}", post);
-        User user = userFindService.findById(post.getAuthorId());
-
         if (bindingResult.hasErrors()) {
-            return "post/postAddForm";
+            return "post/post-add";
         }
+
+        User user = userFindService.findById(post.getAuthorId());
 
         long postId = postService.savePost(post, user).getPostId();
         redirectAttributes.addAttribute("postId", postId);
         response.addCookie(new Cookie(URLEncoder.encode(post.getNickName(), "UTF-8"), "done"));
-        return "redirect:/post/read/{postId}";
+
+        return "redirect:/post/read/" + postId;
     }
 
     //게시글 읽기 Page로 이동
@@ -224,19 +224,20 @@ public class PostController {
         model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
-        return "post/postEditForm";
+
+        return"post/edit";
     }
 
     //게시글 수정
     @PostMapping("/update/{postId}")
     public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
-                           @PathVariable Long postId, RedirectAttributes redirectAttributes,
-                           @RequestParam(defaultValue = "0") String page,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords) {
+                                 @PathVariable Long postId, RedirectAttributes redirectAttributes,
+                                 @RequestParam(defaultValue = "0") String page,
+                                 @RequestParam(defaultValue = "") String searchType,
+                                 @RequestParam(defaultValue = "") String searchWords) {
 
         if (bindingResult.hasErrors()) {
-            return "post/postEditForm";
+            return "post/edit";
         }
 
         Post willUpdate = postFindService.findById(postId);
@@ -247,20 +248,13 @@ public class PostController {
         redirectAttributes.addAttribute("searchType", searchType);
         redirectAttributes.addAttribute("searchWords", searchWords);
 
-        return "redirect:/post/read/{postId}?page={page}&searchType={searchType}&searchWords={searchWords}";
+        return "redirect:/post/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords;
     }
 
     //게시글 삭제
 
     //임시저장기능 (현재는 빈 값만 들어옴)
-    @GetMapping("/savedone")
-    public void testBlanc(@AuthenticationPrincipal CustomAuthenticationPrinciple authUser,
-                          HttpServletResponse response) {
 
-        Cookie cookie = new Cookie(URLEncoder.encode(authUser.getNickName()), null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
 
     private static void searchDefault(Model model, String searchType, String searchWords) {
         model.addAttribute("searchType", searchType);
