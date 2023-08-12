@@ -14,8 +14,8 @@ import com.geulkkoli.domain.topic.Topic;
 import com.geulkkoli.domain.topic.TopicRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.admin.DailyTopicDto;
-import com.geulkkoli.web.admin.ReportDto;
+import com.geulkkoli.web.admin.DailyTopicDTO;
+import com.geulkkoli.web.admin.ReportDTO;
 import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -155,7 +155,7 @@ class AdminServiceImplTest {
         reportRepository.save(report1);
 
         //when
-        List<ReportDto> reportedPosts = adminService.findAllReportedPost();
+        List<ReportDTO> reportedPosts = adminService.findAllReportedPost();
 
         //then
         assertThat(reportedPosts).hasSize(2);
@@ -192,7 +192,7 @@ class AdminServiceImplTest {
         List<Topic> topicsByUseDateBefore = topicRepository.findTopicsByUseDateBefore(LocalDate.now());
 
         //when
-        List<DailyTopicDto> weeklyTopic = adminService.findWeeklyTopic();
+        List<DailyTopicDTO> weeklyTopic = adminService.findWeeklyTopic();
 
         //then
         assertThat(weeklyTopic).hasSize(10);
@@ -271,7 +271,7 @@ class AdminServiceImplTest {
         topicRepository.save(topic);
 
 
-        DailyTopicDto dailyTopicDto = DailyTopicDto.builder()
+        DailyTopicDTO dailyTopicDto = DailyTopicDTO.builder()
                 .topic("testTopic21")
                 .date("2000-01-01")
                 .build();

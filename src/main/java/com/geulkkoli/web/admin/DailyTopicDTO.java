@@ -10,15 +10,15 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class DailyTopicDto {
+public class DailyTopicDTO {
 
     private String date;
     private String topic;
 
-    public DailyTopicDto(){}
+    public DailyTopicDTO(){}
 
     @Builder
-    public DailyTopicDto(String date, String topic) {
+    public DailyTopicDTO(String date, String topic) {
         this.date = date;
         this.topic = topic;
     }
@@ -39,8 +39,8 @@ public class DailyTopicDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DailyTopicDto)) return false;
-        DailyTopicDto that = (DailyTopicDto) o;
+        if (!(o instanceof DailyTopicDTO)) return false;
+        DailyTopicDTO that = (DailyTopicDTO) o;
         return Objects.equals(date, that.date) && Objects.equals(topic, that.topic);
     }
 

@@ -14,7 +14,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.web.blog.dto.*;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
-import com.geulkkoli.web.follow.dto.FollowResult;
+import com.geulkkoli.web.follow.dto.FollowResultDTO;
 import com.geulkkoli.web.blog.dto.UserProfileDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,7 +144,7 @@ public class BlogController {
         }
         boolean mine = loggingUser.getUserId().equals(authorUser.getUserId());
         Boolean follow = followFindService.checkFollow(loggingUser, authorUser);
-        FollowResult followResult = new FollowResult(mine, follow);
+        FollowResultDTO followResult = new FollowResultDTO(mine, follow);
 
 
         model.addAttribute("followResult", followResult);

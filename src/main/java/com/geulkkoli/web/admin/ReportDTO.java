@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @ToString
-public class ReportDto {
+public class ReportDTO {
 
     @NotBlank
     private final Long postId;
@@ -24,15 +24,15 @@ public class ReportDto {
     private final Long Reports;
 
     @Builder
-    public ReportDto(Long postId, String title, String nickName, Long reports) {
+    public ReportDTO(Long postId, String title, String nickName, Long reports) {
         this.postId = postId;
         this.title = title;
         this.nickName = nickName;
         this.Reports = reports;
     }
 
-    public static ReportDto toDto(Post post, Long reports) {
-        return ReportDto.builder()
+    public static ReportDTO toDto(Post post, Long reports) {
+        return ReportDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .nickName(post.getNickName())

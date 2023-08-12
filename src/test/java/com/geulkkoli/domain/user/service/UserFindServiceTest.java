@@ -1,7 +1,7 @@
 package com.geulkkoli.domain.user.service;
 
 import com.geulkkoli.domain.user.User;
-import com.geulkkoli.web.home.dto.JoinFormDto;
+import com.geulkkoli.web.home.dto.JoinDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class UserFindServiceTest {
     @DisplayName("유저 아이디로 찾기")
     @Test
     void findById() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","test@email.com","01056789999","Male");
         User user = userService.signUp(joinForm);
         User findById = userFindService.findById(user.getUserId());
 
@@ -36,7 +36,7 @@ class UserFindServiceTest {
     @DisplayName("유저 이메일로 찾기")
     @Test
     void findByEmail() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","test@email.com","01056789999","Male");
         User user = userService.signUp(joinForm);
         Optional<User> findByEmail = userFindService.findByEmail(user.getEmail());
 
@@ -46,7 +46,7 @@ class UserFindServiceTest {
     @DisplayName("유저 닉네임, 전화번호로 찾기")
     @Test
     void findByUserNameAndPhoneNo() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","test@email.com","01056789999","Male");
         User user = userService.signUp(joinForm);
         Optional<User> findByUserNameAndPhoneNo = userFindService.findByUserNameAndPhoneNo(user.getUserName(),user.getPhoneNo());
 
@@ -56,7 +56,7 @@ class UserFindServiceTest {
     @DisplayName("유저 이메일, 닉네임, 전화번호로 찾기")
     @Test
     void findByEmailAndUserNameAndPhoneNo() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","test@email.com","01056789999","Male");
 
         User user = userService.signUp(joinForm);
         Optional<User> findByEmailAndUserNameAndPhoneNo = userFindService.findByEmailAndUserNameAndPhoneNo(user.getEmail(),user.getUserName(),user.getPhoneNo());
@@ -67,7 +67,7 @@ class UserFindServiceTest {
     @DisplayName("유저 닉네임으로 찾기")
     @Test
     void findByNickName() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","test@email.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","test@email.com","01056789999","Male");
 
         User user = userService.signUp(joinForm);
         User findByNickName = userFindService.findByNickName(user.getNickName());
@@ -79,7 +79,7 @@ class UserFindServiceTest {
     @DisplayName("이메일 중복")
     void isEmailDuplicate() {
 
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","testName","tako1@naver.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","testName","tako1@naver.com","01056789999","Male");
 
         User user = userService.signUp(joinForm);
         assertThat(userFindService.isEmailDuplicate("tako1@naver.com")).isTrue();
@@ -88,7 +88,7 @@ class UserFindServiceTest {
     @Test
     @DisplayName("별명 중복")
     void isNickNameDuplicate() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01056789999","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","바나나1","tako1@naver.com","01056789999","Male");
 
         User user = userService.signUp(joinForm);
         assertThat(userFindService.isNickNameDuplicate("바나나1")).isTrue();
@@ -97,7 +97,7 @@ class UserFindServiceTest {
     @Test
     @DisplayName("전화번호 중복확인")
     void isPhoneNoDuplicate() {
-        JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01012345671","Male");
+        JoinDTO joinForm = JoinDTO.of("test","123","123","바나나1","tako1@naver.com","01012345671","Male");
 
         User user = userService.signUp(joinForm);
         assertThat(userFindService.isPhoneNoDuplicate("01012345671")).isTrue();

@@ -12,7 +12,7 @@ import com.geulkkoli.web.blog.dto.ArticlePagingRequestDTO;
 import com.geulkkoli.web.blog.dto.PagingDTO;
 import com.geulkkoli.web.blog.dto.UserProfileDTO;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
-import com.geulkkoli.web.follow.dto.FollowResult;
+import com.geulkkoli.web.follow.dto.FollowResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +22,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Comparator;
@@ -29,8 +30,8 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
-
 @Slf4j
+@RequestMapping("/feed")
 @Controller
 public class FeedController {
 
@@ -98,7 +99,7 @@ public class FeedController {
         User user = userFindService.findByNickName(nickName);
         Post findPost = postFindService.findById(postId);
         ArticleDTO post = ArticleDTO.toDTO(findPost);
-        FollowResult followResult = new FollowResult(false, followFindService.checkFollow(user, findPost.getUser()));
+        FollowResultDTO followResult = new FollowResultDTO(false, followFindService.checkFollow(user, findPost.getUser()));
         String checkFavorite = "exist";
 
         UserProfileDTO authorUser = UserProfileDTO.toDTO(findPost.getUser());

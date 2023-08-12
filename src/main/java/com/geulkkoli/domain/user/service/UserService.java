@@ -6,7 +6,7 @@ import com.geulkkoli.application.security.RoleRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserNotExistException;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.home.dto.JoinFormDto;
+import com.geulkkoli.web.home.dto.JoinDTO;
 import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
 import com.geulkkoli.web.social.SocialSignUpDto;
 import com.geulkkoli.web.account.dto.edit.PasswordEditFormDto;
@@ -64,7 +64,7 @@ public class UserService {
     }
 
 
-    public User signUp(JoinFormDto form) {
+    public User signUp(JoinDTO form) {
         User user = form.toEntity(passwordEncoder);
         RoleEntity roleEntity = user.addRole(Role.USER);
         roleRepository.save(roleEntity);
@@ -73,7 +73,7 @@ public class UserService {
 
     /*
      * 관리자 실험을 위한 임시 관리자 계정 추가용 메서드*/
-    public void signUpAdmin(JoinFormDto form) {
+    public void signUpAdmin(JoinDTO form) {
         User user = form.toEntity(passwordEncoder);
         RoleEntity roleEntity = user.addRole(Role.ADMIN);
         roleRepository.save(roleEntity);

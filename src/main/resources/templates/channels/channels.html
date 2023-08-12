@@ -21,7 +21,7 @@
             <!-- 검색 위젯 -->
             <div class="card mb-5">
                 <div class="card-header">다양한 채널의 글을 검색해 보세요</div>
-                <form th:action="@{/post/channels}">
+                <form th:action="@{/channels}">
                     <div class="input-group">
                         <div class="input-group-text">
                             <label for="search-type" hidden>검색 유형</label>
@@ -42,8 +42,7 @@
                     </div>
                 </form>
             </div>
-            <!-- <a th:href="@{/index(param1='value1',param2='value2')}">  -->
-            <!-- -->
+
         </div>
     </div>
 </header>
@@ -63,7 +62,7 @@
                             <div class="small text-muted" th:text="${posts.date}"></div>
                             <h2 class="card-title h4" th:text="${posts.title}"></h2>
                             <p class="card-text" th:text="${posts.contentSummary}"></p>
-                            <a class="btn btn-outline-success" th:href="@{/post/read/{postId}(postId=${posts.postId})}">더
+                            <a class="btn btn-outline-success" th:href="@{/blog/read/{postId}(postId=${posts.postId})}">더
                                 읽기 →</a>
                         </div>
                     </div>

@@ -5,12 +5,12 @@ import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.home.dto.find.FindEmailFormDto;
-import com.geulkkoli.web.home.dto.find.FindPasswordFormDto;
-import com.geulkkoli.web.home.dto.find.FoundEmailFormDto;
-import com.geulkkoli.web.home.dto.EmailCheckForJoinDto;
-import com.geulkkoli.web.home.dto.JoinFormDto;
-import com.geulkkoli.web.home.dto.LoginFormDto;
+import com.geulkkoli.web.home.dto.find.FindEmailDTO;
+import com.geulkkoli.web.home.dto.find.FindPasswordDTO;
+import com.geulkkoli.web.home.dto.find.FoundEmailDTO;
+import com.geulkkoli.web.home.dto.EmailCheckForJoinDTO;
+import com.geulkkoli.web.home.dto.JoinDTO;
+import com.geulkkoli.web.home.dto.LoginDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -48,24 +48,24 @@ public class HomeController {
     }
 
     @GetMapping("/loginPage")
-    public String renderingLoginPage(@ModelAttribute("loginForm") LoginFormDto form) {
+    public String renderingLoginPage(@ModelAttribute("loginForm") LoginDTO form) {
 
         return "login";
     }
 
     @PostMapping("/loginPage")
-    public String processLoginForm(@ModelAttribute("loginForm") LoginFormDto form) {
+    public String processLoginForm(@ModelAttribute("loginForm") LoginDTO form) {
 
         return "login"; // 실패 메시지를 포함한 GET 요청으로 리다이렉트
     }
 
     @GetMapping("/find/email")
-    public String renderingFindEmailPage(@ModelAttribute("findEmailForm") FindEmailFormDto form) {
+    public String renderingFindEmailPage(@ModelAttribute("findEmailForm") FindEmailDTO form) {
         return FIND_EMAIL_FORM;
     }
 
     @PostMapping("/find/email")
-    public String findEmail(@Validated @ModelAttribute("findEmailForm") FindEmailFormDto form, BindingResult bindingResult, Model model) {
+    public String findEmail(@Validated @ModelAttribute("findEmailForm") FindEmailDTO form, BindingResult bindingResult, Model model) {
         Optional<User> user = userFindService.findByUserNameAndPhoneNo(form.getUserName(), form.getPhoneNo());
 
         if (user.isEmpty()) {
@@ -77,24 +77,24 @@ public class HomeController {
             return FIND_EMAIL_FORM;
         }
 
-        FoundEmailFormDto foundEmail = new FoundEmailFormDto(user.get().getEmail());
+        FoundEmailDTO foundEmail = new FoundEmailDTO(user.get().getEmail());
         model.addAttribute("email", foundEmail.getEmail());
         return FOUND_EMAIL_FORM;
 
     }
 
     @GetMapping("/foundEmail")
-    public String renderingFoundEmailPage(@ModelAttribute("foundEmailForm") FoundEmailFormDto form) {
+    public String renderingFoundEmailPage(@ModelAttribute("foundEmailForm") FoundEmailDTO form) {
         return FOUND_EMAIL_FORM;
     }
 
     @GetMapping("/find/password")
-    public String renderingFindEmailPage(@ModelAttribute("findPasswordForm") FindPasswordFormDto form) {
+    public String renderingFindEmailPage(@ModelAttribute("findPasswordForm") FindPasswordDTO form) {
         return FIND_PASSWORD_FORM;
     }
 
     @PostMapping("/find/password")
-    public String findPassword(@Validated @ModelAttribute("findPasswordForm") FindPasswordFormDto form, BindingResult bindingResult, HttpServletRequest request) {
+    public String findPassword(@Validated @ModelAttribute("findPasswordForm") FindPasswordDTO form, BindingResult bindingResult, HttpServletRequest request) {
         Optional<User> user = userFindService.findByEmailAndUserNameAndPhoneNo(form.getEmail(), form.getUserName(), form.getPhoneNo());
 
         if (user.isEmpty()) {
@@ -132,12 +132,12 @@ public class HomeController {
 
     //join
     @GetMapping("/join")
-    public String renderingJoinPage(@ModelAttribute("joinForm") JoinFormDto form) {
+    public String renderingJoinPage(@ModelAttribute("joinForm") JoinDTO form) {
         return SIGN_UP_FORM;
     }
 
     @PostMapping("/join")
-    public String join(@Validated @ModelAttribute("joinForm") JoinFormDto form, BindingResult bindingResult, HttpServletRequest request) {
+    public String join(@Validated @ModelAttribute("joinForm") JoinDTO form, BindingResult bindingResult, HttpServletRequest request) {
         if (userFindService.isNickNameDuplicate(form.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
@@ -171,7 +171,7 @@ public class HomeController {
 
     @PostMapping("/checkEmail")
     @ResponseBody
-    public ResponseMessage checkEmail(@RequestBody EmailCheckForJoinDto form, HttpServletRequest request) {
+    public ResponseMessage checkEmail(@RequestBody EmailCheckForJoinDTO form, HttpServletRequest request) {
 
         if (form.getEmail().isEmpty()) {
             return ResponseMessage.NULL_OR_BLANK_EMAIL;
@@ -190,7 +190,7 @@ public class HomeController {
 
     @PostMapping("/checkAuthenticationNumber")
     @ResponseBody
-    public String checkAuthenticationNumber(@RequestBody EmailCheckForJoinDto form, HttpServletRequest request) {
+    public String checkAuthenticationNumber(@RequestBody EmailCheckForJoinDTO form, HttpServletRequest request) {
 
         String authenticationNumber = (String) request.getSession().getAttribute("authenticationNumber");
         String responseMessage;

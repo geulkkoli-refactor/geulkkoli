@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.PositiveOrZero;
 
 @Getter
-public class UserLockDto {
+public class UserLockDTO {
 
     private final Long postId;
 
@@ -16,7 +16,7 @@ public class UserLockDto {
     @PositiveOrZero
     private final Long lockDate;
 
-    public UserLockDto(Long postId, String lockReason, Long lockDate) {
+    public UserLockDTO(Long postId, String lockReason, Long lockDate) {
         this.postId = postId;
         this.lockReason = lockReason;
         this.lockDate = lockDate;

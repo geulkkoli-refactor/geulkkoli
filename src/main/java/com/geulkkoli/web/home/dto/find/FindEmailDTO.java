@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 @Getter
-public class FindEmailFormDto {
+public class FindEmailDTO {
 
     @NotEmpty
     private String userName;
@@ -15,7 +15,7 @@ public class FindEmailFormDto {
     @Pattern(regexp = "^[*\\d]*$")
     private String phoneNo;
 
-    public FindEmailFormDto(String userName, String phoneNo) {
+    public FindEmailDTO(String userName, String phoneNo) {
         this.userName = userName;
         this.phoneNo = phoneNo;
     }

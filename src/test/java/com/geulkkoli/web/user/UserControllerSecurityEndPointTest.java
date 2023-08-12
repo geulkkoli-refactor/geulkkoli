@@ -2,7 +2,7 @@ package com.geulkkoli.web.user;
 
 import com.geulkkoli.application.user.service.UserSecurityService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.home.dto.JoinFormDto;
+import com.geulkkoli.web.home.dto.JoinDTO;
 import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class UserControllerSecurityEndPointTest {
     }@Test
     @DisplayName("인증되지 않은 사용자가 /blog에 delete 방식으로 보내면 로그인 페이지로 리다이렉트")
     void not_Authenticated_user_access_userinfo_delete_post_redirect_loginPage() throws Exception {
-        JoinFormDto joinForm = JoinFormDto.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
+        JoinDTO joinForm = JoinDTO.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
         userService.signUp(joinForm);
 
 
@@ -76,7 +76,7 @@ class UserControllerSecurityEndPointTest {
     @DisplayName("인증된 사용자가 /user/edit get에 접근하면 성공")
     void userEditAuthenticated() throws Exception {
 
-        JoinFormDto joinForm = JoinFormDto.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
+        JoinDTO joinForm = JoinDTO.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
         userService.signUp(joinForm);
 
         UserDetails user = userSecurityService.loadUserByUsername("tako99@naver.com");
@@ -96,7 +96,7 @@ class UserControllerSecurityEndPointTest {
         UserInfoEditFormDto userInfoEditFormDto =
                 UserInfoEditFormDto.form("tako99@naver.com","바나나11","9190232333","male");
 
-        JoinFormDto joinForm = JoinFormDto.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
+        JoinDTO joinForm = JoinDTO.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
 
         userService.signUp(joinForm);
 

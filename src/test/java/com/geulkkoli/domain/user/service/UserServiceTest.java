@@ -3,7 +3,7 @@ package com.geulkkoli.domain.user.service;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.account.dto.edit.PasswordEditFormDto;
-import com.geulkkoli.web.home.dto.JoinFormDto;
+import com.geulkkoli.web.home.dto.JoinDTO;
 import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.*;
@@ -39,7 +39,7 @@ class UserServiceTest {
     @DisplayName("회원정보 수정 성공")
     void updateTest() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
 
         //when
         User saveUser = userService.signUp(joinForm);
@@ -57,7 +57,7 @@ class UserServiceTest {
     @Test
     void signUp() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
 
         //when
         User user = userService.signUp(joinForm);
@@ -70,7 +70,7 @@ class UserServiceTest {
     @Test
     void delete() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
         User user = userService.signUp(joinForm);
 
         //when
@@ -84,7 +84,7 @@ class UserServiceTest {
     @Test
     void isPasswordVerification() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
         User user = userService.signUp(joinForm);
         PasswordEditFormDto passwordEditFormDto = new PasswordEditFormDto("123", "qwerty1@", "qwerty1@");
 
@@ -99,7 +99,7 @@ class UserServiceTest {
     @Test
     void updatePassword() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
         User user = userService.signUp(joinForm);
         PasswordEditFormDto passwordEditFormDto = new PasswordEditFormDto("123", "qwerty1@", "qwerty1@");
 

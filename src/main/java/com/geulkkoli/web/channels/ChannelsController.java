@@ -32,7 +32,7 @@ public class ChannelsController {
     private final PostHahTagFindService postHashTagFindService;
     private final HashTagFindService hashTagFindService;
 
-    public ChannelsController(PostFindService postFindService, UserFindService userFindService, FavoriteService favoriteService, PostHahTagFindService postHashTagFindService, FollowFindService followFindService, HashTagFindService hashTagFindService) {
+    public ChannelsController(PostFindService postFindService, PostHahTagFindService postHashTagFindService, HashTagFindService hashTagFindService) {
         this.postFindService = postFindService;
         this.postHashTagFindService = postHashTagFindService;
         this.hashTagFindService = hashTagFindService;

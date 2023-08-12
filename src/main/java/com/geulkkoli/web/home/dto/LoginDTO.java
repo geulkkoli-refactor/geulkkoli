@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @ToString
-public class LoginFormDto {
+public class LoginDTO {
 
     @NotEmpty
     private String email;

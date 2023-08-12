@@ -44,7 +44,7 @@ public class AdminController {
 
     @GetMapping("/") // 어드민 기본 페이지 링크
     public String adminIndex(Model model) {
-        List<DailyTopicDto> weeklyTopic = adminService.findWeeklyTopic();
+        List<DailyTopicDTO> weeklyTopic = adminService.findWeeklyTopic();
 
         model.addAttribute("data", weeklyTopic);
 
@@ -53,7 +53,7 @@ public class AdminController {
 
     @ResponseBody
     @PostMapping("/calendar/update")
-    public ResponseEntity<Void> updateTheme(@RequestBody DailyTopicDto dailyTopicDto) {
+    public ResponseEntity<Void> updateTheme(@RequestBody DailyTopicDTO dailyTopicDto) {
 
         adminService.updateTopic(dailyTopicDto);
         return ResponseEntity.ok().build();
@@ -68,7 +68,7 @@ public class AdminController {
     //lock user with spring security
     @ResponseBody
     @PostMapping("/lockUser")
-    public String lockUser(@RequestBody UserLockDto UserLockDto) {
+    public String lockUser(@RequestBody UserLockDTO UserLockDto) {
         log.info("postId : {}, reason : {}, date : {}", UserLockDto.getPostId(), UserLockDto.getLockReason(), UserLockDto.getLockDate());
         User user = adminService.findUserByPostId(UserLockDto.getPostId());
         adminService.lockUser(user.getUserId(), UserLockDto.getLockReason(), UserLockDto.getLockDate());

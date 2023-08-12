@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @ToString
 @RequiredArgsConstructor
-public class JoinFormDto {
+public class JoinDTO {
 
     // NotEmpty가 NotNull를 포함하므로 삭제
     @NotEmpty
@@ -44,11 +44,11 @@ public class JoinFormDto {
     private String gender;
 
 
-    public static JoinFormDto of(String userName, String password, String verifyPassword, String nickName, String email, String phoneNo, String gender){
-        return new JoinFormDto(userName,password,verifyPassword,nickName,email,phoneNo,gender);
+    public static JoinDTO of(String userName, String password, String verifyPassword, String nickName, String email, String phoneNo, String gender){
+        return new JoinDTO(userName,password,verifyPassword,nickName,email,phoneNo,gender);
     }
 
-    private JoinFormDto(String userName, String password, String verifyPassword, String nickName, String email, String phoneNo, String gender) {
+    private JoinDTO(String userName, String password, String verifyPassword, String nickName, String email, String phoneNo, String gender) {
         this.userName = userName;
         this.password = password;
         this.verifyPassword = verifyPassword;
