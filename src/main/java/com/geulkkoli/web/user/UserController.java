@@ -51,7 +51,6 @@ public class UserController {
     private final UserFindService userFindService;
     private final PostFindService postFindService;
     private final PostService postService;
-    private final PasswordService passwordService;
     private final FollowFindService followFindService;
     private final SocialInfoService socialInfoService;
     private final FollowService followService;

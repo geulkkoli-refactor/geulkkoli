@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="/css/read.css">
 </head>
 <body>
+<div th:include="nav"></div>
 <div class="container-fluid">
-    <div th:replace="header :: header"></div>
     <div class="container">
 
         <table class="table table-striped">
@@ -39,10 +39,6 @@
                 <li class="page-item"><a href="#" class="page-link" aria-label="firstPageNum"><span
                         aria-hidden="true"><i class="fa fa-fw fa-angle-left"></i></span><span
                         class="sr-only">처음으로</span></a></li>
-                <li class="page-item"><a href="#" class="page-link" aria-label="Previous"><span aria-hidden="true"><i
-                        class="fa fa-fw fa-angle-left"></i></span><span class="sr-only"><</span></a></li>
-                <li class="page-item"><a href="#" class="page-link" aria-label="Next"><span aria-hidden="true"><i
-                        class="fa fa-fw fa-angle-right"></i></span><span class="sr-only">></span></a></li>
                 <li class="page-item"><a href="#" class="page-link" aria-label="lastPageNum"><span aria-hidden="true"><i
                         class="fa fa-fw fa-angle-right"></i></span><span class="sr-only">마지막으로</span></a></li>
             </ul>

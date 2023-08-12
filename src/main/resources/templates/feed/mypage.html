@@ -12,42 +12,37 @@
     <link rel="stylesheet" href="/css/nav.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/calendar.css">
-    <link rel="stylesheet" href="/css/calendar.css">
 </head>
 <body>
-<header id="header" th:include="header"></header>
-<span class="private-page-name"><strong id="user-nickname"
-                                        th:text="|${#authentication.principal.nickName + ' 의 페이지'}|"> </strong></span>
-<div class="nav">
-    <div class="div-aside">
-        <section class="follow-section">
-            <img class="default-profile" src="/images/defaultProfile.png" alt="default Profile Image">
-            <div class="profile-info">
-                <a class="following-link"
-                   th:attr="data-url='/feed/'+${nickName} + '/followers'"
-                   onclick="location.href=this.getAttribute('data-url')"
-                   th:if="${followsCount.getFollowerCount() > 0}">
-                    <em>구독자</em>
-                    <span th:text="${followsCount.getFollowerCount()}"></span>
-                </a>
-                <a class="following-link" href="#" th:unless="${followsCount.getFollowerCount() > 0}">
-                    <em>구독자</em>
-                    <span th:text="${followsCount.getFollowerCount()}"></span>
-                </a>
-                <a class="following-link"
-                   th:attr="data-url='/feed/'+${nickName} + '/followees'"
-                   onclick="location.href=this.getAttribute('data-url')"
-                   th:if="${followsCount.getFolloweeCount() > 0}">
-                    <em>작가</em>
-                    <span th:text="${followsCount.getFolloweeCount()}"></span>
-                </a>
-                <a class="following-link" href="#" th:unless="${followsCount.getFolloweeCount() > 0}">
-                    <em>작가</em>
-                    <span th:text="${followsCount.getFolloweeCount()}"></span>
-                </a>
-            </div>
-        </section>
-    </div>
+<div th:include="nav"></div>
+
+<div class="col-md-3">
+    <section class="follow-section">
+        <div class="profile-info">
+            <a class="following-link"
+               th:attr="data-url='/feed/'+${nickName} + '/followers'"
+               onclick="location.href=this.getAttribute('data-url')"
+               th:if="${followsCount.getFollowerCount() > 0}">
+                <em>구독자</em>
+                <span th:text="${followsCount.getFollowerCount()}"></span>
+            </a>
+            <a class="following-link" href="#" th:unless="${followsCount.getFollowerCount() > 0}">
+                <em>구독자</em>
+                <span th:text="${followsCount.getFollowerCount()}"></span>
+            </a>
+            <a class="following-link"
+               th:attr="data-url='/feed/'+${nickName} + '/followees'"
+               onclick="location.href=this.getAttribute('data-url')"
+               th:if="${followsCount.getFolloweeCount() > 0}">
+                <em>작가</em>
+                <span th:text="${followsCount.getFolloweeCount()}"></span>
+            </a>
+            <a class="following-link" href="#" th:unless="${followsCount.getFolloweeCount() > 0}">
+                <em>작가</em>
+                <span th:text="${followsCount.getFolloweeCount()}"></span>
+            </a>
+        </div>
+    </section>
 </div>
 <div class="flex-shrink-0 p-3" style="width: 280px;">
     <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
@@ -57,15 +52,6 @@
         <span class="fs-5 fw-semibold">Home</span>
     </a>
     <ul class="list-unstyled ps-0">
-        <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
-                    data-bs-target="#home-collapse" aria-expanded="true">
-                <a class=""
-                   th:attr="data-url='/feed/'+${nickName} + '/write-posts'"
-                   onclick="location.href=this.getAttribute('data-url')">
-                    <em>내가 쓴 글</em>
-                </a>            </button>
-        </li>
         <li class="mb-1">
             <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
                     data-bs-target="#orders-collapse" aria-expanded="true">
@@ -79,14 +65,14 @@
     </ul>
 </div>
 
-<div id="calendarBox">
-    <h4> < 활동한 날 > </h4>
-    <select id="beforeYears" style="display: none">
-    </select>
-    <div class="calendar">
-        <div class="days"></div>
-    </div>
-</div>
+<!--<div id="calendarBox">-->
+<!--    <h4> < 활동한 날 > </h4>-->
+<!--    <select id="beforeYears" style="display: none">-->
+<!--    </select>-->
+<!--    <div class="calendar">-->
+<!--        <div class="days"></div>-->
+<!--    </div>-->
+<!--</div>-->
 </body>
 <div th:include="footer"></div>
 <script src="/js/calendar.js"></script>

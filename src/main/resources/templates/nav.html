@@ -11,7 +11,12 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">홈</a></li>
                 <li class="nav-item"><a class="nav-link" href="/channels">채널</a></li>
-                <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
+                <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
+                    <a class="nav-link" type="button"
+                       sec:authorize="hasAnyRole('USER')"
+                       th:attr="data-url='/feed/'+${#authentication.principal.nickName}"
+                       onclick="location.href=this.getAttribute('data-url')">피드</a>
+                </li>                <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
                 <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link" href="/loginPage">로그인 </a></li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" href="/admin/">Admin</a></li>
                 <li class="nav-item" sec:authorize="isAnonymous()"><a class="nav-link" href="/join">가입하기</a></li>
