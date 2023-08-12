@@ -6,8 +6,8 @@ import com.geulkkoli.domain.hashtag.service.HashTagFindService;
 import com.geulkkoli.domain.hashtag.service.HashTagService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,22 +31,22 @@ public class PostHashTagService {
      * 게시글에 해시태그를 추가하는 메서드
      *
      * @param post
-     * @param postAddDTO
+     * @param WriteRequestDTO
      * @return Post
      * @see HashTagFindService#findHashTags(List)
      * @see HashTagService#createNewHashTag(String, String)
      * @see Post#addMultiHashTags(List)
      * @see PostHashTagRepository#saveAll(Iterable)
      */
-    public Post addHashTagsToPost(Post post, PostAddDTO postAddDTO) {
-        if (postAddDTO.getHashTagString().isEmpty()) {
+    public Post addHashTagsToPost(Post post, WriteRequestDTO WriteRequestDTO) {
+        if (WriteRequestDTO.getHashTagString().isEmpty()) {
             return post;
         }
-        List<HashTag> hashTags = hashTagFindService.findHashTags(postAddDTO.tagLists());
+        List<HashTag> hashTags = hashTagFindService.findHashTags(WriteRequestDTO.tagLists());
         log.info("hashTags: {}", hashTags);
-        Optional<HashTag> any = hashTags.stream().filter(i -> postAddDTO.getHashTagString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty() && !postAddDTO.getHashTagString().isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(postAddDTO.getHashTagString(), HashTagType.GENERAL.getTypeName());
+        Optional<HashTag> any = hashTags.stream().filter(i -> WriteRequestDTO.getHashTagString().equals(i.getHashTagName())).findAny();
+        if (any.isEmpty() && !WriteRequestDTO.getHashTagString().isEmpty()) {
+            HashTag newHashTag = hashTagService.createNewHashTag(WriteRequestDTO.getHashTagString(), HashTagType.GENERAL.getTypeName());
             hashTags.add(newHashTag);
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
             return post;
@@ -64,7 +64,7 @@ public class PostHashTagService {
      * @see HashTagFindService#findHashTags(List)
      * @see HashTagService#createNewHashTag(String, String)
      */
-    public Post editHashTagsToPost(Post post, PostEditRequestDTO updateParam) {
+    public Post editHashTagsToPost(Post post, ArticleEditRequestDTO updateParam) {
         log.info("updateParam: {}", updateParam.getTags());
 
         List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagNames());

@@ -12,15 +12,13 @@ import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
+import com.geulkkoli.web.blog.dto.*;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.post.UserProfileDTO;
-import com.geulkkoli.web.post.dto.*;
+import com.geulkkoli.web.blog.dto.UserProfileDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,24 +33,26 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 @Slf4j
+@RequestMapping("/blog")
 @Controller
 public class BlogController {
     private final PostService postService;
     private final PostFindService postFindService;
     private final UserFindService userFindService;
     private final FavoriteService favoriteService;
-    private final PostHahTagFindService postHashTagFindService;
     private final FollowFindService followFindService;
     private final HashTagFindService hashTagFindService;
     @Value("${comm.uploadPath}")
@@ -63,7 +63,6 @@ public class BlogController {
         this.postFindService = postFindService;
         this.userFindService = userFindService;
         this.favoriteService = favoriteService;
-        this.postHashTagFindService = postHashTagFindService;
         this.followFindService = followFindService;
         this.hashTagFindService = hashTagFindService;
     }
@@ -91,63 +90,35 @@ public class BlogController {
         return src;
     }
 
-    @GetMapping("/tag/{tag}/{subTag}")
-    public ModelAndView postListByTags(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                       @PathVariable String tag, @PathVariable(required = false) String subTag) {
-        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        ModelAndView modelAndView = new ModelAndView("post/channels");
-        modelAndView.addObject("page", pagingDTO);
+    @GetMapping("/{nickName}")
+    public ModelAndView renderingBlog(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        User user = userFindService.findByNickName(nickName);
+        List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
+        List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+
+        int totalPosts = posts.size();
+        Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
+        Page<ArticlePagingRequestDTO> readInfos = pagePost.map(ArticlePagingRequestDTO::toDTO);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+
+
+        ModelAndView modelAndView = new ModelAndView("blog/home");
+        modelAndView.addObject("loggingNickName", nickName);
+        modelAndView.addObject("page",pagingDTO);
         return modelAndView;
     }
 
-    @GetMapping("/tag/{tag}")
-    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                      @PathVariable String tag) {
-        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
-        ModelAndView modelAndView = new ModelAndView("post/channels");
-        modelAndView.addObject("page", pagingDTO);
-        return modelAndView;
-    }
-
-    @GetMapping("/add")
-    public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new PostAddDTO());
-        return "post/post-add";
-    }
-
-    //새 게시글 등록
-    @PostMapping("/add")
-    public String postAdd(@Validated @ModelAttribute PostAddDTO post, BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest request)
-            throws UnsupportedEncodingException {
-        redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
-        log.info("addDTO: {}", post);
-        if (bindingResult.hasErrors()) {
-            return "post/post-add";
-        }
-
-        User user = userFindService.findById(post.getAuthorId());
-
-        long postId = postService.savePost(post, user).getPostId();
-        redirectAttributes.addAttribute("postId", postId);
-        response.addCookie(new Cookie(URLEncoder.encode(post.getNickName(), "UTF-8"), "done"));
-
-        return "redirect:/post/read/" + postId;
-    }
 
     @GetMapping("/read/{postId}")
-    public String readPost(Model model, @PathVariable Long postId,
-                           @RequestParam(defaultValue = "0") String page,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords,
-                           @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
+    public String renderingArticle(Model model, @PathVariable Long postId,
+                                   @RequestParam(defaultValue = "0") String page,
+                                   @RequestParam(defaultValue = "") String searchType,
+                                   @RequestParam(defaultValue = "") String searchWords,
+                                   @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
         Post post = postService.showDetailPost(postId);
         log.info("게시글 해시태그 변경 후 조회: {}", post.getPostHashTags());
-        PageDTO postPage = PageDTO.toDTO(post);
+        ArticleDTO postPage = ArticleDTO.toDTO(post);
         User authorUser = userFindService.findById(postPage.getAuthorId());
         UserProfileDTO userProfile = UserProfileDTO.toDTO(authorUser);
 
@@ -162,7 +133,7 @@ public class BlogController {
             model.addAttribute("authorUser", userProfile);
             model.addAttribute("checkFavorite", checkFavorite);
             searchDefault(model, searchType, searchWords);
-            return "post/blog-post";
+            return "blog/article";
         }
 
         User loggingUser = userFindService.findById(Long.parseLong(authUser.getUserId()));
@@ -185,32 +156,59 @@ public class BlogController {
         model.addAttribute("loginUserId", authUser.getUserId());
         model.addAttribute("comments", new CommentBodyDTO());
         searchDefault(model, searchType, searchWords);
-        return "post/blog-post";
+        return "blog/article";
+    }
+
+    @GetMapping("/write")
+    public String renderingArticleWrite(Model model) {
+        model.addAttribute("writeRequestDTO", new WriteRequestDTO());
+        return "blog/write";
+    }
+
+    //새 게시글 등록
+    @PostMapping("/write")
+    public String writeArticle(@Validated @ModelAttribute WriteRequestDTO WriteRequestDTO, BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes, HttpServletResponse response)
+            throws UnsupportedEncodingException {
+        log.info("writeRequestDTO: {}", WriteRequestDTO);
+
+        if (bindingResult.hasErrors()) {
+            log.info("bindingResult: {}", bindingResult);
+            return "blog/write";
+        }
+
+        User user = userFindService.findById(WriteRequestDTO.getAuthorId());
+
+        long postId = postService.writeArtice(WriteRequestDTO, user).getPostId();
+        redirectAttributes.addAttribute("postId", postId);
+        response.addCookie(new Cookie(URLEncoder.encode(WriteRequestDTO.getNickName(), "UTF-8"), "done"));
+
+        return "redirect:/blog/read/" + postId;
     }
 
     @GetMapping("/update/{postId}")
-    public String movePostEditForm(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
-                                   @RequestParam(defaultValue = "") String searchType,
-                                   @RequestParam(defaultValue = "") String searchWords) {
-        PostEditRequestDTO editPost = PostEditRequestDTO.toDTO(postFindService.findById(postId));
+    public String renderingArticleEdit(Model model, @PathVariable Long postId, @RequestParam(defaultValue = "0") String page,
+                                       @RequestParam(defaultValue = "") String searchType,
+                                       @RequestParam(defaultValue = "") String searchWords) {
+        ArticleEditRequestDTO editPost = ArticleEditRequestDTO.toDTO(postFindService.findById(postId));
         log.info("editPost: {}", editPost);
         model.addAttribute("editDTO", editPost);
         model.addAttribute("pageNumber", page);
         searchDefault(model, searchType, searchWords);
 
-        return "post/edit";
+        return "blog/edit";
     }
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
-                           @PathVariable Long postId, RedirectAttributes redirectAttributes,
-                           @RequestParam(defaultValue = "0") String page,
-                           @RequestParam(defaultValue = "") String searchType,
-                           @RequestParam(defaultValue = "") String searchWords) {
+    public String editArticle(@Validated @ModelAttribute ArticleEditRequestDTO updateParam, BindingResult bindingResult,
+                              @PathVariable Long postId, RedirectAttributes redirectAttributes,
+                              @RequestParam(defaultValue = "0") String page,
+                              @RequestParam(defaultValue = "") String searchType,
+                              @RequestParam(defaultValue = "") String searchWords) {
 
         if (bindingResult.hasErrors()) {
-            return "post/edit";
+            return "blog/edit";
         }
 
         Post willUpdate = postFindService.findById(postId);
@@ -221,11 +219,11 @@ public class BlogController {
         redirectAttributes.addAttribute("searchType", searchType);
         redirectAttributes.addAttribute("searchWords", searchWords);
 
-        return "redirect:/post/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords;
+        return "redirect:/blog/read/{postId}?page=" + page + "&searchType=" + searchType + "& searchWords=" + searchWords;
     }
 
     @DeleteMapping("/{nickName}/delete/{postId}")
-    public RedirectView deletePost(@PathVariable("nickName") String userNickName, @PathVariable("postId") Long postId) {
+    public RedirectView deleteArticle(@PathVariable("nickName") String userNickName, @PathVariable("postId") Long postId) {
         User requestUser = userFindService.findByNickName(userNickName);
         Post post = postFindService.findById(postId);
         if (!post.getUser().equals(requestUser)) {
@@ -240,20 +238,38 @@ public class BlogController {
         String encode = UriComponentsBuilder.newInstance().path(userNickName).build().encode().toUriString();
         log.info("userNickName : {}", encode);
 
-        RedirectView redirectView = new RedirectView("/user/" + encode);
+        RedirectView redirectView = new RedirectView("/blog/" + encode);
         log.info("redirectView : {}", redirectView.getUrl());
         return redirectView;
     }
+
+    @GetMapping("/tag/{tag}/{subTag}")
+    public ModelAndView postListByTags(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                       @PathVariable String tag, @PathVariable(required = false) String subTag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTags(tag, subTag);
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/channels");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+
+    @GetMapping("/tag/{tag}")
+    public ModelAndView postListByTag(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                                      @PathVariable String tag) {
+        List<HashTag> hashTag = hashTagFindService.findHashTag(tag);
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, hashTag);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(postRequestListDTOS);
+        ModelAndView modelAndView = new ModelAndView("post/channels");
+        modelAndView.addObject("page", pagingDTO);
+        return modelAndView;
+    }
+
 
 
     private static void searchDefault(Model model, String searchType, String searchWords) {
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchWords", searchWords);
-    }
-
-    private static void searchDefault(ModelAndView model, String searchType, String searchWords) {
-        model.addObject("searchType", searchType);
-        model.addObject("searchWords", searchWords);
     }
 
 }

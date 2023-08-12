@@ -1,4 +1,4 @@
-package com.geulkkoli.web.post.dto;
+package com.geulkkoli.web.blog.dto;
 
 import com.geulkkoli.domain.post.Post;
 import lombok.Builder;
@@ -6,12 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.swing.text.html.HTML;
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
-public class PostRequestDTO {
+public class ArticlePagingRequestDTO {
 
     private Long postId;
 
@@ -27,7 +24,7 @@ public class PostRequestDTO {
 
 
     @Builder
-    public PostRequestDTO(Long postId, String title, String nickName, String contentSummary, String date, int postHits) {
+    public ArticlePagingRequestDTO(Long postId, String title, String nickName, String contentSummary, String date, int postHits) {
         this.postId = postId;
         this.title = title;
         this.nickName = nickName;
@@ -36,8 +33,8 @@ public class PostRequestDTO {
         this.postHits = postHits;
     }
 
-    public static PostRequestDTO toDTO(Post post) {
-        return PostRequestDTO.builder()
+    public static ArticlePagingRequestDTO toDTO(Post post) {
+        return ArticlePagingRequestDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .contentSummary(post.getPostBody())

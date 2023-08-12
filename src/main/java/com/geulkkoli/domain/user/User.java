@@ -9,10 +9,10 @@ import com.geulkkoli.domain.follow.Follow;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.comment.Comments;
 import com.geulkkoli.domain.favorites.Favorites;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.comment.dto.CommentEditDTO;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -120,12 +120,12 @@ public class User extends ConfigDate {
      * 게시글 관련 CRUD
      */
     //유저가 쓴 게시글
-    public Post writePost(PostAddDTO postAddDTO) {
+    public Post writePost(WriteRequestDTO WriteRequestDTO) {
         Post post = Post.builder()
-                .title(postAddDTO.getTitle())
-                .postBody(postAddDTO.getPostBody())
+                .title(WriteRequestDTO.getTitle())
+                .postBody(WriteRequestDTO.getPostBody())
                 .user(this)
-                .nickName(postAddDTO.getNickName())
+                .nickName(WriteRequestDTO.getNickName())
                 .build();
 
         this.posts.add(post);
@@ -138,10 +138,10 @@ public class User extends ConfigDate {
     }
 
     // 유저가 쓴 게시글 수정하기
-    public Post editPost(Post post, PostEditRequestDTO postEditRequestDTO) {
-        post.changePostBody(postEditRequestDTO.getPostBody());
-        post.changeTitle(postEditRequestDTO.getTitle());
-        post.changeNickName(postEditRequestDTO.getNickName());
+    public Post editPost(Post post, ArticleEditRequestDTO articleEditRequestDTO) {
+        post.changePostBody(articleEditRequestDTO.getPostBody());
+        post.changeTitle(articleEditRequestDTO.getTitle());
+        post.changeNickName(articleEditRequestDTO.getNickName());
         return post;
     }
 

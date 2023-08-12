@@ -1,7 +1,8 @@
-package com.geulkkoli.web.post.dto;
+package com.geulkkoli.web.blog.dto;
 
+import com.geulkkoli.domain.hashtag.HashTag;
+import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import lombok.Builder;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.util.HtmlUtils;
 
@@ -10,8 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-@Setter
-public class PostAddDTO {
+
+
+public class WriteRequestDTO {
 
     @NotNull
     private Long authorId;
@@ -29,12 +31,11 @@ public class PostAddDTO {
 
     private String hashTagString = "";
 
-    public PostAddDTO() {
+    public WriteRequestDTO() {
     }
 
-
     @Builder
-    public PostAddDTO(Long authorId, String title, String postBody
+    public WriteRequestDTO(Long authorId, String title, String postBody
             , String nickName, String tagList) {
         this.authorId = authorId;
         this.title = title;
@@ -42,6 +43,26 @@ public class PostAddDTO {
         this.nickName = nickName;
         this.hashTagString = tagList;
 
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPostBody(String postBody) {
+        this.postBody = postBody;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void setHashTagString(String hashTagString) {
+        this.hashTagString = hashTagString;
     }
 
     public Long getAuthorId() {
@@ -65,7 +86,7 @@ public class PostAddDTO {
     }
 
     public List<String> tagLists() {
-        return Arrays.stream(hashTagString.split(" ")).collect(Collectors.toList());
+        return Arrays.stream(hashTagString.split(HashTagSign.GENERAL.getSign())).collect(Collectors.toList());
     }
 
     @Override

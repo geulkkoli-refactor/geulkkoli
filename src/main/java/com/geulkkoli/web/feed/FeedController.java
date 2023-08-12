@@ -1,24 +1,18 @@
 package com.geulkkoli.web.feed;
 
 import com.geulkkoli.application.follow.FollowInfos;
-import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.favorites.Favorites;
 import com.geulkkoli.domain.follow.service.FollowFindService;
-import com.geulkkoli.domain.follow.service.FollowService;
 import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.service.PostFindService;
-import com.geulkkoli.domain.post.service.PostService;
-import com.geulkkoli.domain.social.service.SocialInfoFindService;
-import com.geulkkoli.domain.social.service.SocialInfoService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
-import com.geulkkoli.domain.user.service.UserService;
+import com.geulkkoli.web.blog.dto.ArticleDTO;
+import com.geulkkoli.web.blog.dto.ArticlePagingRequestDTO;
+import com.geulkkoli.web.blog.dto.PagingDTO;
+import com.geulkkoli.web.blog.dto.UserProfileDTO;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.post.UserProfileDTO;
-import com.geulkkoli.web.post.dto.PageDTO;
-import com.geulkkoli.web.post.dto.PagingDTO;
-import com.geulkkoli.web.post.dto.PostRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -90,7 +84,7 @@ public class FeedController {
         List<Post> subPosts = favoritePosts.subList(startIndex, endIndex);
 
         Page<Post> favoritsPost = new PageImpl<>(subPosts, pageable, favoritePosts.size());
-        Page<PostRequestDTO> readInfos = favoritsPost.map(PostRequestDTO::toDTO);
+        Page<ArticlePagingRequestDTO> readInfos = favoritsPost.map(ArticlePagingRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
         log.info("pagingDTO = {}", pagingDTO);
         ModelAndView modelAndView = new ModelAndView("user/favorites", "pagingResponses", pagingDTO);
@@ -103,7 +97,7 @@ public class FeedController {
     public ModelAndView getFavoritePost(@PathVariable("nickName") String nickName, @PathVariable("postId") Long postId) {
         User user = userFindService.findByNickName(nickName);
         Post findPost = postFindService.findById(postId);
-        PageDTO post = PageDTO.toDTO(findPost);
+        ArticleDTO post = ArticleDTO.toDTO(findPost);
         FollowResult followResult = new FollowResult(false, followFindService.checkFollow(user, findPost.getUser()));
         String checkFavorite = "exist";
 

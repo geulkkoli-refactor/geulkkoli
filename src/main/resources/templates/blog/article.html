@@ -19,7 +19,7 @@
     <!--  tinyMce -->
     <script src="https://cdn.tiny.cloud/1/5tnsr1h3mrs2d5stx1dtq8r7d2hqkm63hxn3ee7j3hjniywm/tinymce/6/tinymce.min.js"
             referrerpolicy="origin"></script>
-    <title>게시글 추가 폼</title>
+    <title>본문</title>
 </head>
 <body>
 <!-- csrf token-->
@@ -97,13 +97,14 @@
                 <section class="mb-3">
                     <!-- 게시글 내용-->
                     <textarea id="editor" th:text="${post.postBody}"></textarea>
+
                 </section>
                 <!-- 수정 삭제 버튼-->
                 <section class="mb-3">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="hasRole('USER')"
                          th:with="userNickName=${#authentication.principal.nickName}">
                         <button class="btn btn-warning btn-lg" onclick="location.href='postUpdateForm.html'"
-                                th:onclick="|location.href='@{/post/update/{postId}(postId=${post.postId},page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
+                                th:onclick="|location.href='@{/blog/update/{postId}(postId=${post.postId},page=${pageNumber},searchType=${searchType},searchWords=${searchWords})}'|"
                                 th:if="${#strings.equals(authorUser.nickName, userNickName)}"
                                 type="button">수정
                         </button>

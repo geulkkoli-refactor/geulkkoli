@@ -10,7 +10,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
-class PostRequestDTOTest {
+class ArticlePagingRequestDTOTest {
 
     @DisplayName("게시글 요약본을 11자 보여 준다.")
     @Test

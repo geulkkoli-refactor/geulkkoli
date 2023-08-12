@@ -3,7 +3,6 @@ package com.geulkkoli.web.user;
 import com.geulkkoli.application.follow.FollowInfos;
 import com.geulkkoli.application.user.CustomAuthenticationPrinciple;
 import com.geulkkoli.application.user.service.PasswordService;
-import com.geulkkoli.domain.favorites.Favorites;
 import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.follow.service.FollowService;
 import com.geulkkoli.domain.post.NotAuthorException;
@@ -15,19 +14,14 @@ import com.geulkkoli.domain.social.service.SocialInfoService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.comment.dto.CommentBodyDTO;
-import com.geulkkoli.web.follow.dto.FollowResult;
-import com.geulkkoli.web.post.UserProfileDTO;
-import com.geulkkoli.web.post.dto.PageDTO;
-import com.geulkkoli.web.post.dto.PagingDTO;
-import com.geulkkoli.web.post.dto.PostRequestDTO;
-import com.geulkkoli.web.user.dto.edit.PasswordEditFormDto;
-import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
-import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
-import com.geulkkoli.web.user.dto.mypage.calendar.CalendarDto;
+import com.geulkkoli.web.account.dto.edit.PasswordEditFormDto;
+import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
+import com.geulkkoli.web.account.dto.ConnectedSocialInfos;
+import com.geulkkoli.web.account.dto.CalendarDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,11 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Comparator;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 @Controller
 @RequiredArgsConstructor
@@ -67,25 +57,6 @@ public class UserController {
     private final FollowService followService;
     private final SocialInfoFindService socialInfoFindService;
 
-
-    @GetMapping("/{nickName}")
-    public ModelAndView getBlog(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        User user = userFindService.findByNickName(nickName);
-        List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
-        List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
-
-        int totalPosts = posts.size();
-        Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
-        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
-
-
-        ModelAndView modelAndView = new ModelAndView("user/blog-home");
-        modelAndView.addObject("loggingNickName", nickName);
-        modelAndView.addObject("page",pagingDTO);
-        return modelAndView;
-    }
 
     @DeleteMapping("/{nickName}/delete/{postId}")
     public RedirectView deletePost(@PathVariable("nickName") String userNickName , @PathVariable("postId") Long postId) {
@@ -145,87 +116,6 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("{nickName}/write-posts")
-    public ModelAndView getPostList(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        User user = userFindService.findByNickName(nickName);
-        List<Post> posts = user.getPosts().stream().collect(toUnmodifiableList());
-        List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
-        int totalPosts = posts.size();
-        Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
-        Page<PostRequestDTO> readInfos = pagePost.map(PostRequestDTO::toDTO);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
-
-
-        ModelAndView modelAndView = new ModelAndView("blog-home", "pagingResponses", pagingDTO);
-        modelAndView.addObject("loggingNickName", nickName);
-        return modelAndView;
-    }
-
-
-    @GetMapping("{nickName}/write-posts/{postId}")
-    public ModelAndView readPost(@PathVariable("nickName") String nickName, @PathVariable("postId") Long postId) {
-        Post byId = postFindService.findById(postId);
-
-        PageDTO post = PageDTO.toDTO(byId);
-        FollowResult followResult = new FollowResult(true, false);
-        String checkFavorite = "none";
-        UserProfileDTO authorUser = UserProfileDTO.toDTO(byId.getUser());
-
-        ModelAndView modelAndView = new ModelAndView("post_page");
-        modelAndView.addObject("post", post);
-        modelAndView.addObject("authorUser", authorUser);
-        modelAndView.addObject("followResult", followResult);
-        modelAndView.addObject("checkFavorite", checkFavorite);
-        modelAndView.addObject("commentList", post.getCommentList());
-        modelAndView.addObject("comments", new CommentBodyDTO());
-
-        return modelAndView;
-    }
-
-
-    @GetMapping("/{nickName}/favorites")
-    public ModelAndView getFavorite(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("nickName = {}", nickName);
-        User user = userFindService.findByNickName(nickName);
-        List<Favorites> favorites = user.getFavorites().stream().collect(toUnmodifiableList());
-        List<Post> favoritePosts = favorites.stream().sorted(Comparator.comparing(Favorites::getFavoritesId).reversed()).map(Favorites::getPost).collect(toList());
-
-        int totalFavoritePosts = favoritePosts.size();
-        int startIndex = pageable.getPageNumber() * pageable.getPageSize();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), totalFavoritePosts);
-        List<Post> subPosts = favoritePosts.subList(startIndex, endIndex);
-
-        Page<Post> favoritsPost = new PageImpl<>(subPosts, pageable, favoritePosts.size());
-        Page<PostRequestDTO> readInfos = favoritsPost.map(PostRequestDTO::toDTO);
-        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
-        log.info("pagingDTO = {}", pagingDTO);
-        ModelAndView modelAndView = new ModelAndView("user/favorites", "pagingResponses", pagingDTO);
-        modelAndView.addObject("loggingNickName", nickName);
-
-        return modelAndView;
-    }
-
-    @GetMapping("{nickName}/favorites/{postId}")
-    public ModelAndView getFavoritePost(@PathVariable("nickName") String nickName, @PathVariable("postId") Long postId) {
-        User user = userFindService.findByNickName(nickName);
-        Post findPost = postFindService.findById(postId);
-        PageDTO post = PageDTO.toDTO(findPost);
-        FollowResult followResult = new FollowResult(false, followFindService.checkFollow(user, findPost.getUser()));
-        String checkFavorite = "exist";
-
-        UserProfileDTO authorUser = UserProfileDTO.toDTO(findPost.getUser());
-        ModelAndView modelAndView = new ModelAndView("post_page");
-        modelAndView.addObject("post", post);
-        modelAndView.addObject("authorUser", authorUser);
-        modelAndView.addObject("followResult", followResult);
-        modelAndView.addObject("checkFavorite", checkFavorite);
-        modelAndView.addObject("commentList", post.getCommentList());
-        modelAndView.addObject("comments", new CommentBodyDTO());
-        return modelAndView;
-    }
-
-
     @GetMapping("/edit")
     public ModelAndView editUserInfo(@AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
         ModelAndView modelAndView = new ModelAndView(EDIT_FORM);
@@ -252,11 +142,11 @@ public class UserController {
     public ModelAndView editUserInfo(@Validated @ModelAttribute("editForm") UserInfoEditFormDto userInfoEditDto, BindingResult bindingResult, @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
 
         // 닉네임 중복 검사 && 본인의 기존 닉네임과 일치해도 중복이라고 안 뜨게
-        if (userService.isNickNameDuplicate(userInfoEditDto.getNickName()) && !userInfoEditDto.getNickName().equals(authUser.getNickName())) {
+        if (userFindService.isNickNameDuplicate(userInfoEditDto.getNickName()) && !userInfoEditDto.getNickName().equals(authUser.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
 
-        if (userService.isPhoneNoDuplicate(userInfoEditDto.getPhoneNo()) && !userInfoEditDto.getPhoneNo().equals(authUser.getPhoneNo())) {
+        if (userFindService.isPhoneNoDuplicate(userInfoEditDto.getPhoneNo()) && !userInfoEditDto.getPhoneNo().equals(authUser.getPhoneNo())) {
             bindingResult.rejectValue("phoneNo", "Duple.phoneNo");
         }
 
@@ -292,7 +182,7 @@ public class UserController {
     @PostMapping("/edit/edit-password")
     public ModelAndView editPassword(@Validated @ModelAttribute("passwordEditForm") PasswordEditFormDto form, BindingResult bindingResult, @AuthenticationPrincipal CustomAuthenticationPrinciple authUser, RedirectAttributes redirectAttributes) {
         User user = userFindService.findById(parseLong(authUser));
-        if (!passwordService.isPasswordVerification(user, form)) {
+        if (!userService.isPasswordVerification(user.getPassword(), form.getOldPassword())) {
             bindingResult.rejectValue("oldPassword", "Check.password");
         }
 
@@ -302,7 +192,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView(EDIT_PASSWORD_FORM);
         }
-        passwordService.updatePassword(parseLong(authUser), form.getNewPassword());
+        userService.updatePassword(parseLong(authUser), form.getNewPassword());
         ModelAndView modelAndView = new ModelAndView(REDIRECT_EDIT_INDEX);
         modelAndView.addObject("status", true);
         return modelAndView;

@@ -10,8 +10,8 @@ import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticlePagingRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,23 +85,24 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("소설 완결")
-                .postBody("test postbody")
-                .nickName("점심뭐먹지")
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
+                .title("title")
+                .tagList("#소설#완결")
+                .postBody("body")
+                .nickName("nick")
                 .tagList("")
                 .build();
-        Post save = postService.savePost(postAddDTO, user1);
+        Post save = postService.writeArtice(writeRequestDTO, user1);
 
         Post post = postFindService.findById(save.getPostId());
-        List<PostHashTag> postHashTags = post.getPostHashTags();
 
         assertThat("title").isEqualTo(post.getTitle());
         assertThat("body").isEqualTo(post.getPostBody());
         assertThat("nick").isEqualTo(post.getNickName());
-        assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("완결");
-        assertThat(postHashTags).extracting("hashTag").extracting("hashTagName").contains("소설");
+        assertThat("userName").isEqualTo(post.getUser().getUserName());
+        assertThat("email@email.com").isEqualTo(post.getUser().getEmail());
+        assertThat("phoneNo").isEqualTo(post.getUser().getPhoneNo());
+
     }
 
     @DisplayName("게시글 날짜를 조히")
@@ -118,21 +119,21 @@ class PostFindServiceTest {
 
         User testUser = userRepository.save(user);
 
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO1 = WriteRequestDTO.builder()
                 .title("calender")
                 .postBody("test")
                 .nickName(testUser.getNickName())
                 .build();
 
-        Post writePost = testUser.writePost(postAddDTO1);
+        Post writePost = testUser.writePost(writeRequestDTO1);
 
-        PostAddDTO postAddDTO2 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO2 = WriteRequestDTO.builder()
                 .title("calender")
                 .postBody("test")
                 .nickName(testUser.getNickName())
                 .build();
 
-        Post writePost1 = testUser.writePost(postAddDTO2);
+        Post writePost1 = testUser.writePost(writeRequestDTO2);
 
         List<String> createdAts = postFindService.getCreatedAts(testUser);
 
@@ -157,28 +158,28 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
+                .title("title")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO1 = WriteRequestDTO.builder()
+                .title("title")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
-        Post save = postService.savePost(postAddDTO, user1);
+        Post save = postService.writeArtice(writeRequestDTO, user1);
 
-        Post save1 = postService.savePost(postAddDTO1, user1);
+        Post save1 = postService.writeArtice(writeRequestDTO1, user1);
 
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, SearchType.TITLE.getType(), "title");
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, SearchType.TITLE.getType(), "title");
 
         //then
         assertAll(
@@ -201,45 +202,45 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
+                .title("title")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO1 = WriteRequestDTO.builder()
+                .title("title1")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
-        PostAddDTO postAddDTO2 = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO2 = WriteRequestDTO.builder()
+                .title("fsdfsdf")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
-        PostAddDTO postAddDTO3 = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
+        WriteRequestDTO writeRequestDTO3 = WriteRequestDTO.builder()
+                .title("sdfsdfds")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .tagList("")
                 .build();
 
 
-        Post save = postService.savePost(postAddDTO, user1);
-        Post save1 = postService.savePost(postAddDTO1, user1);
-        Post save2 = postService.savePost(postAddDTO2, user1);
-        Post save3 = postService.savePost(postAddDTO3, user1);
+        Post save = postService.writeArtice(writeRequestDTO, user1);
+        Post save1 = postService.writeArtice(writeRequestDTO1, user1);
+        Post save2 = postService.writeArtice(writeRequestDTO2, user1);
+        Post save3 = postService.writeArtice(writeRequestDTO3, user1);
 
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "제목", "title fsdfsdf sdfsdfds");
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, "제목", "title fsdfsdf sdfsdfds");
 
         //then
         assertAll(
@@ -249,7 +250,7 @@ class PostFindServiceTest {
 
     @DisplayName("다양한 검색어와 검색 타입으로 검색하기")
     @ParameterizedTest
-    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body", "멀티 해시태그, 소설#완결"}, delimiter = ',')
+    @CsvSource(value = {"제목, title fsdfsdf sdfsdfds", "닉네임, nick", "내용, body", "멀티 해시태그, 소설 완결"}, delimiter = ',')
     void searchPostsList(String searchType, String searchWords) {
         //given
         User user1 = User.builder()
@@ -263,53 +264,43 @@ class PostFindServiceTest {
 
         userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag 소설 완결")
-                .postBody("test postbody")
-                .nickName("점심뭐먹지")
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
+                .title("title")
+                .tagList("#소설#완결")
+                .postBody("body")
+                .nickName("nick")
                 .build();
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO1 = writeRequestDTO.builder()
                 .title("ㅁㄷ")
-                .tagList("testTag 소설 연재")
+                .tagList("#testTag")
                 .postBody("ㅇㄹㅁ")
                 .nickName("ㅁㄹ")
                 .build();
-        PostAddDTO.builder()
+
+        WriteRequestDTO writeRequestDTO2 = writeRequestDTO.builder()
                 .title("fsdfsdf")
-                .tagList("testTag 소설 완결")
+                .tagList("#testTag#소설#완결")
                 .postBody("body sdfsd")
                 .nickName("nick")
                 .build();
-        PostAddDTO postAddDTO2 = PostAddDTO.builder()
-                .title("fsdfsdf")
-                .tagList("testTag 소설 완결")
-                .postBody("body sdfsd")
-                .nickName("nick")
-                .build();
-        PostAddDTO.builder()
+
+        WriteRequestDTO writeRequestDTO3 = writeRequestDTO.builder()
                 .title("sdfsdfds")
-                .tagList("testTag 소설 완결")
-                .postBody("body")
-                .nickName("nick")
-                .build();
-        PostAddDTO postAddDTO3 = PostAddDTO.builder()
-                .title("sdfsdfds")
-                .tagList("testTag 소설 완결")
+                .tagList("#testTag#소설#완결")
                 .postBody("body")
                 .nickName("nick")
                 .build();
 
 
-        Post save = postService.savePost(postAddDTO, user1);
-        Post save1 = postService.savePost(postAddDTO1, user1);
-        Post save2 = postService.savePost(postAddDTO2, user1);
-        Post save3 = postService.savePost(postAddDTO3, user1);
+        Post save = postService.writeArtice(writeRequestDTO, user1);
+        Post save1 = postService.writeArtice(writeRequestDTO1, user1);
+        Post save2 = postService.writeArtice(writeRequestDTO2, user1);
+        Post save3 = postService.writeArtice(writeRequestDTO3, user1);
 
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.searchPostsList(pageable, searchType, searchWords);
 
         assertAll(
                 () -> assertThat(postRequestListDTOS).hasSize(3),
@@ -330,38 +321,38 @@ class PostFindServiceTest {
                 .build();
 
         userRepository.save(user1);
-        PostAddDTO postAddDTO = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .title("test Title1")
-                .tagList("testTag 소설 완결")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .authorId(user1.getUserId())
                 .build();
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO1 = WriteRequestDTO.builder()
                 .title("test Title2")
-                .tagList("testTag 소설 완결")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .authorId(user1.getUserId())
                 .build();
-        PostAddDTO postAddDTO2 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO2 = WriteRequestDTO.builder()
                 .title("test Title3")
-                .tagList("testTag 소설 완결")
+                .tagList("#testTag#소설#완결")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지")
                 .authorId(user1.getUserId())
                 .build();
 
 
-        Post save = postService.savePost(postAddDTO, user1);
-        Post save1 = postService.savePost(postAddDTO1, user1);
-        Post save2 = postService.savePost(postAddDTO2, user1);
+        Post save = postService.writeArtice(writeRequestDTO, user1);
+        Post save1 = postService.writeArtice(writeRequestDTO1, user1);
+        Post save2 = postService.writeArtice(writeRequestDTO2, user1);
         Pageable pageable = PageRequest.of(0, 5);
         HashTag 소설 = hashTagRepository.findByHashTagName("소설");
         HashTag 완결 = hashTagRepository.findByHashTagName("완결");
 
         //when
-        Page<PostRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, List.of(소설, 완결));
+        Page<ArticlePagingRequestDTO> postRequestListDTOS = postFindService.findPostByTag(pageable, List.of(소설, 완결));
 
         //then
         assertThat(postRequestListDTOS).hasSize(3);

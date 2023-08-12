@@ -8,10 +8,10 @@ import com.geulkkoli.domain.comment.Comments;
 import com.geulkkoli.domain.favorites.Favorites;
 import com.geulkkoli.domain.follow.Follow;
 import com.geulkkoli.domain.post.Post;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.comment.dto.CommentEditDTO;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -141,13 +141,13 @@ class UserTest {
                 .build();
 
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .nickName(user.getNickName())
                 .authorId(1L)
                 .title("title")
                 .postBody("content")
                 .build();
-        Post post = user.writePost(postAddDTO);
+        Post post = user.writePost(writeRequestDTO);
 
         assertAll(
                 () -> assertThat(user).has(new Condition<>(u -> u.getPosts().contains(post), "post가 추가되었다")),
@@ -168,21 +168,21 @@ class UserTest {
                 .build();
 
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .nickName(user.getNickName())
                 .authorId(1L)
                 .title("title")
                 .postBody("content")
                 .build();
-        Post post = user.writePost(postAddDTO);
+        Post post = user.writePost(writeRequestDTO);
 
-        PostEditRequestDTO postEditRequestDTO = PostEditRequestDTO.builder()
+        ArticleEditRequestDTO articleEditRequestDTO = ArticleEditRequestDTO.builder()
                 .postId(1L)
                 .title("title1")
                 .postBody("content1")
                 .build();
 
-        Post post1 = user.editPost(post, postEditRequestDTO);
+        Post post1 = user.editPost(post, articleEditRequestDTO);
 
         assertAll(
                 () -> assertThat(post1).has(new Condition<>(p -> p.getTitle().equals("title1"), "title이 수정되었다")),
@@ -203,14 +203,14 @@ class UserTest {
                 .build();
 
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .nickName(user.getNickName())
                 .authorId(1L)
                 .title("title")
                 .postBody("content")
                 .build();
-        Post post = user.writePost(postAddDTO);
-        Post post2 = user.writePost(postAddDTO);
+        Post post = user.writePost(writeRequestDTO);
+        Post post2 = user.writePost(writeRequestDTO);
         Post post1 = user.deletePost(post);
 
         assertThat(user).has(new Condition<>(u -> !u.getPosts().contains(post1), "post가 삭제되었다"));
@@ -237,7 +237,7 @@ class UserTest {
                 .gender("male")
                 .build();
 
-        Post post = user1.writePost(PostAddDTO.builder()
+        Post post = user1.writePost(WriteRequestDTO.builder()
                 .nickName(user1.getNickName())
                 .authorId(1L)
                 .title("title")
@@ -322,7 +322,7 @@ class UserTest {
                 .gender("male")
                 .build();
 
-        Post post = user1.writePost(PostAddDTO.builder()
+        Post post = user1.writePost(WriteRequestDTO.builder()
                 .nickName(user1.getNickName())
                 .authorId(1L)
                 .title("title")
@@ -357,7 +357,7 @@ class UserTest {
                 .gender("male")
                 .build();
 
-        Post post = user1.writePost(PostAddDTO.builder()
+        Post post = user1.writePost(WriteRequestDTO.builder()
                 .nickName(user1.getNickName())
                 .authorId(1L)
                 .title("title")
@@ -393,7 +393,7 @@ class UserTest {
                 .gender("male")
                 .build();
 
-        Post post = user1.writePost(PostAddDTO.builder()
+        Post post = user1.writePost(WriteRequestDTO.builder()
                 .nickName(user1.getNickName())
                 .authorId(1L)
                 .title("title")
@@ -430,7 +430,7 @@ class UserTest {
                 .gender("male")
                 .build();
 
-        Post post = user1.writePost(PostAddDTO.builder()
+        Post post = user1.writePost(WriteRequestDTO.builder()
                 .nickName(user1.getNickName())
                 .authorId(1L)
                 .title("title")

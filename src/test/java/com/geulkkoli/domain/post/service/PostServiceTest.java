@@ -11,8 +11,8 @@ import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserNotExistException;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,14 +81,7 @@ class PostServiceTest {
 
         userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .tagList("testTag testTag2, testTag3")
-                .postBody("test postbody")
-                .nickName("점심뭐먹지")
-                .tagList("")
-                .build();
-        Post save = postService.savePost(postAddDTO, user1);
+        Post save = postService.writeArtice(WriteRequestDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("소설 판타지 완결").nickName(user1.getNickName()).build(), user1);
 
 
         assertAll(() -> assertThat(save).has(new Condition<>(p -> p.getTitle().equals("title"), "title")),
@@ -114,15 +107,15 @@ class PostServiceTest {
         userRepository.save(user1);
 
 
-        Post post = postService.savePost(PostAddDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("소설 판타지 완결").nickName(user1.getNickName()).build(), user1);
-        PostEditRequestDTO postEditRequestDTO = PostEditRequestDTO.builder()
+        Post post = postService.writeArtice(WriteRequestDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("#소설#판타지#완결").nickName(user1.getNickName()).build(), user1);
+        ArticleEditRequestDTO articleEditRequestDTO = ArticleEditRequestDTO.builder()
                 .postId(post.getPostId())
                 .postBody("body update")
                 .title("title update")
-                .tags("판타지 완결")
+                .tags("#판타지#완결")
                 .nickName("nick update")
                 .build();
-        postService.updatePost(post, postEditRequestDTO);
+        postService.updatePost(post, articleEditRequestDTO);
 
         Post one = postFindService.findById(post.getPostId());
 
@@ -149,7 +142,7 @@ class PostServiceTest {
 
         userRepository.save(user1);
 
-        Post post = postService.savePost( PostAddDTO.builder()
+        Post post = postService.writeArtice(WriteRequestDTO.builder()
                 .title("testTitle")
                 .tagList("testTag testTag2")
                 .postBody("test postbody")
@@ -175,7 +168,7 @@ class PostServiceTest {
 
         User save = userRepository.save(user1);
 
-        PostAddDTO postAddDTO = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .title("testTitle")
                 .tagList("testTag testTag2")
                 .postBody("test postbody")
@@ -183,7 +176,7 @@ class PostServiceTest {
                 .tagList("")
                 .build();
 
-        Post post = postService.savePost(postAddDTO, user1);
+        Post post = postService.writeArtice(writeRequestDTO, user1);
 
         Post findPost = postService.showDetailPost(post.getPostId());
 
@@ -214,7 +207,7 @@ class PostServiceTest {
                 .build();
 
         userRepository.save(user1);
-        Post post = postService.savePost( PostAddDTO.builder()
+        Post post = postService.writeArtice(WriteRequestDTO.builder()
                 .title("testTitle")
                 .tagList("testTag testTag2")
                 .postBody("test postbody")
@@ -251,7 +244,7 @@ class PostServiceTest {
 
         userRepository.save(user1);
         userRepository.save(user2);
-        Post post = postService.savePost( PostAddDTO.builder()
+        Post post = postService.writeArtice(WriteRequestDTO.builder()
                 .title("testTitle")
                 .tagList("testTag testTag2")
                 .postBody("test postbody")

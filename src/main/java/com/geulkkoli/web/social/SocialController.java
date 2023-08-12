@@ -6,9 +6,10 @@ import com.geulkkoli.application.user.UserModelDto;
 import com.geulkkoli.domain.social.service.SocialInfoFindService;
 import com.geulkkoli.domain.social.service.SocialInfoService;
 import com.geulkkoli.domain.user.User;
+import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
+import com.geulkkoli.web.account.dto.ConnectedSocialInfos;
 import com.geulkkoli.web.social.util.SocialSignUpValueEncryptoDecryptor;
-import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +35,8 @@ public class SocialController {
     private static final String SIGN_UP_VIEW_NAME = "social-signup";
     private static final String HOME = "home";
     private final UserService userService;
+
+    private final UserFindService userFindService;
 
     private final SocialInfoService socialService;
     private final SocialInfoFindService socialInfoFindService;
@@ -77,11 +80,11 @@ public class SocialController {
             bindingResult.rejectValue("verifyPassword", "NotEquals.verifyPassword");
         }
 
-        if (userService.isNickNameDuplicate(signUpDtoUpDto.getNickName())) {
+        if (userFindService.isNickNameDuplicate(signUpDtoUpDto.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
 
-        if (userService.isPhoneNoDuplicate(signUpDtoUpDto.getPhoneNo())) {
+        if (userFindService.isPhoneNoDuplicate(signUpDtoUpDto.getPhoneNo())) {
             bindingResult.rejectValue("phoneNo", "Duple.phoneNo");
             return modelAndView;
         }

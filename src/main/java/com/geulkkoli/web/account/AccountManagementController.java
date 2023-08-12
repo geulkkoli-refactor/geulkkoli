@@ -1,19 +1,15 @@
 package com.geulkkoli.web.account;
 
 import com.geulkkoli.application.user.CustomAuthenticationPrinciple;
-import com.geulkkoli.application.user.service.PasswordService;
-import com.geulkkoli.domain.follow.service.FollowFindService;
 import com.geulkkoli.domain.follow.service.FollowService;
-import com.geulkkoli.domain.post.service.PostFindService;
-import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.social.service.SocialInfoFindService;
 import com.geulkkoli.domain.social.service.SocialInfoService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.user.dto.edit.PasswordEditFormDto;
-import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
-import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
+import com.geulkkoli.web.account.dto.edit.PasswordEditFormDto;
+import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
+import com.geulkkoli.web.account.dto.ConnectedSocialInfos;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/account")
 @Controller
 public class AccountManagementController {
     public static final String EDIT_FORM = "/user/userInfo-edit";
@@ -36,7 +33,6 @@ public class AccountManagementController {
 
     private final UserService userService;
     private final UserFindService userFindService;
-    private final PasswordService passwordService;
     private final SocialInfoService socialInfoService;
     private final FollowService followService;
     private final SocialInfoFindService socialInfoFindService;
@@ -68,11 +64,11 @@ public class AccountManagementController {
     public ModelAndView editUserInfo(@Validated @ModelAttribute("editForm") UserInfoEditFormDto userInfoEditDto, BindingResult bindingResult, @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
 
         // 닉네임 중복 검사 && 본인의 기존 닉네임과 일치해도 중복이라고 안 뜨게
-        if (userService.isNickNameDuplicate(userInfoEditDto.getNickName()) && !userInfoEditDto.getNickName().equals(authUser.getNickName())) {
+        if (userFindService.isNickNameDuplicate(userInfoEditDto.getNickName()) && !userInfoEditDto.getNickName().equals(authUser.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
 
-        if (userService.isPhoneNoDuplicate(userInfoEditDto.getPhoneNo()) && !userInfoEditDto.getPhoneNo().equals(authUser.getPhoneNo())) {
+        if (userFindService.isPhoneNoDuplicate(userInfoEditDto.getPhoneNo()) && !userInfoEditDto.getPhoneNo().equals(authUser.getPhoneNo())) {
             bindingResult.rejectValue("phoneNo", "Duple.phoneNo");
         }
 
@@ -108,17 +104,17 @@ public class AccountManagementController {
     @PostMapping("/edit/edit-password")
     public ModelAndView editPassword(@Validated @ModelAttribute("passwordEditForm") PasswordEditFormDto form, BindingResult bindingResult, @AuthenticationPrincipal CustomAuthenticationPrinciple authUser, RedirectAttributes redirectAttributes) {
         User user = userFindService.findById(parseLong(authUser));
-        if (!passwordService.isPasswordVerification(user, form)) {
+        if (!userService.isPasswordVerification(user.getPassword(), form.getOldPassword())) {
             bindingResult.rejectValue("oldPassword", "Check.password");
         }
 
-        if (!form.getNewPassword().equals(form.getVerifyPassword())) {
+        if (form.isMatched()) {
             bindingResult.rejectValue("verifyPassword", "Check.verifyPassword");
         }
         if (bindingResult.hasErrors()) {
             return new ModelAndView(EDIT_PASSWORD_FORM);
         }
-        passwordService.updatePassword(parseLong(authUser), form.getNewPassword());
+        userService.updatePassword(parseLong(authUser), form.getNewPassword());
         ModelAndView modelAndView = new ModelAndView(REDIRECT_EDIT_INDEX);
         modelAndView.addObject("status", true);
         return modelAndView;

@@ -1,9 +1,7 @@
 package com.geulkkoli.domain.user.service;
 
 import com.geulkkoli.domain.user.User;
-import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.user.dto.JoinFormDto;
-import org.junit.jupiter.api.Assertions;
+import com.geulkkoli.web.home.dto.JoinFormDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -93,7 +91,7 @@ class UserFindServiceTest {
         JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01056789999","Male");
 
         User user = userService.signUp(joinForm);
-        assertThat(userService.isNickNameDuplicate("바나나1")).isTrue();
+        assertThat(userFindService.isNickNameDuplicate("바나나1")).isTrue();
     }
 
     @Test
@@ -102,6 +100,6 @@ class UserFindServiceTest {
         JoinFormDto joinForm = JoinFormDto.of("test","123","123","바나나1","tako1@naver.com","01012345671","Male");
 
         User user = userService.signUp(joinForm);
-        assertThat(userService.isPhoneNoDuplicate("01012345671")).isTrue();
+        assertThat(userFindService.isPhoneNoDuplicate("01012345671")).isTrue();
     }
 }

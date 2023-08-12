@@ -6,7 +6,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.web.comment.dto.CommentBodyDTO;
 import com.geulkkoli.web.comment.dto.CommentEditDTO;
-import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,20 +61,20 @@ class CommentsRepositoryTest {
 
     @BeforeEach
     void beforeEach () {
-        PostAddDTO postAddDTO01 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO01 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        post01 = user.writePost(postAddDTO01);
+        post01 = user.writePost(writeRequestDTO01);
         postRepository.save(post01);
 
-        PostAddDTO postAddDTO02 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO02 = WriteRequestDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
-        post02 = user.writePost(postAddDTO02);
+        post02 = user.writePost(writeRequestDTO02);
         postRepository.save(post02);
     }
 

@@ -1,4 +1,4 @@
-package com.geulkkoli.web.user;
+package com.geulkkoli.web.home;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;

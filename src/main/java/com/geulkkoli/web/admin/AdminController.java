@@ -6,8 +6,9 @@ import com.geulkkoli.domain.post.service.PostFindService;
 import com.geulkkoli.domain.post.service.PostService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -86,13 +87,13 @@ public class AdminController {
 
     @GetMapping("/add")
     public String postAddForm(Model model) {
-        model.addAttribute("addDTO", new PostAddDTO());
+        model.addAttribute("addDTO", new WriteRequestDTO());
         return "notice-add";
     }
 
     //새 게시글 등록
     @PostMapping("/add")
-    public String postAdd(@Validated @ModelAttribute PostAddDTO post, BindingResult bindingResult,
+    public String postAdd(@Validated @ModelAttribute WriteRequestDTO post, BindingResult bindingResult,
                           RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest request) {
         redirectAttributes.addAttribute("page", request.getSession().getAttribute("pageNumber"));
 
@@ -114,7 +115,7 @@ public class AdminController {
     public String movePostEditForm(Model model, @PathVariable Long postId,
                                    @RequestParam(defaultValue = "") String searchType,
                                    @RequestParam(defaultValue = "") String searchWords) {
-        PostEditRequestDTO postPage = PostEditRequestDTO.toDTO(postFindService.findById(postId));
+        ArticleEditRequestDTO postPage = ArticleEditRequestDTO.toDTO(postFindService.findById(postId));
         model.addAttribute("editDTO", postPage);
         searchDefault(model, searchType, searchWords);
         return "notice-edit";
@@ -122,7 +123,7 @@ public class AdminController {
 
     //게시글 수정
     @PostMapping("/update/{postId}")
-    public String editPost(@Validated @ModelAttribute PostEditRequestDTO updateParam, BindingResult bindingResult,
+    public String editPost(@Validated @ModelAttribute ArticleEditRequestDTO updateParam, BindingResult bindingResult,
                            @PathVariable Long postId, RedirectAttributes redirectAttributes, HttpServletRequest request,
                            @RequestParam(defaultValue = "") String searchType,
                            @RequestParam(defaultValue = "") String searchWords) {

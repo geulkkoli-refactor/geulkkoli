@@ -2,8 +2,8 @@ package com.geulkkoli.web.user;
 
 import com.geulkkoli.application.user.service.UserSecurityService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.user.dto.JoinFormDto;
-import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
+import com.geulkkoli.web.home.dto.JoinFormDto;
+import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -21,11 +22,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -58,6 +59,16 @@ class UserControllerSecurityEndPointTest {
 
         mvc.perform(post("/user/edit"))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/loginPage"));
+    }@Test
+    @DisplayName("인증되지 않은 사용자가 /blog에 delete 방식으로 보내면 로그인 페이지로 리다이렉트")
+    void not_Authenticated_user_access_userinfo_delete_post_redirect_loginPage() throws Exception {
+        JoinFormDto joinForm = JoinFormDto.of("김","qwe123!!!","qwe123!!!","바나나11","tako99@naver.com","919023233","male");
+        userService.signUp(joinForm);
+
+
+        mvc.perform(delete("/blog/바나나11"))
+                .andExpect(status().is(403))
                 .andExpect(redirectedUrl("http://localhost/loginPage"));
     }
 

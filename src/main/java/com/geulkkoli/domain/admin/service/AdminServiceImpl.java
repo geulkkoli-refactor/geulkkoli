@@ -14,8 +14,8 @@ import com.geulkkoli.domain.admin.AccountLockRepository;
 import com.geulkkoli.domain.admin.ReportRepository;
 import com.geulkkoli.web.admin.DailyTopicDto;
 import com.geulkkoli.web.admin.ReportDto;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -78,14 +78,14 @@ public class AdminServiceImpl {
         postService.deletePost(deletePost.getPostId(), deletePost.getUser().getUserId());
     }
 
-    public Post saveNotice(PostAddDTO postAddDto, User user) {
-        Post save = postRepository.save(user.writePost(postAddDto));
-        log.info("addDto.getTagListString() = " + postAddDto.getHashTagString());
-        postHashTagService.addHashTagsToPost(save, postAddDto);
+    public Post saveNotice(WriteRequestDTO writeRequestDto, User user) {
+        Post save = postRepository.save(user.writePost(writeRequestDto));
+        log.info("addDto.getTagListString() = " + writeRequestDto.getHashTagString());
+        postHashTagService.addHashTagsToPost(save, writeRequestDto);
         return save;
     }
 
-    public Post updateNotice(Long postId, PostEditRequestDTO updateParam) {
+    public Post updateNotice(Long postId, ArticleEditRequestDTO updateParam) {
         Post post = postFindService.findById(postId);
         postService.updatePost(post, updateParam);
         return postHashTagService.editHashTagsToPost(post, updateParam);

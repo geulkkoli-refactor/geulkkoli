@@ -10,26 +10,23 @@
 <!--    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/super-build/ckeditor.js"></script>-->
     <!--  tinyMce -->
     <script src="https://cdn.tiny.cloud/1/5tnsr1h3mrs2d5stx1dtq8r7d2hqkm63hxn3ee7j3hjniywm/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <title>게시글 수정 폼</title>
+    <title>글 수정</title>
 </head>
 <body>
 
 <div th:include="nav"></div>
 
 <div class="container">
-    <div class="py-5 text-center">
-        <h2>게시글 수정하기</h2>
-    </div>
 
     <hr class="my-4">
     <div class="container">
         <div>
             <form id="edit"
-                  th:action="@{/post/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}"
+                  th:action="@{/blog/update/{postId}(postId=*{postId},page=${session.pageNumber},searchType=${searchType},searchWords=${searchWords})}"
                   th:object="${editDTO}" method="post">
                 <input type="hidden" th:field="*{nickName}" form="edit">
                 <div class="mb-3">
-                    <label for="title" th:text="제목">제목</label>
+                    <label for="title"></label>
                     <input class="form-control"
                            type="text"
                            id="title"

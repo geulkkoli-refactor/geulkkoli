@@ -1,10 +1,7 @@
-package com.geulkkoli.web.post.dto;
+package com.geulkkoli.web.blog.dto;
 
 import com.geulkkoli.domain.comment.Comments;
-import com.geulkkoli.domain.comment.service.CommentsService;
-import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.post.Post;
-import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.web.comment.dto.CommentListDTO;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,14 +11,13 @@ import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @ToString
-public class PageDTO {
+public class ArticleDTO {
 
     @NotBlank
     private Long postId;
@@ -56,9 +52,9 @@ public class PageDTO {
     private List<String> tagList;
 
     @Builder
-    public PageDTO(Long postId, Long authorId, String title,
-                   String postBody, String nickName, Set<Comments> comments,
-                   String date, int favoriteCount, List<String> tagList) {
+    public ArticleDTO(Long postId, Long authorId, String title,
+                      String postBody, String nickName, Set<Comments> comments,
+                      String date, int favoriteCount, List<String> tagList) {
         this.postId = postId;
         this.authorId = authorId;
         this.title = title;
@@ -70,8 +66,8 @@ public class PageDTO {
         this.tagList = tagList;
     }
 
-    public static PageDTO toDTO(Post post) {
-        return PageDTO.builder()
+    public static ArticleDTO toDTO(Post post) {
+        return ArticleDTO.builder()
                 .postId(post.getPostId())
                 .authorId(post.getUser().getUserId())
                 .title(post.getTitle())

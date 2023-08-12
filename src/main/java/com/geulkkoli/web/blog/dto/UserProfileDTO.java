@@ -1,4 +1,4 @@
-package com.geulkkoli.web.post;
+package com.geulkkoli.web.blog.dto;
 
 import com.geulkkoli.domain.user.User;
 

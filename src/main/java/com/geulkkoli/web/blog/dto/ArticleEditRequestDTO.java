@@ -1,4 +1,4 @@
-package com.geulkkoli.web.post.dto;
+package com.geulkkoli.web.blog.dto;
 
 import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import com.geulkkoli.domain.post.Post;
@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class PostEditRequestDTO {
+public class ArticleEditRequestDTO {
 
     @NotNull
     private Long postId;
@@ -38,8 +37,8 @@ public class PostEditRequestDTO {
 
 
     @Builder
-    public PostEditRequestDTO(Long postId, String title, String postBody,
-                              String nickName, String tags) {
+    public ArticleEditRequestDTO(Long postId, String title, String postBody,
+                                 String nickName, String tags) {
         this.postId = postId;
         this.title = title;
         this.postBody = postBody;
@@ -47,10 +46,10 @@ public class PostEditRequestDTO {
         this.tags = tags;
     }
 
-    public static PostEditRequestDTO toDTO(Post post) {
+    public static ArticleEditRequestDTO toDTO(Post post) {
         List<PostHashTag> postHashTags = post.getPostHashTags();
         String tagNames = postHashTags.stream().map(i -> i.getHashTag().getHashTagName()).collect(Collectors.joining(HashTagSign.GENERAL.getSign()));
-        return PostEditRequestDTO.builder()
+        return ArticleEditRequestDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
                 .postBody(post.getPostBody())

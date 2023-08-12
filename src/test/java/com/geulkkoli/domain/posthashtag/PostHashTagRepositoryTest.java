@@ -7,7 +7,7 @@ import com.geulkkoli.domain.post.Post;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -155,12 +155,12 @@ class PostHashTagRepositoryTest {
     }
 
     private Post createPost(User user, String title, String postBody) {
-        PostAddDTO postAddDTO01 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO01 = WriteRequestDTO.builder()
                 .title(title)
                 .postBody(postBody)
                 .nickName(user.getNickName())
                 .build();
-        return postRepository.save(user.writePost(postAddDTO01));
+        return postRepository.save(user.writePost(writeRequestDTO01));
     }
 
     private User creatUser(String userName, String nickName, String email, String phoneNo, String password, String gender) {
