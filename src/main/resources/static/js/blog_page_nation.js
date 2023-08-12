@@ -39,5 +39,5 @@ function isVisible(bool, obj) {
 }
 
 function makeURI(page, size) {
-    return `/user/${nickName}/?page=${page}&size=${size}`;
+    return `/blog/${nickName}/?page=${page}&size=${size}`;
 }
