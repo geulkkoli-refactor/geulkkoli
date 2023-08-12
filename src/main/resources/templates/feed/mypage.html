@@ -8,17 +8,21 @@
     <title>마이페이지</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/mypage.css">
     <link rel="stylesheet" href="/css/nav.css">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/calendar.css">
+    <link href="/css/channel.css" rel="stylesheet"/>
 </head>
 <body>
 <div th:include="nav"></div>
-
-<div class="col-md-3">
-    <section class="follow-section">
-        <div class="profile-info">
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col p-3 bg-opacity-10">
+            <a class=""
+               th:attr="data-url='/feed/'+${#authentication.principal.nickName} + '/favorites'"
+               onclick="location.href=this.getAttribute('data-url')">
+                <em>좋아요 한 글</em>
+            </a>
+        </div>
+        <div class="col p-3 bg-white text-black">
             <a class="following-link"
                th:attr="data-url='/feed/'+${nickName} + '/followers'"
                onclick="location.href=this.getAttribute('data-url')"
@@ -29,7 +33,8 @@
             <a class="following-link" href="#" th:unless="${followsCount.getFollowerCount() > 0}">
                 <em>구독자</em>
                 <span th:text="${followsCount.getFollowerCount()}"></span>
-            </a>
+            </a></div>
+        <div class="col p-3 bg-white text-black">.
             <a class="following-link"
                th:attr="data-url='/feed/'+${nickName} + '/followees'"
                onclick="location.href=this.getAttribute('data-url')"
@@ -42,27 +47,7 @@
                 <span th:text="${followsCount.getFolloweeCount()}"></span>
             </a>
         </div>
-    </section>
-</div>
-<div class="flex-shrink-0 p-3" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-        <svg class="bi pe-none me-2" width="30" height="24">
-            <use xlink:href="#bootstrap"></use>
-        </svg>
-        <span class="fs-5 fw-semibold">Home</span>
-    </a>
-    <ul class="list-unstyled ps-0">
-        <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse"
-                    data-bs-target="#orders-collapse" aria-expanded="true">
-                <a class=""
-                   th:attr="data-url='/feed/'+${#authentication.principal.nickName} + '/favorites'"
-                   onclick="location.href=this.getAttribute('data-url')">
-                    <em>좋아요 한 글</em>
-                </a>
-            </button>
-        </li>
-    </ul>
+    </div>
 </div>
 
 <!--<div id="calendarBox">-->
@@ -75,8 +60,7 @@
 <!--</div>-->
 </body>
 <div th:include="footer"></div>
-<script src="/js/calendar.js"></script>
-<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script src="/js/calendar.js"></script>-->
+<script src="/js/nav.js"></script>
 </html>
