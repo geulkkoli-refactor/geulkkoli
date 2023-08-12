@@ -12,10 +12,10 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.domain.admin.AccountLockRepository;
 import com.geulkkoli.domain.admin.ReportRepository;
-import com.geulkkoli.web.admin.DailyTopicDto;
-import com.geulkkoli.web.admin.ReportDto;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.admin.DailyTopicDTO;
+import com.geulkkoli.web.admin.ReportDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -55,12 +55,12 @@ public class AdminServiceImpl {
     }
 
     //신고받은 게시글 조회
-    public List<ReportDto> findAllReportedPost() {
+    public List<ReportDTO> findAllReportedPost() {
         List<Post> allPost = reportRepository.findDistinctByReportedPost();
-        List<ReportDto> reportDtoList = new ArrayList<>();
+        List<ReportDTO> reportDtoList = new ArrayList<>();
 
         for (Post post : allPost) {
-            reportDtoList.add(ReportDto.toDto(post, reportRepository.countByReportedPost(post)));
+            reportDtoList.add(ReportDTO.toDto(post, reportRepository.countByReportedPost(post)));
         }
 
         return reportDtoList;
@@ -78,20 +78,20 @@ public class AdminServiceImpl {
         postService.deletePost(deletePost.getPostId(), deletePost.getUser().getUserId());
     }
 
-    public Post saveNotice(PostAddDTO postAddDto, User user) {
-        Post save = postRepository.save(user.writePost(postAddDto));
-        log.info("addDto.getTagListString() = " + postAddDto.getHashTagString());
-        postHashTagService.addHashTagsToPost(save, postAddDto);
+    public Post saveNotice(WriteRequestDTO writeRequestDto, User user) {
+        Post save = postRepository.save(user.writePost(writeRequestDto));
+        log.info("addDto.getTagListString() = " + writeRequestDto.getHashTagString());
+        postHashTagService.addHashTagsToPost(save, writeRequestDto);
         return save;
     }
 
-    public Post updateNotice(Long postId, PostEditRequestDTO updateParam) {
+    public Post updateNotice(Long postId, ArticleEditRequestDTO updateParam) {
         Post post = postFindService.findById(postId);
         postService.updatePost(post, updateParam);
         return postHashTagService.editHashTagsToPost(post, updateParam);
     }
 
-    public List<DailyTopicDto> findWeeklyTopic() {
+    public List<DailyTopicDTO> findWeeklyTopic() {
         List<Topic> topics = topicRepository.findTopicByUpComingDateBetween(LocalDate.now(), LocalDate.now().plusDays(29), Sort.by(Sort.Direction.ASC, "upComingDate"));
 
         if (topics.size() < 30) {
@@ -100,7 +100,7 @@ public class AdminServiceImpl {
 
         return topics.stream()
                 .limit(10)
-                .map(a -> DailyTopicDto.builder()
+                .map(a -> DailyTopicDTO.builder()
                         .topic(a.getTopicName())
                         .date(a.getUpComingDate().toString())
                         .build())
@@ -124,7 +124,7 @@ public class AdminServiceImpl {
         return topics;
     }
 
-    public Topic updateTopic(DailyTopicDto topic) {
+    public Topic updateTopic(DailyTopicDTO topic) {
         Topic findTopic = topicRepository.findTopicByUpComingDate(LocalDate.parse(topic.getDate()));
         log.info("findTopic = " + findTopic);
         findTopic.settingUpComingDate(LocalDate.of(2000, 1, 1));

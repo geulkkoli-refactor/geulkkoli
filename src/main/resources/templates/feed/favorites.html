@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>favorites</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/read.css">
+</head>
+<body>
+<div th:include="nav"></div>
+<div class="container-fluid">
+    <div class="container">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">제목</th>
+                <th scope="col">닉네임</th>
+                <th scope="col">날짜</th>
+                <th scope="col">조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="page : ${pagingResponses.getList()}">
+                <td>
+                    <a th:href="@{|/user/${loggingNickName}/favorites/${page.postId}}"
+                       th:text="${page.title}"></a></td>
+                <td th:align="center" th:text="${page.nickName}"></td>
+                <td th:align="center" th:text="${page.date}"></td>
+                <td th:align="center" th:text="${page.postHits}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-center">
+        <nav class="" aria-label="Page navigation example">
+            <ul class="pagination" id="pagination">
+                <li class="page-item"><a href="#" class="page-link" aria-label="firstPageNum"><span
+                        aria-hidden="true"><i class="fa fa-fw fa-angle-left"></i></span><span
+                        class="sr-only">처음으로</span></a></li>
+                <li class="page-item"><a href="#" class="page-link" aria-label="lastPageNum"><span aria-hidden="true"><i
+                        class="fa fa-fw fa-angle-right"></i></span><span class="sr-only">마지막으로</span></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+<script>
+    const currentPage = [[${pagingResponses.number}]];
+    const isFirst = [[${pagingResponses.first}]];
+    const isLast = [[${pagingResponses.last}]];
+    const endPage = [[${pagingResponses.totalPages}]];
+    const size = [[${pagingResponses.size}]];
+    const nickName = '[[${loggingNickName}]]';
+</script>
+<script src="/js/blog_page_nation.js"></script>
+</html>

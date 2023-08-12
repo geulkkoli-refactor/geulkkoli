@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/follow")
 @RestController
 public class FollowApiController {
     private final FollowService followService;

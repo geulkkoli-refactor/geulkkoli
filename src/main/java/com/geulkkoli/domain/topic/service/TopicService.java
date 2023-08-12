@@ -2,7 +2,7 @@ package com.geulkkoli.domain.topic.service;
 
 import com.geulkkoli.domain.topic.Topic;
 import com.geulkkoli.domain.topic.TopicRepository;
-import com.geulkkoli.web.admin.DailyTopicDto;
+import com.geulkkoli.web.admin.DailyTopicDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +12,10 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class TopicService {
     private final TopicRepository topicRepository;
-    public DailyTopicDto showTodayTopic(LocalDate date) {
+    public DailyTopicDTO showTodayTopic(LocalDate date) {
         Topic todayTopic = topicRepository.findTopicByUpComingDate(date);
         todayTopic.settingUseDate(date);
-        return DailyTopicDto.builder()
+        return DailyTopicDTO.builder()
                 .date(date.toString())
                 .topic(todayTopic.getTopicName())
                 .build();

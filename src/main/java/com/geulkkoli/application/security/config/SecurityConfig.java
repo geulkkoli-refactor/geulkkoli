@@ -67,13 +67,12 @@ public class SecurityConfig {
         http
                 .authorizeRequests(auth -> {
                     auth.mvcMatchers("/actuator/**").hasRole("ADMIN");
-                    auth.mvcMatchers("users/**").hasIpAddress("localhost");
                     auth.mvcMatchers("/admin/**").hasRole("ADMIN");
-                    auth.mvcMatchers("/user/**").hasRole("USER");
+                    auth.mvcMatchers("/account/**").hasRole("USER");
                     auth.mvcMatchers(HttpMethod.GET, "/social/oauth2/signup").hasAnyRole("GUEST");
-                    auth.mvcMatchers("/post/add/**", "/post/update/**", "/post/delete/**").hasAnyRole("USER", "ADMIN");
+                    auth.mvcMatchers("/blog/write/**", "/blog/update/**","/blog/*/delete").hasAnyRole("USER", "ADMIN");
                     auth.mvcMatchers(LOGIN_PAGE).anonymous();
-                    auth.mvcMatchers(HttpMethod.GET, "/", "/post/read/**", "/post/list/**" )
+                    auth.mvcMatchers(HttpMethod.GET, "/", "/blog/read/**","blog/tag/**" )
                             .permitAll();
                     auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll(); // 정적 리소스들(css,js)등을 권장 방식에 맞게 인증 체크에서 제외 시켰다
                 })

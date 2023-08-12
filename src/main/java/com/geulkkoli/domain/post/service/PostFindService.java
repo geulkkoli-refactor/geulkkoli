@@ -7,7 +7,7 @@ import com.geulkkoli.domain.post.PostNotExistException;
 import com.geulkkoli.domain.post.PostRepository;
 import com.geulkkoli.domain.post.SearchType;
 import com.geulkkoli.domain.user.User;
-import com.geulkkoli.web.post.dto.PostRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticlePagingRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,7 +37,7 @@ public class PostFindService {
         return postRepository.findCreatedAt(user.getUserId());
     }
 
-    public Page<PostRequestDTO> searchPostsList(Pageable pageable, String searchType, String searchWord) {
+    public Page<ArticlePagingRequestDTO> searchPostsList(Pageable pageable, String searchType, String searchWord) {
         if (searchWord.contains(" ")) {
             List<String> searchWords = Arrays.stream(searchWord.split(" ")).map(String::trim).collect(Collectors.toList());
             if (SearchType.TITLE.getType().equals(searchType)) return searchPostsListByTitles(pageable, searchWords);
@@ -54,81 +54,81 @@ public class PostFindService {
         if (SearchType.Multi_Hash_Tag.getType().equals(searchType))
             return searchPostsListByHashTag(pageable, searchWord);
         return postRepository.findAll(pageable)
-                .map(PostRequestDTO::toDTO);
+                .map(ArticlePagingRequestDTO::toDTO);
     }
 
-    private Page<PostRequestDTO> searchPostsListByHashTag(Pageable pageable, String searchWords) {
+    private Page<ArticlePagingRequestDTO> searchPostsListByHashTag(Pageable pageable, String searchWords) {
         List<String> multiHashTagNames = Arrays.stream(searchWords.split(HashTagSign.GENERAL.getSign())).collect(Collectors.toUnmodifiableList());
-        List<PostRequestDTO> result = postRepository.allPostsMultiHashTags(multiHashTagNames).stream()
-                .map(PostRequestDTO::toDTO)
+        List<ArticlePagingRequestDTO> result = postRepository.allPostsMultiHashTags(multiHashTagNames).stream()
+                .map(ArticlePagingRequestDTO::toDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(result, pageable, pageable.getPageSize());
     }
-    private Page<PostRequestDTO> searchPostsListByHashTags(Pageable pageable, List<String> multiHashTagNames) {
+    private Page<ArticlePagingRequestDTO> searchPostsListByHashTags(Pageable pageable, List<String> multiHashTagNames) {
         List<String> multiHashTagNames2 = multiHashTagNames.stream().map(i -> i.replace(HashTagSign.GENERAL.getSign(), "")).collect(Collectors.toList());
-        List<PostRequestDTO> result = postRepository.allPostsMultiHashTags(multiHashTagNames2).stream()
-                .map(PostRequestDTO::toDTO)
+        List<ArticlePagingRequestDTO> result = postRepository.allPostsMultiHashTags(multiHashTagNames2).stream()
+                .map(ArticlePagingRequestDTO::toDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(result, pageable, pageable.getPageSize());
     }
 
     // 검색어가 여러개일 경우, 검색어를 공백으로 구분하여 검색하도록 수정
-    private Page<PostRequestDTO> searchPostsListByTitles(Pageable pageable, List<String> searchWords) {
+    private Page<ArticlePagingRequestDTO> searchPostsListByTitles(Pageable pageable, List<String> searchWords) {
 
-        List<PostRequestDTO> findPagesByTitle = searchWords.stream()
+        List<ArticlePagingRequestDTO> findPagesByTitle = searchWords.stream()
                 .map(i -> postRepository.findPostsByTitleContaining(pageable, i))
-                .map(i -> i.map(PostRequestDTO::toDTO))
+                .map(i -> i.map(ArticlePagingRequestDTO::toDTO))
                 .flatMap(Streamable::stream)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(findPagesByTitle, pageable, pageable.getPageSize());
     }
 
-    private Page<PostRequestDTO> searchPostsListByTitle(Pageable pageable, String searchWord) {
+    private Page<ArticlePagingRequestDTO> searchPostsListByTitle(Pageable pageable, String searchWord) {
         return postRepository.findPostsByTitleContaining(pageable, searchWord)
-                .map(PostRequestDTO::toDTO);
+                .map(ArticlePagingRequestDTO::toDTO);
     }
 
     // 검색어가 여러개일 경우, 검색어를 공백으로 구분하여 검색하도록 수정
-    private Page<PostRequestDTO> searchPostListByNickName(Pageable pageable, String nickName) {
+    private Page<ArticlePagingRequestDTO> searchPostListByNickName(Pageable pageable, String nickName) {
 
         return postRepository.findPostsByNickNameContaining(pageable, nickName)
-                .map(PostRequestDTO::toDTO);
+                .map(ArticlePagingRequestDTO::toDTO);
     }
 
-    private Page<PostRequestDTO> searchPostListByNickName(Pageable pageable, List<String> nickNames) {
-        List<PostRequestDTO> findPageByNickName = nickNames.stream()
+    private Page<ArticlePagingRequestDTO> searchPostListByNickName(Pageable pageable, List<String> nickNames) {
+        List<ArticlePagingRequestDTO> findPageByNickName = nickNames.stream()
                 .map(i -> postRepository.findPostsByNickNameContaining(pageable, i))
-                .map(i -> i.map(PostRequestDTO::toDTO))
+                .map(i -> i.map(ArticlePagingRequestDTO::toDTO))
                 .flatMap(Streamable::stream)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(findPageByNickName, pageable, pageable.getPageSize());
     }
 
-    private Page<PostRequestDTO> searchPostListByPostBody(Pageable pageable, String postBody) {
+    private Page<ArticlePagingRequestDTO> searchPostListByPostBody(Pageable pageable, String postBody) {
 
         return postRepository.findPostsByPostBodyContaining(pageable, postBody)
-                .map(PostRequestDTO::toDTO);
+                .map(ArticlePagingRequestDTO::toDTO);
     }
 
-    private Page<PostRequestDTO> searchPostListByPostBodys(Pageable pageable, List<String> postBodys) {
-        List<PostRequestDTO> findPageByPostBody = postBodys.stream()
+    private Page<ArticlePagingRequestDTO> searchPostListByPostBodys(Pageable pageable, List<String> postBodys) {
+        List<ArticlePagingRequestDTO> findPageByPostBody = postBodys.stream()
                 .map(i -> postRepository.findPostsByPostBodyContaining(pageable, i))
-                .map(i -> i.map(PostRequestDTO::toDTO))
+                .map(i -> i.map(ArticlePagingRequestDTO::toDTO))
                 .flatMap(Streamable::stream)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(findPageByPostBody, pageable, pageable.getPageSize());
     }
 
-    public Page<PostRequestDTO> findPostByTag(Pageable pageable, List<HashTag> hashTag) {
+    public Page<ArticlePagingRequestDTO> findPostByTag(Pageable pageable, List<HashTag> hashTag) {
         List<String> hashTagNames = hashTag.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
-        List<PostRequestDTO> postRequestDTOS = postRepository.allPostsMultiHashTags(pageable,hashTagNames)
-                .stream().map(PostRequestDTO::toDTO).collect(Collectors.toList());
+        List<ArticlePagingRequestDTO> articlePagingRequestDTOS = postRepository.allPostsMultiHashTags(pageable,hashTagNames)
+                .stream().map(ArticlePagingRequestDTO::toDTO).collect(Collectors.toList());
 
-        return new PageImpl<>(postRequestDTOS, pageable, pageable.getPageSize());
+        return new PageImpl<>(articlePagingRequestDTOS, pageable, pageable.getPageSize());
     }
 }

@@ -2,23 +2,17 @@ package com.geulkkoli.web.home;
 
 import com.geulkkoli.application.EmailService;
 import com.geulkkoli.application.user.service.PasswordService;
-import com.geulkkoli.domain.hashtag.service.HashTagFindService;
-import com.geulkkoli.domain.posthashtag.service.PostHahTagFindService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
-import com.geulkkoli.web.user.ResponseMessage;
-import com.geulkkoli.web.user.dto.EmailCheckForJoinDto;
-import com.geulkkoli.web.user.dto.JoinFormDto;
-import com.geulkkoli.web.user.dto.LoginFormDto;
-import com.geulkkoli.web.user.dto.find.FindEmailFormDto;
-import com.geulkkoli.web.user.dto.find.FindPasswordFormDto;
-import com.geulkkoli.web.user.dto.find.FoundEmailFormDto;
+import com.geulkkoli.web.home.dto.find.FindEmailDTO;
+import com.geulkkoli.web.home.dto.find.FindPasswordDTO;
+import com.geulkkoli.web.home.dto.find.FoundEmailDTO;
+import com.geulkkoli.web.home.dto.EmailCheckForJoinDTO;
+import com.geulkkoli.web.home.dto.JoinDTO;
+import com.geulkkoli.web.home.dto.LoginDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,106 +28,101 @@ import java.util.Optional;
 @Slf4j
 @RequestMapping("/")
 public class HomeController {
-    private final String FIND_EMAIL_FORM = "find/find-email";
-    private final String FOUND_EMAIL_FORM = "find/found-email";
-    private final String FIND_PASSWORD_FORM = "find/find-password";
+    private final String FIND_EMAIL_FORM = "find/email";
+    private final String FOUND_EMAIL_FORM = "find/email-lookup";
+    private final String FIND_PASSWORD_FORM = "find/password";
     private final String TEMP_PASSWORD_FORM = "find/temp-password";
     private final String SIGN_UP_FORM = "form-signup";
     public static final String REDIRECT_INDEX = "redirect:/";
 
 
-    private final PostHahTagFindService postHahTagFindService;
     private final EmailService emailService;
     private final UserFindService userFindService;
     private final UserService userService;
     private final PasswordService passwordService;
-    private final HashTagFindService hashTagFindService;
 
 
     @GetMapping
-    public String home(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model,
-                       @RequestParam(defaultValue = "일반") String searchWords) {
+    public String renderingMainPage() {
         return "home";
     }
 
     @GetMapping("/loginPage")
-    public String loginForm(@ModelAttribute("loginForm") LoginFormDto form) {
+    public String renderingLoginPage(@ModelAttribute("loginForm") LoginDTO form) {
 
         return "login";
     }
 
     @PostMapping("/loginPage")
-    public String processLoginForm(@ModelAttribute("loginForm") LoginFormDto form) {
+    public String processLoginForm(@ModelAttribute("loginForm") LoginDTO form) {
 
         return "login"; // 실패 메시지를 포함한 GET 요청으로 리다이렉트
     }
 
-    @GetMapping("/findEmail")
-    public String findEmailForm(@ModelAttribute("findEmailForm") FindEmailFormDto form) {
+    @GetMapping("/find/email")
+    public String renderingFindEmailPage(@ModelAttribute("findEmailForm") FindEmailDTO form) {
         return FIND_EMAIL_FORM;
     }
 
-    @PostMapping("/findEmail")
-    public String userFindEmail(@Validated @ModelAttribute("findEmailForm") FindEmailFormDto form, BindingResult bindingResult, Model model) {
-
+    @PostMapping("/find/email")
+    public String findEmail(@Validated @ModelAttribute("findEmailForm") FindEmailDTO form, BindingResult bindingResult, Model model) {
         Optional<User> user = userFindService.findByUserNameAndPhoneNo(form.getUserName(), form.getPhoneNo());
 
         if (user.isEmpty()) {
             bindingResult.addError(new ObjectError("empty", "Check.findContent"));
-        }
-
-        if (!bindingResult.hasErrors()) {
-            FoundEmailFormDto foundEmail = new FoundEmailFormDto(user.get().getEmail());
-            model.addAttribute("email", foundEmail.getEmail());
-            return FOUND_EMAIL_FORM;
-
-        } else {
             return FIND_EMAIL_FORM;
         }
+
+        if (bindingResult.hasErrors()) {
+            return FIND_EMAIL_FORM;
+        }
+
+        FoundEmailDTO foundEmail = new FoundEmailDTO(user.get().getEmail());
+        model.addAttribute("email", foundEmail.getEmail());
+        return FOUND_EMAIL_FORM;
+
     }
 
     @GetMapping("/foundEmail")
-    public String foundEmailForm(@ModelAttribute("foundEmailForm") FoundEmailFormDto form) {
+    public String renderingFoundEmailPage(@ModelAttribute("foundEmailForm") FoundEmailDTO form) {
         return FOUND_EMAIL_FORM;
     }
 
-    @GetMapping("/findPassword")
-    public String findPasswordForm(@ModelAttribute("findPasswordForm") FindPasswordFormDto form) {
+    @GetMapping("/find/password")
+    public String renderingFindEmailPage(@ModelAttribute("findPasswordForm") FindPasswordDTO form) {
         return FIND_PASSWORD_FORM;
     }
 
-    @PostMapping("/findPassword")
-    public String userFindPassword(@Validated @ModelAttribute("findPasswordForm") FindPasswordFormDto form, BindingResult bindingResult, HttpServletRequest request) {
-
+    @PostMapping("/find/password")
+    public String findPassword(@Validated @ModelAttribute("findPasswordForm") FindPasswordDTO form, BindingResult bindingResult, HttpServletRequest request) {
         Optional<User> user = userFindService.findByEmailAndUserNameAndPhoneNo(form.getEmail(), form.getUserName(), form.getPhoneNo());
 
         if (user.isEmpty()) {
             bindingResult.addError(new ObjectError("empty", "Check.findContent"));
         }
 
-        if (!bindingResult.hasErrors()) {
-            request.getSession().setAttribute("email", user.get().getEmail());
-            return "forward:/tempPassword"; // post로 감
-        } else {
+        if (bindingResult.hasErrors()) {
             return FIND_PASSWORD_FORM;
         }
+        request.getSession().setAttribute("email", user.get().getEmail());
+        return "forward:/tempPassword"; // post로 감
     }
 
     @PostMapping("/tempPassword")
-    public String tempPasswordForm() {
+    public String renderingTempPasswordPage() {
         return TEMP_PASSWORD_FORM;
     }
 
     @GetMapping("/tempPassword")
-    public String userTempPassword(HttpServletRequest request, Model model) {
+    public String sendTempPassword(HttpServletRequest request, Model model) {
         String email = (String) request.getSession().getAttribute("email");
-        Optional<User> user = userFindService.findByEmail(email);
-
+        Optional<User> findByUser = userFindService.findByEmail(email);
+        if (findByUser.isEmpty()) {
+            return REDIRECT_INDEX;
+        }
         int length = passwordService.setLength(8, 20);
         String tempPassword = passwordService.createTempPassword(length);
-
-        passwordService.updatePassword(user.get().getUserId(), tempPassword);
+        userService.updatePassword(findByUser.get().getUserId(), tempPassword);
         emailService.sendTempPasswordEmail(email, tempPassword);
         log.info("email 발송");
 
@@ -143,12 +132,12 @@ public class HomeController {
 
     //join
     @GetMapping("/join")
-    public String joinForm(@ModelAttribute("joinForm") JoinFormDto form) {
+    public String renderingJoinPage(@ModelAttribute("joinForm") JoinDTO form) {
         return SIGN_UP_FORM;
     }
 
     @PostMapping("/join")
-    public String userJoin(@Validated @ModelAttribute("joinForm") JoinFormDto form, BindingResult bindingResult, HttpServletRequest request) {
+    public String join(@Validated @ModelAttribute("joinForm") JoinDTO form, BindingResult bindingResult, HttpServletRequest request) {
         if (userFindService.isNickNameDuplicate(form.getNickName())) {
             bindingResult.rejectValue("nickName", "Duple.nickName");
         }
@@ -172,19 +161,17 @@ public class HomeController {
             bindingResult.rejectValue("verifyPassword", "Check.verifyPassword");
         }
 
-        if (!bindingResult.hasErrors()) {
-            userService.signUp(form);
-
-            return REDIRECT_INDEX;
-        } else {
+        if (bindingResult.hasErrors()) {
             return SIGN_UP_FORM;
         }
+        userService.signUp(form);
+
+        return REDIRECT_INDEX;
     }
 
     @PostMapping("/checkEmail")
     @ResponseBody
-    public ResponseMessage checkEmail(@RequestBody EmailCheckForJoinDto form, HttpServletRequest request) {
-
+    public ResponseMessage checkEmail(@RequestBody EmailCheckForJoinDTO form, HttpServletRequest request) {
 
         if (form.getEmail().isEmpty()) {
             return ResponseMessage.NULL_OR_BLANK_EMAIL;
@@ -203,7 +190,7 @@ public class HomeController {
 
     @PostMapping("/checkAuthenticationNumber")
     @ResponseBody
-    public String checkAuthenticationNumber(@RequestBody EmailCheckForJoinDto form, HttpServletRequest request) {
+    public String checkAuthenticationNumber(@RequestBody EmailCheckForJoinDTO form, HttpServletRequest request) {
 
         String authenticationNumber = (String) request.getSession().getAttribute("authenticationNumber");
         String responseMessage;

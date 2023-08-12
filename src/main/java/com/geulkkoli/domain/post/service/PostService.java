@@ -8,8 +8,8 @@ import com.geulkkoli.domain.posthashtag.service.PostHashTagService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserNotExistException;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +36,10 @@ public class PostService {
                 .orElseThrow(() -> new PostNotExistException("No post found id matches:" + postId));
     }
 
-    public Post savePost(PostAddDTO postAddDTO, User user) {
-        Post writePost = user.writePost(postAddDTO);
+    public Post writeArtice(WriteRequestDTO WriteRequestDTO, User user) {
+        Post writePost = user.writePost(WriteRequestDTO);
         Post save = postRepository.save(writePost);
-        postHashTagService.addHashTagsToPost(save, postAddDTO);
+        postHashTagService.addHashTagsToPost(save, WriteRequestDTO);
 
         return save;
     }
@@ -49,7 +49,7 @@ public class PostService {
      * @param updateParam
      * @return postHashTagService의 hashTagSerparator가 해시태그를 찾아 List<HashTag>로 반환한다. 나
      */
-    public Post updatePost(Post post, PostEditRequestDTO updateParam) {
+    public Post updatePost(Post post, ArticleEditRequestDTO updateParam) {
         post.getUser().editPost(post, updateParam);
         if (updateParam.getTags().isEmpty()) {
             post.deleteAllPostHashTag();

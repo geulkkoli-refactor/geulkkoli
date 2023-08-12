@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" ,
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <link href="/css/channel.css" rel="stylesheet"/>
+</head>
+<body>
+<div th:include="nav"></div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col p-3 bg-opacity-10">
+            <a class=""
+               th:attr="data-url='/feed/'+${#authentication.principal.nickName} + '/favorites'"
+               onclick="location.href=this.getAttribute('data-url')">
+                <em>좋아요 한 글</em>
+            </a>
+        </div>
+        <div class="col p-3 bg-white text-black">
+            <a class="following-link"
+               th:attr="data-url='/feed/'+${nickName} + '/followers'"
+               onclick="location.href=this.getAttribute('data-url')"
+               th:if="${followsCount.getFollowerCount() > 0}">
+                <em>구독자</em>
+                <span th:text="${followsCount.getFollowerCount()}"></span>
+            </a>
+            <a class="following-link" href="#" th:unless="${followsCount.getFollowerCount() > 0}">
+                <em>구독자</em>
+                <span th:text="${followsCount.getFollowerCount()}"></span>
+            </a></div>
+        <div class="col p-3 bg-white text-black">.
+            <a class="following-link"
+               th:attr="data-url='/feed/'+${nickName} + '/followees'"
+               onclick="location.href=this.getAttribute('data-url')"
+               th:if="${followsCount.getFolloweeCount() > 0}">
+                <em>작가</em>
+                <span th:text="${followsCount.getFolloweeCount()}"></span>
+            </a>
+            <a class="following-link" href="#" th:unless="${followsCount.getFolloweeCount() > 0}">
+                <em>작가</em>
+                <span th:text="${followsCount.getFolloweeCount()}"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!--<div id="calendarBox">-->
+<!--    <h4> < 활동한 날 > </h4>-->
+<!--    <select id="beforeYears" style="display: none">-->
+<!--    </select>-->
+<!--    <div class="calendar">-->
+<!--        <div class="days"></div>-->
+<!--    </div>-->
+<!--</div>-->
+</body>
+<div th:include="footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script src="/js/calendar.js"></script>-->
+<script src="/js/nav.js"></script>
+</html>

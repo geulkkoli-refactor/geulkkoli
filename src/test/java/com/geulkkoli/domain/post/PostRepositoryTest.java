@@ -7,8 +7,9 @@ import com.geulkkoli.domain.posthashtag.PostHashTag;
 import com.geulkkoli.domain.posthashtag.PostHashTagRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.post.dto.PostAddDTO;
-import com.geulkkoli.web.post.dto.PostEditRequestDTO;
+import com.geulkkoli.web.blog.dto.ArticleEditRequestDTO;
+
+import com.geulkkoli.web.blog.dto.WriteRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,43 +68,42 @@ class PostRepositoryTest {
 
     @BeforeEach
     void beforeEach() {
-        PostAddDTO postAddDTO = PostAddDTO.builder()
-                .title("testTitle")
-                .postBody("test postbody")
-                .nickName("점심뭐먹지").build();
-
-        Post post = user.writePost(postAddDTO);
-        postRepository.save(post);
-
-
-        PostAddDTO postAddDTO1 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName("점심뭐먹지").build();
-        Post post1 = user.writePost(postAddDTO1);
+
+        Post post = user.writePost(writeRequestDTO);
+
+
+        WriteRequestDTO writeRequestDTO1 = WriteRequestDTO.builder()
+                .title("testTitle01")
+                .postBody("test postbody 01")
+                .nickName("점심뭐먹지").build();
+        Post post1 = user.writePost(writeRequestDTO1);
 
         postRepository.save(post1);
 
-        PostAddDTO postAddDTO2 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO2 = WriteRequestDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName("점심뭐먹지").build();
 
-        Post post2 = user.writePost(postAddDTO2);
+        Post post2 = user.writePost(writeRequestDTO2);
 
         postRepository.save(post2);
 
-        PostAddDTO postAddDTO3 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO3 = WriteRequestDTO.builder()
                 .title("testTitle03")
                 .postBody("test postbody 03")
                 .nickName("점심뭐먹지").build();
 
-        postRepository.save(user.writePost(postAddDTO3));
+        postRepository.save(user.writePost(writeRequestDTO3));
     }
 
     @Test
     void save() {
-        Post post = user.writePost(PostAddDTO.builder()
+        Post post = user.writePost(WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build());
@@ -113,7 +113,7 @@ class PostRepositoryTest {
 
     @Test
     void findById() {
-        Post post = user.writePost(PostAddDTO.builder()
+        Post post = user.writePost(WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build());
@@ -136,13 +136,13 @@ class PostRepositoryTest {
 
     @Test
     void update() {
-        Post post = user.writePost(PostAddDTO.builder()
+        Post post = user.writePost(WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build());
         Post savePost = postRepository.save(post);
 
-        Post modifyPost = user.editPost(savePost, new PostEditRequestDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "수정 test"));
+        Post modifyPost = user.editPost(savePost, new ArticleEditRequestDTO(savePost.getPostId(), "modifyTitle", "modifyBody", savePost.getNickName(), "수정 test"));
 
         postRepository.save(modifyPost);
 
@@ -154,7 +154,7 @@ class PostRepositoryTest {
 
     @Test
     void delete() {
-        Post post = user.writePost(PostAddDTO.builder()
+        Post post = user.writePost(WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
                 .nickName("점심뭐먹지").build());
@@ -186,42 +186,42 @@ class PostRepositoryTest {
 
     @Test
     void allPostsMultiHashTags() {
-        PostAddDTO postAddDTO01 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO01 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        Post post01 = user.writePost(postAddDTO01);
+        Post post01 = user.writePost(writeRequestDTO01);
         postRepository.save(post01);
 
-        PostAddDTO postAddDTO02 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO02 = WriteRequestDTO.builder()
                 .title("testTitle02")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO03 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO03 = WriteRequestDTO.builder()
                 .title("testTitle03")
                 .postBody("test postbody 03")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO4 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO4 = WriteRequestDTO.builder()
                 .title("testTitle04")
                 .postBody("test postbody 04")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO5 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO5 = WriteRequestDTO.builder()
                 .title("testTitle05")
                 .postBody("test postbody 05")
                 .nickName(user.getNickName())
                 .build();
 
-        Post post02 = user.writePost(postAddDTO02);
-        Post post03 = user.writePost(postAddDTO03);
-        Post post04 = user.writePost(postAddDTO4);
-        Post post05 = user.writePost(postAddDTO5);
+        Post post02 = user.writePost(writeRequestDTO02);
+        Post post03 = user.writePost(writeRequestDTO03);
+        Post post04 = user.writePost(writeRequestDTO4);
+        Post post05 = user.writePost(writeRequestDTO5);
 
         postRepository.save(post02);
         postRepository.save(post03);
@@ -268,42 +268,42 @@ class PostRepositoryTest {
     @DisplayName("제목과 멀티 해시태그가 일치하는 게시글 조회")
     @Test
     void allPostTitleAndMultiHashTags(){
-        PostAddDTO postAddDTO01 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO01 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 01")
                 .nickName(user.getNickName())
                 .build();
-        Post post01 = user.writePost(postAddDTO01);
+        Post post01 = user.writePost(writeRequestDTO01);
         postRepository.save(post01);
 
-        PostAddDTO postAddDTO02 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO02 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 02")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO03 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO03 = WriteRequestDTO.builder()
                 .title("testTitle03")
                 .postBody("test postbody 03")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO4 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO4 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 04")
                 .nickName(user.getNickName())
                 .build();
 
-        PostAddDTO postAddDTO5 = PostAddDTO.builder()
+        WriteRequestDTO writeRequestDTO5 = WriteRequestDTO.builder()
                 .title("testTitle01")
                 .postBody("test postbody 05")
                 .nickName(user.getNickName())
                 .build();
 
-        Post post02 = user.writePost(postAddDTO02);
-        Post post03 = user.writePost(postAddDTO03);
-        Post post04 = user.writePost(postAddDTO4);
-        Post post05 = user.writePost(postAddDTO5);
+        Post post02 = user.writePost(writeRequestDTO02);
+        Post post03 = user.writePost(writeRequestDTO03);
+        Post post04 = user.writePost(writeRequestDTO4);
+        Post post05 = user.writePost(writeRequestDTO5);
 
         postRepository.save(post02);
         postRepository.save(post03);

@@ -7,6 +7,7 @@ import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import com.geulkkoli.domain.user.service.UserFindService;
 import com.geulkkoli.domain.user.service.UserService;
+import com.geulkkoli.web.account.AccountManagementController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
     MockBean으로 가상의 빈 객체를 쓰겠다고 선언해 준 이후,
     given으로 해당 메서드의 파라미터로 뭔가 넣었을 때 return될 값을 정해준다.
  */
-@WebMvcTest(UserController.class)
+@WebMvcTest(AccountManagementController.class)
 @Import({SecurityConfig.class, LoginFailureHandler.class, UserSecurityService.class})
 class UserControllerTest {
     public static final String TESTER_MAIL = "tester@naver.com";

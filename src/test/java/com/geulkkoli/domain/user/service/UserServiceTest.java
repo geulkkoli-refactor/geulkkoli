@@ -1,11 +1,10 @@
 package com.geulkkoli.domain.user.service;
 
-import com.geulkkoli.application.user.service.PasswordService;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
-import com.geulkkoli.web.user.dto.JoinFormDto;
-import com.geulkkoli.web.user.dto.edit.UserInfoEditFormDto;
-import org.assertj.core.api.Assertions;
+import com.geulkkoli.web.account.dto.edit.PasswordEditFormDto;
+import com.geulkkoli.web.home.dto.JoinDTO;
+import com.geulkkoli.web.account.dto.edit.UserInfoEditFormDto;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -40,8 +39,10 @@ class UserServiceTest {
     @DisplayName("회원정보 수정 성공")
     void updateTest() {
         //given
-        User saveUser = userRepository.save(User.builder() // userId = 3L
-                .email("tako1@naver.com").userName("김1").nickName("바나나1").password("123qwe!@#").phoneNo("01012345671").gender("male").build());
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
+
+        //when
+        User saveUser = userService.signUp(joinForm);
         UserInfoEditFormDto preupdateUser = UserInfoEditFormDto.form("김2", "바나나155", "01055554646", "female");
 
         //when
@@ -56,7 +57,7 @@ class UserServiceTest {
     @Test
     void signUp() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test12222@naver.com", "01056789999", "Male");
 
         //when
         User user = userService.signUp(joinForm);
@@ -69,7 +70,7 @@ class UserServiceTest {
     @Test
     void delete() {
         //given
-        JoinFormDto joinForm = JoinFormDto.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
         User user = userService.signUp(joinForm);
 
         //when
@@ -77,5 +78,35 @@ class UserServiceTest {
 
         //then
         assertThat(userRepository.findById(user.getUserId())).isEmpty();
+    }
+
+    @DisplayName("비밀번호 검증")
+    @Test
+    void isPasswordVerification() {
+        //given
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        User user = userService.signUp(joinForm);
+        PasswordEditFormDto passwordEditFormDto = new PasswordEditFormDto("123", "qwerty1@", "qwerty1@");
+
+        //when
+        boolean passwordVerification = userService.isPasswordVerification(user, passwordEditFormDto);
+
+        //then
+        assertThat(passwordVerification).isTrue();
+
+    }
+
+    @Test
+    void updatePassword() {
+        //given
+        JoinDTO joinForm = JoinDTO.of("test", "123", "123", "nick", "test1234111@naver.com", "01056789999", "Male");
+        User user = userService.signUp(joinForm);
+        PasswordEditFormDto passwordEditFormDto = new PasswordEditFormDto("123", "qwerty1@", "qwerty1@");
+
+        //when
+        User userByEditedPassword = userService.updatePassword(user.getUserId(), passwordEditFormDto.getNewPassword());
+
+        //then
+        assertTrue(userService.isPasswordVerification(userByEditedPassword, passwordEditFormDto));
     }
 }

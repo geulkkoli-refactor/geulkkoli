@@ -1,7 +1,7 @@
 package com.geulkkoli.domain.social.service;
 
 import com.geulkkoli.domain.social.NoSuchSocialInfoException;
-import com.geulkkoli.web.user.dto.mypage.ConnectedSocialInfos;
+import com.geulkkoli.web.account.dto.ConnectedSocialInfos;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
