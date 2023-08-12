@@ -26,10 +26,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/account")
 @Controller
 public class AccountManagementController {
-    public static final String EDIT_FORM = "/user/userInfo-edit";
-    public static final String EDIT_PASSWORD_FORM = "/password-edit";
+    public static final String EDIT_FORM = "account/userInfo-edit";
+    public static final String EDIT_PASSWORD_FORM = "account/password-edit";
     public static final String REDIRECT_INDEX = "redirect:/";
-    public static final String REDIRECT_EDIT_INDEX = "redirect:/user/edit";
+    public static final String REDIRECT_EDIT_INDEX = "redirect:/account/edit";
 
     private final UserService userService;
     private final UserFindService userFindService;
