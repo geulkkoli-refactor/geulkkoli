@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" ,
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/followdetail.css">
+    <title>follow</title>
+</head>
+<body>
+<aside>
+    <button class="btn-back_text_hide"></button>
+</aside>
+<header>
+    <div>
+        <strong class="title_follow">
+            나를 구독하는
+            <span class="span_follow">
+                <span id="all-count" th:text="${allCount}"></span>
+            </span>
+            명
+        </strong>
+    </div>
+</header>
+<main>
+    <div>
+        <ul id="ul-follow" class="list_follow">
+            <li th:each="follower : ${followers.getFollowInfos()}">
+                <span class="span_follow-profile-image">
+                </span>
+                <span class="span_follow" th:text="${follower.nickName}"></span>
+                <span class="span_follow" hidden="hidden" id="follow-id" th:text="${follower.id}"></span>
+                <span class="span_follow" hidden="hidden" id="userId" th:text="${follower.userId}"></span>
+                <button  th:id="${follower.isSubscribed() ? 'btn-unfollow' : 'btn-follow'} + ${follower.id}" class="btn-subscribe"
+                        type="button">
+                    <span th:unless="${follower.isSubscribed()}">구독하기
+                    </span>
+                    <span th:if="${follower.isSubscribed()}" class="txt_default">구독중</span>
+                    <span th:if="${follower.isSubscribed()}" class="txt_on">구독취소</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</main>
+</body>
+<footer>
+</footer>
+<script src="/js/followerdetail.js"></script>
+</html>
