@@ -4,7 +4,7 @@ function followButtonHandler() {
     if (followButton) {
         followButton.addEventListener('click', function() {
             var userId = document.getElementById('userId').textContent;
-            var url = '/api/follow/' + userId;
+            var url = '/follow/follow/' + userId;
             fetch(url, {
                 method: 'GET', // or 'POST'
             })
@@ -43,7 +43,7 @@ function unFollowButtonHandler() {
     if (unfollowButton) {
         unfollowButton.addEventListener('click', function() {
             var userId = document.getElementById('userId').textContent;
-            var url = '/api/unfollow/' + userId;
+            var url = '/follow/unfollow/' + userId;
 
             fetch(url, {
                 method: 'GET', // or 'POST'

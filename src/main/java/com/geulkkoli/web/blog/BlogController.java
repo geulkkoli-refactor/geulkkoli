@@ -91,8 +91,30 @@ public class BlogController {
     }
 
     @GetMapping("/{nickName}")
-    public ModelAndView renderingBlog(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView renderingBlog(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @AuthenticationPrincipal CustomAuthenticationPrinciple authUser) {
+        ModelAndView modelAndView = new ModelAndView("blog/home");
         User user = userFindService.findByNickName(nickName);
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }
+        //로그인 안했을 때
+        if (Objects.isNull(authUser)){
+            List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
+            List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
+            PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
+
+            int totalPosts = posts.size();
+            Page<Post> pagePost = new PageImpl<>(subPost, pageRequest, totalPosts);
+            Page<ArticlePagingRequestDTO> readInfos = pagePost.map(ArticlePagingRequestDTO::toDTO);
+            PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+
+            modelAndView.addObject("channelName", nickName);
+            modelAndView.addObject("loginUserName", "guest");
+            modelAndView.addObject("page",pagingDTO);
+            return modelAndView;
+        }
+
+        //로그인 했을 때
         List<Post> posts = user.getPosts().stream().sorted(Comparator.comparing(Post::getCreatedAt).reversed()).collect(toList());
         List<Post> subPost = posts.subList(pageable.getPageNumber() * pageable.getPageSize(), Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), posts.size()));
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
@@ -102,9 +124,8 @@ public class BlogController {
         Page<ArticlePagingRequestDTO> readInfos = pagePost.map(ArticlePagingRequestDTO::toDTO);
         PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
 
-
-        ModelAndView modelAndView = new ModelAndView("blog/home");
-        modelAndView.addObject("loggingNickName", nickName);
+        modelAndView.addObject("channelName", nickName);
+        modelAndView.addObject("loginUserName", authUser.getNickName());
         modelAndView.addObject("page",pagingDTO);
         return modelAndView;
     }
