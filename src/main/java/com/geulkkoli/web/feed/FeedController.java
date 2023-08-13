@@ -47,12 +47,29 @@ public class FeedController {
     }
 
     @GetMapping("/{nickName}")
-    public ModelAndView getMyPage(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView renderingFeed(@PathVariable("nickName") String nickName, @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         User user = userFindService.findByNickName(nickName);
         Integer countFolloweeByFollowerId = followFindService.countFolloweeByFollowerId(user.getUserId());
         Integer countFollowerByFolloweeId = followFindService.countFollowerByFolloweeId(user.getUserId());
         FollowsCountDTO followsCountDTO = FollowsCountDTO.of(countFolloweeByFollowerId, countFollowerByFolloweeId);
-        ModelAndView mv = new ModelAndView("feed/mypage");
+
+        List<Favorites> favorites = user.getFavorites().stream().collect(toUnmodifiableList());
+        List<Post> favoritePosts = favorites.stream().sorted(Comparator.comparing(Favorites::getFavoritesId).reversed()).map(Favorites::getPost).collect(toList());
+
+        int totalFavoritePosts = favoritePosts.size();
+        int startIndex = pageable.getPageNumber() * pageable.getPageSize();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), totalFavoritePosts);
+        List<Post> subPosts = favoritePosts.subList(startIndex, endIndex);
+
+        Page<Post> favoritsPost = new PageImpl<>(subPosts, pageable, favoritePosts.size());
+        Page<ArticlePagingRequestDTO> readInfos = favoritsPost.map(ArticlePagingRequestDTO::toDTO);
+        PagingDTO pagingDTO = PagingDTO.listDTOtoPagingDTO(readInfos);
+        log.info("pagingDTO = {}", pagingDTO);
+
+
+
+        ModelAndView mv = new ModelAndView("feed/feed", "pagingDTO", pagingDTO);
+        mv.addObject("channelName", nickName);
         mv.addObject("followsCount", followsCountDTO);
         return mv;
     }

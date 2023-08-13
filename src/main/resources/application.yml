@@ -101,6 +101,7 @@ spring:
           timeout: 5000 # Socket Read Timeout 시간(ms) (기본값 : 무한대)
           starttls:
             enable: true # StartTLS 활성화 여부 (기본값 : false)
+    default-encoding: utf-8 # 기본 인코딩 설정 (기본값 : UTF-8)
 
 
 #JPA log
@@ -120,6 +121,13 @@ server:
     path: /error
     include-exception: false
     include-message: never
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: linemac-ssl
+
 
 # 액추에이터 엔드 포인트 활성화
 management:

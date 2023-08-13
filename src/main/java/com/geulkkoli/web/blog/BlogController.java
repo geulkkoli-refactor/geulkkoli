@@ -111,6 +111,7 @@ public class BlogController {
             modelAndView.addObject("channelName", nickName);
             modelAndView.addObject("loginUserName", "guest");
             modelAndView.addObject("page",pagingDTO);
+
             return modelAndView;
         }
 
