@@ -18,7 +18,7 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light" id="profile-nickName" th:text="${loggingNickName}" ></div>
-        <div class="list-group list-group-flush" th:with="userNickName=${#authentication.principal.nickName}">
+        <div class="list-group list-group-flush">
             <a class="list-group-item list-group-item-action list-group-item-light p-3">
 
             </a>
@@ -41,10 +41,10 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">메뉴</a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" th:with="userNickName=${#authentication.principal.nickName}">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="/">메인 홈</a>
                                 <a class="dropdown-item"  th:attr="data-url='/blog/write'"
-                                   onclick="location.href=this.getAttribute('data-url')" sec:authorize="hasRole('USER')" th:if="${#strings.equals(loggingNickName, userNickName)}">글쓰기</a>
+                                   onclick="location.href=this.getAttribute('data-url')" sec:authorize="hasRole('USER')" th:if="${#strings.equals(channelName, loginUserName)}">글쓰기</a>
 
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#!">Something else here</a>
