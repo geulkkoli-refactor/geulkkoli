@@ -9,7 +9,7 @@ const allCount = parseInt(allCountText,10);
 const getList = () => {
     var lastId = document.querySelector('ul li:last-child span#follow-id').innerText;
     console
-    URL = "/api/followees/" + lastId;
+    URL = "/follow/followees/" + lastId;
     console.log(URL);
     console.log('getList()');
     isFetching = true;
@@ -87,7 +87,7 @@ function followButtonHandler(buttonId) {
             console.log(target)
             console.log(target.parentElement)
             var userId = target.parentElement.parentElement.querySelector('span#userId').innerText;
-            var url = '/api/follow/' + userId;
+            var url = '/follow/follow/' + userId;
             fetch(url, {
                 method: 'GET', // or 'POST'
             })
@@ -130,7 +130,7 @@ function unFollowButtonHandler(buttonId) {
             let target = event.target;
             var userId = target.parentElement.parentElement.querySelector('span#userId').innerText;
             console.log(userId)
-            var url = '/api/unfollow/' + userId;
+            var url = '/follow/unfollow/' + userId;
             fetch(url, {
                 method: 'GET', // or 'POST'
             })
