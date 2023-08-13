@@ -41,7 +41,7 @@ function isVisible(bool, obj) {
 function makeURI(page, size) {
     const type =document.getElementById('search-type').value;
     const words =document.getElementById('search-words').value;
-    let uri = '/post/channels?page=' + page + '&size=' + size;
+    let uri = '/channels?page=' + page + '&size=' + size;
 
     if (type != null) {
         uri += '&searchType=' + type;
