@@ -11,7 +11,7 @@ function postDelete() {
         userNickName: userNickName
     };
 
-    const uri = '/user/' + userNickName+ '/delete/' + postId;
+    const uri = '/blog/' + userNickName+ '/delete/' + postId;
     if (compareTitle === deleteTitle) {
         fetch(uri, {
             headers: {
