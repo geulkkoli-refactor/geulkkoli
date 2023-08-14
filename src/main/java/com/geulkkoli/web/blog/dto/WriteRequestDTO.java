@@ -1,6 +1,5 @@
 package com.geulkkoli.web.blog.dto;
 
-import com.geulkkoli.domain.hashtag.HashTag;
 import com.geulkkoli.domain.hashtag.util.HashTagSign;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
@@ -10,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class WriteRequestDTO {

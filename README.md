@@ -1,33 +1,13 @@
-# 글꼬리
+# 바라바라
+
 ## 프로젝트 개요
 
-글을 쓰고 싶으나 주제를 생각하기 어려운 사람들을 위해, 날마다 주제를 추천해주며 해당 주제에 대해 글을 쓸 수 있는 게시판 서비스. 
+회원 가입제 블로깅 플랫폼 서비스 입니다. 현재 스프링 부트를 도커 컨테이너에 올린 후 깃헙 액션과 aws 라이트 세일을 이용하려 변경중입니다.
 
-다른 회원의 글에 좋아요을 누르고 해당 글을 개인 페이지에서 모아 볼 수 있다. 다른 회원을 구독하거나 른 회원이 한 회원을 구독했을 경우 페이지에서 모아 관리할 수 있다
-## 팀 구성
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><a href=""><img src= ""width="100px;" alt=""/><br /><sub><b>BE 팀장 : 김륜환</b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 최승인</b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 김태윤</b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 이준호</b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : 신채안</b></sub></a><br /></td>
-    </tr>
-  </tbody>
-</table>
+## 참여
 
-### 각 역할
+- 김륜환
 
-김륜환 → 데이터베이스, 스프링 시큐리티, 소셜 로그인, 구독, 좋아요, 
-
-최승인 → 게시글 전반, 댓글, 게시글 텍스트 에디터, 
-
-김태윤 → 게시글 전반, 관리자, 좋아요, 해시태그, 주제, 
-
-신채안 → 회원 전반, 이메일 중복 체크, 회원 가입, 임시 비밀번호, 활동량 잔디 심기, 
-
-이준호 → DB보조, 회원 전반, 관리자, 해시태그, 주제, 신고, 
 
 기술 스택 및 개발 도구
 //프로젝트에 사용되는 개발 환경 및 도구 목록
@@ -40,7 +20,7 @@ Git
 Git hub
 IntelliJ Git
 
-Java 11
+Java 17
 Spring boot 2.7.1
 Spring Security 5.7
 
@@ -68,45 +48,215 @@ Jquery
 프로젝트 아키텍처
 
 디렉토리 구조
+
  ```
-   ├── application
-    │   ├── EmailDto.java
-    │   ├── EmailService.java
-    │   ├── comment
-    │   ├── follow
-    │   ├── post
-    │   ├── security
-    │   ├── social
-    │   └── user
-    ├── domain
-    │   ├── admin
-    │   ├── comment
-    │   ├── favorites
-    │   ├── follow
-    │   ├── hashtag
-    │   ├── post
-    │   ├── posthashtag
-    │   ├── social
-    │   ├── topic
-    │   └── user
-    ├── infrastructure
-    │   ├── QuerydslConfiguration.java
-    └── web
-        ├── admin
-        ├── comment
-        ├── favorite
-        ├── follow
-        ├── home
-        ├── post
-        ├── social
-        └── user
+geulkkoli
+        ├── GeulkkoliApplication.java
+        ├── application
+        │   ├── EmailDto.java
+        │   ├── EmailService.java
+        │   ├── comment
+        │   │   └── AjaxBadResponseHandler.java
+        │   ├── follow
+        │   │   ├── FollowInfo.java
+        │   │   └── FollowInfos.java
+        │   ├── post
+        │   │   └── WebConfig.java
+        │   ├── security
+        │   │   ├── AccountStatus.java
+        │   │   ├── LockExpiredTimeException.java
+        │   │   ├── LoginProcessException.java
+        │   │   ├── Role.java
+        │   │   ├── RoleEntity.java
+        │   │   ├── RoleException.java
+        │   │   ├── RoleRepository.java
+        │   │   ├── config
+        │   │   │   ├── CustomAuthenticationFilter.java
+        │   │   │   └── SecurityConfig.java
+        │   │   ├── handler
+        │   │   │   ├── LoginFailureHandler.java
+        │   │   │   └── LoginSuccessHandler.java
+        │   │   └── util
+        │   │       └── RoleNameAttributeConverter.java
+        │   ├── social
+        │   │   ├── GoogleOAuth2User.java
+        │   │   ├── KakaoOAuth2User.java
+        │   │   ├── NaverOAuth2User.java
+        │   │   ├── OAuth2ProviderUser.java
+        │   │   ├── service
+        │   │   │   ├── AbstractOauth2UserService.java
+        │   │   │   └── CustomOauth2UserService.java
+        │   │   └── util
+        │   │       ├── DelegateOAuth2RequestConverter.java
+        │   │       ├── GoogleRequestConverter.java
+        │   │       ├── KaKaoRequestConverter.java
+        │   │       ├── NaverRequestConverter.java
+        │   │       ├── ProviderUserRequest.java
+        │   │       ├── SocialType.java
+        │   │       ├── SocialTypeException.java
+        │   │       ├── UserRequest.java
+        │   │       └── UserRequestConverter.java
+        │   └── user
+        │       ├── CustomAuthenticationPrinciple.java
+        │       ├── ProviderUser.java
+        │       ├── UserModelDto.java
+        │       └── service
+        │           ├── PasswordService.java
+        │           └── UserSecurityService.java
+        ├── domain
+        │   ├── admin
+        │   │   ├── AccountLock.java
+        │   │   ├── AccountLockRepository.java
+        │   │   ├── Report.java
+        │   │   ├── ReportRepository.java
+        │   │   └── service
+        │   │       └── AdminServiceImpl.java
+        │   ├── comment
+        │   │   ├── Comments.java
+        │   │   ├── CommentsRepository.java
+        │   │   └── service
+        │   │       ├── CommentNotFoundException.java
+        │   │       └── CommentsService.java
+        │   ├── favorites
+        │   │   ├── Favorites.java
+        │   │   ├── FavoritesRepository.java
+        │   │   └── service
+        │   │       └── FavoriteService.java
+        │   ├── follow
+        │   │   ├── Follow.java
+        │   │   ├── FollowRepository.java
+        │   │   ├── FollowRepositoryCustom.java
+        │   │   ├── FollowRepositoryImpl.java
+        │   │   └── service
+        │   │       ├── CanNotFollowException.java
+        │   │       ├── FollowFindService.java
+        │   │       ├── FollowNotFoundException.java
+        │   │       └── FollowService.java
+        │   ├── hashtag
+        │   │   ├── HashTag.java
+        │   │   ├── HashTagRepository.java
+        │   │   ├── HashTagRepositoryCustom.java
+        │   │   ├── HashTagRepositoryImpl.java
+        │   │   ├── HashTagType.java
+        │   │   ├── service
+        │   │   │   ├── HashTagFindService.java
+        │   │   │   └── HashTagService.java
+        │   │   └── util
+        │   │       ├── HashTagSign.java
+        │   │       └── HashTagTypeConverter.java
+        │   ├── post
+        │   │   ├── AdminTagAccessDenied.java
+        │   │   ├── ConfigDate.java
+        │   │   ├── NotAuthorException.java
+        │   │   ├── Post.java
+        │   │   ├── PostNotExistException.java
+        │   │   ├── PostRepository.java
+        │   │   ├── PostRepositoryCustom.java
+        │   │   ├── PostRepositoryImpl.java
+        │   │   ├── SearchType.java
+        │   │   └── service
+        │   │       ├── PostFindService.java
+        │   │       └── PostService.java
+        │   ├── posthashtag
+        │   │   ├── PostHashTag.java
+        │   │   ├── PostHashTagRepository.java
+        │   │   ├── PostHashTagRepositoryCustom.java
+        │   │   ├── PostHashTagRepositoryImpl.java
+        │   │   └── service
+        │   │       ├── PostHahTagFindService.java
+        │   │       └── PostHashTagService.java
+        │   ├── social
+        │   │   ├── NoSuchSocialInfoException.java
+        │   │   └── service
+        │   │       ├── SocialInfo.java
+        │   │       ├── SocialInfoFindService.java
+        │   │       ├── SocialInfoRepository.java
+        │   │       └── SocialInfoService.java
+        │   ├── topic
+        │   │   ├── Topic.java
+        │   │   ├── TopicRepository.java
+        │   │   ├── service
+        │   │   │   └── TopicService.java
+        │   │   └── service 2
+        │   └── user
+        │       ├── ConfigDate.java
+        │       ├── NoSuchCommnetException.java
+        │       ├── NoSuchReportException.java
+        │       ├── User.java
+        │       ├── UserNotExistException.java
+        │       ├── UserRepository.java
+        │       └── service
+        │           ├── UserFindService.java
+        │           └── UserService.java
+        ├── infrastructure
+        │   └── QuerydslConfiguration.java
+        └── web
+            ├── account
+            │   ├── AccountManagementController.java
+            │   └── dto
+            │       ├── CalendarDto.java
+            │       ├── ConnectSocialInfo.java
+            │       ├── ConnectedSocialInfos.java
+            │       ├── GoogleConnectedSocialInfo.java
+            │       ├── KaKaoConnectedSocialInfo.java
+            │       ├── NaverConnectedSocialInfo.java
+            │       └── edit
+            │           ├── PasswordEditFormDto.java
+            │           └── UserInfoEditFormDto.java
+            ├── admin
+            │   ├── AdminController.java
+            │   ├── DailyTopicDTO.java
+            │   ├── ReportDTO.java
+            │   └── UserLockDTO.java
+            ├── blog
+            │   ├── BlogController.java
+            │   └── dto
+            │       ├── ArticleDTO.java
+            │       ├── ArticleEditRequestDTO.java
+            │       ├── ArticlePagingRequestDTO.java
+            │       ├── PagingDTO.java
+            │       ├── UserProfileDTO.java
+            │       └── WriteRequestDTO.java
+            ├── channels
+            │   └── ChannelsController.java
+            ├── comment
+            │   ├── CommentController.java
+            │   └── dto
+            │       ├── CommentBodyDTO.java
+            │       ├── CommentEditDTO.java
+            │       └── CommentListDTO.java
+            ├── favorite
+            │   ├── FavoriteController.java
+            │   └── FavoriteRequestDTO.java
+            ├── feed
+            │   └── FeedController.java
+            ├── follow
+            │   ├── FollowApiController.java
+            │   └── dto
+            │       ├── FollowResultDTO.java
+            │       └── FollowsCountDTO.java
+            ├── home
+            │   ├── HomeController.java
+            │   ├── ResponseMessage.java
+            │   └── dto
+            │       ├── EmailCheckForJoinDTO.java
+            │       ├── EmailCheckResponseMessage.java
+            │       ├── JoinDTO.java
+            │       ├── LoginDTO.java
+            │       └── find
+            │           ├── FindEmailDTO.java
+            │           ├── FindPasswordDTO.java
+            │           └── FoundEmailDTO.java
+            └── social
+                ├── SocialController.java
+                ├── SocialInfoDto.java
+                ├── SocialSignUpDto.java
+                └── util
+                    └── SocialSignUpValueEncryptoDecryptor.java
 ```
+
 데이터베이스 스키마
 프로젝트의 데이터베이스 스키마 설계 또는 ER 다이어그램
-![image](https://github.com/geulkkoli-refactor/geulkkoli/assets/85615666/b1e6e3a8-9e34-49f7-8b56-f59155a02c52)
-
-프로젝트 시연영상 모음
-https://www.youtube.com/playlist?list=PLr9nS95erT7m5jrlJ80b1B3WeEYnyu4yq
-
+![barabara.png](..%2F..%2F..%2Fbarabara.png)
 프로젝트 데모 주소
 https://geulkkoli.hop.sh/
