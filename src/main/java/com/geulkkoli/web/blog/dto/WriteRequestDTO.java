@@ -86,7 +86,7 @@ public class WriteRequestDTO {
     }
 
     public List<String> tagLists() {
-        return Arrays.stream(hashTagString.split(HashTagSign.GENERAL.getSign())).collect(Collectors.toList());
+        return Arrays.stream(hashTagString.split(HashTagSign.GENERAL.getSign())).filter(s -> !s.isBlank()).toList();
     }
 
     @Override

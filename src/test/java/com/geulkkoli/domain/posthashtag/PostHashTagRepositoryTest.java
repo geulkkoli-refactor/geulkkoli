@@ -142,8 +142,8 @@ class PostHashTagRepositoryTest {
 
         List<Post> posts = postHashTagRepository.findAllByHashTagNames(List.of("소설", "로맨스"));
 
-        assertThat(posts).hasSize(2);
-        assertThat(posts).contains(post01, post03);
+        assertThat(posts).hasSize(3);
+        assertThat(posts).contains(post01,post02, post03);
     }
 
     private PostHashTag createPostHashTag(Post post, HashTag hashTag) {

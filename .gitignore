@@ -387,3 +387,5 @@ build/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 /.vscode/
+/Dockerfile
+/src/main/resources/docker-compose.yml

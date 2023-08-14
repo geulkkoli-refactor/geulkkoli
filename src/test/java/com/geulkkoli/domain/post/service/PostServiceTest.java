@@ -81,12 +81,12 @@ class PostServiceTest {
 
         userRepository.save(user1);
 
-        Post save = postService.writeArtice(WriteRequestDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("소설 판타지 완결").nickName(user1.getNickName()).build(), user1);
+        Post save = postService.writeArtice(WriteRequestDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("#소설#판타지#완결").nickName(user1.getNickName()).build(), user1);
 
 
         assertAll(() -> assertThat(save).has(new Condition<>(p -> p.getTitle().equals("title"), "title")),
                 () -> assertThat(save).has(new Condition<>(p -> p.getPostBody().equals("body"), "body")),
-                () -> assertThat(save).has(new Condition<>(p -> p.getNickName().equals("nick"), "nick")),
+                () -> assertThat(save).has(new Condition<>(p -> p.getNickName().equals("nickName"), "nick")),
                 () -> assertThat(save.getPostHashTags()).hasSize(3));
 
     }
@@ -108,6 +108,7 @@ class PostServiceTest {
 
 
         Post post = postService.writeArtice(WriteRequestDTO.builder().authorId(user1.getUserId()).postBody("body").title("title").tagList("#소설#판타지#완결").nickName(user1.getNickName()).build(), user1);
+
         ArticleEditRequestDTO articleEditRequestDTO = ArticleEditRequestDTO.builder()
                 .postId(post.getPostId())
                 .postBody("body update")

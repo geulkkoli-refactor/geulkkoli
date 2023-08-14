@@ -58,7 +58,7 @@ public class ArticleEditRequestDTO {
                 .build();
     }
     public List<String> tagNames() {
-        return Arrays.stream(tags.split(HashTagSign.GENERAL.getSign())).collect(Collectors.toList());
+        return Arrays.stream(tags.split(HashTagSign.GENERAL.getSign())).filter(s ->!s.isBlank()).toList();
     }
 
     @Override

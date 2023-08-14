@@ -43,14 +43,15 @@ public class PostHashTagService {
             return post;
         }
         List<HashTag> hashTags = hashTagFindService.findHashTags(WriteRequestDTO.tagLists());
-        log.info("hashTags: {}", hashTags);
-        Optional<HashTag> any = hashTags.stream().filter(i -> WriteRequestDTO.getHashTagString().equals(i.getHashTagName())).findAny();
-        if (any.isEmpty() && !WriteRequestDTO.getHashTagString().isEmpty()) {
-            HashTag newHashTag = hashTagService.createNewHashTag(WriteRequestDTO.getHashTagString(), HashTagType.GENERAL.getTypeName());
-            hashTags.add(newHashTag);
+        Optional<String> any = WriteRequestDTO.tagLists().stream().filter(name -> hashTags.stream().map(HashTag::getHashTagName).noneMatch(name::equals)).findAny();
+        if (any.isEmpty() &&  !hashTags.isEmpty()) {
+            postHashTagRepository.deleteAll(post.getPostHashTags());
             postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
             return post;
         }
+        HashTag newHashTag = hashTagService.createNewHashTag(any.get(), HashTagType.GENERAL.getTypeName());
+        hashTags.add(newHashTag);
+        postHashTagRepository.deleteAll(post.getPostHashTags());
         postHashTagRepository.saveAll(post.addMultiHashTags(hashTags));
         return post;
     }
@@ -68,11 +69,11 @@ public class PostHashTagService {
         log.info("updateParam: {}", updateParam.getTags());
 
         List<HashTag> hashTags = hashTagFindService.findHashTags(updateParam.tagNames());
-        List<String> findHashTagNames = hashTags.stream().map(HashTag::getHashTagName).collect(Collectors.toList());
-        List<String> newHashTagNames = updateParam.tagNames().stream().filter(name -> !findHashTagNames.contains(name)).collect(Collectors.toList());
+        List<String> findHashTagNames = hashTags.stream().map(HashTag::getHashTagName).toList();
+        List<String> newHashTagNames = updateParam.tagNames().stream().filter(name -> !findHashTagNames.contains(name)).toList();
         if (newHashTagNames.isEmpty()) {
             log.info("hashTags: {}", hashTags);
-            postHashTagRepository.deleteAll(post.deleteAllPostHashTag());
+            postHashTagRepository.deleteAll(post.getPostHashTags());
             postHashTagRepository.saveAll(post.editMultiHashTags(hashTags));
             log.info("postHashTags: {}", post.getPostHashTags());
             return post;
