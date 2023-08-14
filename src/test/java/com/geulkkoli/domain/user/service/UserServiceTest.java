@@ -89,13 +89,14 @@ class UserServiceTest {
         PasswordEditFormDto passwordEditFormDto = new PasswordEditFormDto("123", "qwerty1@", "qwerty1@");
 
         //when
-        boolean passwordVerification = userService.isPasswordVerification(user, passwordEditFormDto);
+        boolean passwordVerification = userService.isPasswordVerification(user.getPassword(), passwordEditFormDto.getOldPassword());
 
         //then
         assertThat(passwordVerification).isTrue();
 
     }
 
+    @DisplayName("비밀번호 수정")
     @Test
     void updatePassword() {
         //given

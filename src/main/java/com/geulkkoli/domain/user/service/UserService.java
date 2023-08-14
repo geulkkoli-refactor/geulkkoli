@@ -28,7 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public boolean isPasswordVerification(User user, PasswordEditFormDto passwordEditFormDto) {
-        return passwordEncoder.matches(passwordEditFormDto.getOldPassword(), user.getPassword());
+        return passwordEncoder.matches(passwordEditFormDto.getNewPassword(), user.getPassword());
     }
 
     public boolean isPasswordVerification(String currentPassword, String oldPassword) {

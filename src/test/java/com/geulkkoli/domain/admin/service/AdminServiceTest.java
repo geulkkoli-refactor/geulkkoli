@@ -222,7 +222,7 @@ class AdminServiceImplTest {
         WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagList("이벤트 소설 완결")
+                .tagList("#이벤트#소설#완결")
                 .nickName("점심뭐먹지").build();
 
 
@@ -241,7 +241,7 @@ class AdminServiceImplTest {
         WriteRequestDTO writeRequestDTO = WriteRequestDTO.builder()
                 .title("testTitle")
                 .postBody("test postbody")
-                .tagList("이벤트 완결")
+                .tagList("#이벤트#완결")
                 .nickName("점심뭐먹지")
                 .build();
 
@@ -249,7 +249,7 @@ class AdminServiceImplTest {
         ArticleEditRequestDTO articleEditRequestDTO = ArticleEditRequestDTO.builder()
                 .title("testTitle1")
                 .postBody("test")
-                .tags("이벤트 구독 소설")
+                .tags("#이벤트#구독#소설")
                 .nickName("밥뭐먹지")
                 .build();
         Post editPost = adminService.updateNotice(post.getPostId(), articleEditRequestDTO);
