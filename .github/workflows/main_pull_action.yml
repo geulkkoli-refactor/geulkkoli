@@ -47,6 +47,8 @@ jobs:
         ## gradle 빌드
       - name: gradle 빌드
         run: ./gradlew build -x test
+        source: 'build/libs/*.jar'
+        target: 'home/${{env.LIGHTSAIL_USER}}/barabara/*.jar'
 
 
         # AWS 인증
@@ -69,8 +71,7 @@ jobs:
           username: ${{ env.LIGHTSAIL_USER }}
           key: ${{ env.LIGHTSAIL_SSH_KEY }}
           script: |
-                cd /home/ubuntu/barabara
-                gradle build -x test
-                ./stop.sh
-                ./start.sh
+            ./stop.sh
+            mv /home/${{env.LIGHTSAIL_USER}}/barabara/*.jar
+            ./start.sh
             
