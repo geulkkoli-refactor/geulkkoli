@@ -35,13 +35,13 @@ jobs:
     - name: write email username
       run: echo "SPRING_MAIL_USERNAME =${spring.mail.password}" >> ./src/main/resources/application.yml
       working-directory: ./src/main/resources
-    - name: datasouse url
+    - name: data souruse url
       run: echo "SPRING_DATASOURCE_URL =${spring.datasource.url}" >> ./src/main/resources/application.yml
       working-directory: ./src/main/resources
-    - name: datasouse username
+    - name: data souruse username
       run: echo "SPRING_DATASOURCE_USERNAME =${spring.datasource.username}" >> ./src/main/resources/application.yml
       working-directory: ./src/main/resources
-    - name: datasouse password
+    - name: data sourse password
       run: echo "SPRING_DATASOURCE_PASSWORD =${spring.datasource.password}" >> ./src/main/resources/application.yml
       working-directory: ./src/main/resources
     - name: google client id
