@@ -79,7 +79,5 @@ jobs:
           username: ${{ env.LIGHTSAIL_USER }}
           key: ${{ env.LIGHTSAIL_SSH_KEY }}
           script: |
-            ./stop.sh
             mv /home/${{env.LIGHTSAIL_USER}}/barabara/*.jar
-            ./start.sh
             
