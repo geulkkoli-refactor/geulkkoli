@@ -29,13 +29,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: write email username
-      run: echo "spring.mail.username=${{secrets.SPRING_MAIL_USERNAME}}" >> application.yml
-      working-directory: ./src/main/resources
-    - name: write email password
-      run: echo "spring.mail.password=${{secrets.SPRING_MAIL_PASSWORD}}" >> application.yml
-      working-directory: ./src/main/resources
-
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
