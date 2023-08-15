@@ -63,6 +63,14 @@ jobs:
 
       # 배포 자동화
       - name: 배포 자동화
-        run: |
-          ssh -i ${{ secrets.LIGHTSAIL_SSH_KEY }} ${{ secrets.LIGHTSAIL_USER }}@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ubuntu/barabara && ./gradlew build -x test && sudo systemctl restart geulkkoli"
-          shell: bash
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ env.LIGHTSAIL_HOST }}
+          username: ${{ env.LIGHTSAIL_USER }}
+          key: ${{ env.LIGHTSAIL_SSH_KEY }}
+          script: |
+                cd /home/ubuntu/barabara
+                gradle build -x test
+                ./stop.sh
+                ./start.sh
+            
