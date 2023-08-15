@@ -31,16 +31,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Setup and execute Gradle 'test' task
-      uses: gradle/gradle-build-action@v2
-      with:
-       arguments: test
-
-    # 빌드 시간 서울
-    - name: Setup timezone
-      uses: zcong1993/setup-timezone@master
-      with:
-        timezone: Asia/Seoul
+    - name: Build with Gradle
+      run: ./gradlew test
