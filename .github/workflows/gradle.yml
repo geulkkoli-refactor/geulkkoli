@@ -35,3 +35,9 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew test
+
+        # 빌드 시간 현지화
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Asia/Seoul
