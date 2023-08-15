@@ -47,8 +47,16 @@ jobs:
         ## gradle 빌드
       - name: gradle 빌드
         run: ./gradlew build -x test
-        source: 'build/libs/*.jar'
-        target: 'home/${{env.LIGHTSAIL_USER}}/barabara/*.jar'
+
+       ## 라이트 세일 파일 전송
+      - name: 라이트 세일 파일 전송
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.LIGHTSAIL_HOST }}
+          username: ${{ env.LIGHTSAIL_USER }}
+          key: ${{ env.LIGHTSAIL_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "/home/${{env.LIGHTSAIL_USER}}/barabara"
 
 
         # AWS 인증
