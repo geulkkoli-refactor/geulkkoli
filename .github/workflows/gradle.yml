@@ -28,6 +28,41 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+
+    - name: write email password
+      run: echo "SPRING_MAIL_PASSWORD =${spring.mail.username}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: write email username
+      run: echo "SPRING_MAIL_USERNAME =${spring.mail.password}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: datasouse url
+      run: echo "SPRING_DATASOURCE_URL =${spring.datasource.url}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: datasouse username
+      run: echo "SPRING_DATASOURCE_USERNAME =${spring.datasource.username}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: datasouse password
+      run: echo "SPRING_DATASOURCE_PASSWORD =${spring.datasource.password}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: google client id
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID =${google.client_id}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: google client secret
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET =${google.client_secret}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: kakao client id
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_ID =${kakao.client_id}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: kakao client secret
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_SECRET =${kakao.client_secret}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: naver client id
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_NAVER_CLIENT_ID =${naver.client_id}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+    - name: naver client secret
+      run: echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_NAVER_CLIENT_SECRET =${naver.client_secret}" >> ./src/main/resources/application.yml
+      working-directory: ./src/main/resources
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:

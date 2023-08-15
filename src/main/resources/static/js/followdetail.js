@@ -10,8 +10,6 @@ const getList = () => {
     var lastId = document.querySelector('ul li:last-child span#follow-id').innerText;
     console
     URL = "/follow/followees/" + lastId;
-    console.log(URL);
-    console.log('getList()');
     isFetching = true;
     fetch(URL, {
         method: "GET",
@@ -123,7 +121,6 @@ function followButtonHandler(buttonId) {
 
 function unFollowButtonHandler(buttonId) {
     var unfollowButton = document.getElementById(buttonId);
-    console.log(unfollowButton)
     if (unfollowButton) {
         unfollowButton.addEventListener('click', function (event) {
             event.preventDefault();
@@ -178,17 +175,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 window.addEventListener("scroll", () => {
-    console.log('scroll')
     let scrollHeight = window.scrollY;
     let innerHeight = window.innerHeight;
     let offsetHeight = document.body.offsetHeight;
     let elementById = document.getElementById('ul-follow');
     let length = elementById.getElementsByTagName('li').length;
-    console.log(length)
-    console.log(allCount)
+
     const Is_END = scrollHeight + innerHeight > offsetHeight - 10;
     if (Is_END && !isFetching && length < allCount) {
-        console.log('list')
         getList();
     }
 });
