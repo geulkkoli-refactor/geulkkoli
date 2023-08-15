@@ -31,10 +31,10 @@ jobs:
 
     - name: write email username
       run: echo "spring.mail.username=${{secrets.SPRING_MAIL_USERNAME}}" >> ./src/main/resources/application.yml
-      working-directory: src/main/resources
+      working-directory: ./src/main/resources
     - name: write email password
       run: echo "spring.mail.password=${{secrets.SPRING_MAIL_PASSWORD}}" >> ./src/main/resources/application.yml
-      working-directory: src/main/resources
+      working-directory: ./src/main/resources
 
 
     - name: Build with Gradle
