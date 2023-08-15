@@ -53,20 +53,20 @@ spring:
           kakao:
             client-id: ${kakao.client_id}
             client-secret: ${kakao.client_secret}
-            redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+            redirect-uri: '{baseUrl}/login/oauth2/code/kakao'
             authorization-grant-type: authorization_code
             client-authentication-method: POST
 
           naver:
             client-id: ${naver.client_id}
             client-secret: ${naver.client_secret}
-            redirect-uri: "{baseUrl}/login/oauth2/code/naver"
+            redirect-uri: '{baseUrl}/login/oauth2/code/naver'
             authorization-grant-type: authorization_code
 
           google:
             client-id: ${google.client_id}
             client-secret: ${google.client_secret}
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            redirect-uri: '{baseUrl}/login/oauth2/code/google'
             authorization-grant-type: authorization_code
             client-authentication-method: POST
             scope: email, profile
