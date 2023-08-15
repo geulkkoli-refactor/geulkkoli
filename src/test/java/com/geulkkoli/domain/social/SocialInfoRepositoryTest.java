@@ -6,13 +6,16 @@ import com.geulkkoli.domain.social.service.SocialInfoRepository;
 import com.geulkkoli.domain.user.User;
 import com.geulkkoli.domain.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+@ActiveProfiles("test")
 @DataJpaTest
 class SocialInfoRepositoryTest {
 
@@ -26,6 +29,7 @@ class SocialInfoRepositoryTest {
         socialInfoRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
+    @DisplayName("소셜 정보 저장")
     @Test
     void socialInfoSave() {
         User user = User.builder()

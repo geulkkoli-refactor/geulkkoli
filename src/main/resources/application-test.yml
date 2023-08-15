@@ -1,3 +1,12 @@
+server:
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
+    include-exception: false
+    include-message: never
+  port: 8081
+
 spring:
   config:
     activate:
@@ -10,10 +19,10 @@ spring:
       max-request-size: 100MB
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/test_db
-    username: ryn
-    password: 123
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test::mode=MySQL;
+    username: sa
+    password:
 
   jpa:
     hibernate:
@@ -103,13 +112,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: trace
-server:
-  error:
-    whitelabel:
-      enabled: false
-    path: /error
-    include-exception: false
-    include-message: never
+
 
 comm:
   uploadPath: /Users/choi/Desktop/Geulkkoli/src/main/resources/static/upload/
