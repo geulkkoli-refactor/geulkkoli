@@ -48,7 +48,6 @@ jobs:
       - name: gradle 빌드
         run: ./gradlew clean build -x test
 
-
         # AWS 인증
       - name: AWS 인증
         uses: aws-actions/configure-aws-credentials@v1
@@ -71,17 +70,5 @@ jobs:
           source: "build/libs/*.jar"
           target: "/home/${{env.LIGHTSAIL_USER}}/barabara"
 
-      ## 서버 재시작
-      - name: 서버 재시작
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.LIGHTSAIL_HOST }}
-          username: ${{ env.LIGHTSAIL_USER }}
-          key: ${{ env.LIGHTSAIL_SSH_KEY }}
-          script: |
-            cd /home/${{env.LIGHTSAIL_USER}}/barabara
-            docker-compose down
-            docker-compose up -d
-            docker-compose ps
-            docker-compose logs -f
+
             
