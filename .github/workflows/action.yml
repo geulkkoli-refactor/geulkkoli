@@ -41,7 +41,8 @@ jobs:
           cd ./src/main/resources
           touch ./application.yml
           echo "${{secrets.PROPERTIES_PROD }}" > ./application.yml
-          
+
+        shell: bash
 
         ## gradle 빌드
       - name: gradle 빌드
