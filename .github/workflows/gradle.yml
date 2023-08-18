@@ -39,11 +39,14 @@ jobs:
       - name: 프로덕션 환경 설정
         run: |
           cd ./src/main/resources
+          # application.yml 파일 생성
           touch ./application.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
+          # application.yml 파일에 프로퍼티 추가
+          echo "$PROPERTIES_PROD" > ./application.yml
 
         shell: bash
-
+        env:
+          PROPERTIES_PROD: ${{ secrets.PROPERTIES_PROD }}
         ## gradle 빌드
       - name: gradle 빌드
         run: ./gradlew clean build -x test
