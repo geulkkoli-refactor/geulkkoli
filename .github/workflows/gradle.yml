@@ -37,12 +37,12 @@ jobs:
 
       # 프로덕션 환경 설정
       - name: 프로덕션 환경 설정
+        shell: bash
         run: |
           cd ./src/main/resources
           touch ./application.yml
           echo "${{secrets.PROPERTIES_PROD }}" > ./application.yml
-
-        shell: bash
+          
 
         ## gradle 빌드
       - name: gradle 빌드
