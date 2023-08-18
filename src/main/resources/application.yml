@@ -87,13 +87,6 @@ spring:
       path: /h2-console
       enabled: true
 
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-  thymeleaf:
-    cache: false
 
   #587 포트가 이메일 전송에 유용한 보안 포트입니다.
   #구글 계정으로 앱 서비스를 설정하여 전송할 수 있게 했습니다.
